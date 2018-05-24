@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -25,6 +26,57 @@ namespace Xamarin.Forms.Internals
 				}
 		}
 
+		private struct Unroll3Enumerable<T>
+		{
+			internal const int Capacity = 3;
+			internal int Count; 
+			internal T Item0;
+			internal T Item1;
+			internal T Item2;
+
+			internal Unroll3Enumerable(IEnumerable<T> enumerable)
+			{
+				Count = 0;
+				Item0 = Item1 = Item2 = default(T);
+
+				var enumerator = enumerable.GetEnumerator();
+				if (enumerator.MoveNext())
+				{
+					Count++;
+					Item0 = enumerator.Current;
+					if (enumerator.MoveNext())
+					{
+						Count++;
+						Item1 = enumerator.Current;
+						if (enumerator.MoveNext())
+						{
+							Count++;
+							Item2 = enumerator.Current;
+
+							if (enumerator.MoveNext())
+								Count++;
+						}
+					}
+				}
+			}
+
+			public bool Overflow => Count > Capacity;
+
+			public T this[int index]
+			{
+				get
+				{
+					switch (index)
+					{
+						case 0: return Item0;
+						case 1: return Item1;
+						case 2: return Item2;
+						default: throw new InvalidOperationException("Unroll overflow");
+					}
+				}
+			}
+		}
+
 		public static IEnumerable<T> GetGesturesFor<T>(this IEnumerable<IGestureRecognizer> gestures, Func<T, bool> predicate = null) where T : GestureRecognizer
 		{
 			if (gestures == null)
@@ -32,6 +84,21 @@ namespace Xamarin.Forms.Internals
 
 			if (predicate == null)
 				predicate = x => true;
+
+			// optimization to avoid new List<> allocation
+			var unroll = new Unroll3Enumerable<IGestureRecognizer>(gestures);
+			if (!unroll.Overflow)
+			{
+				for (var i = 0; i < unroll.Count; i++)
+				{
+					IGestureRecognizer item = unroll[i];
+					var gesture = item as T;
+					if (gesture != null && predicate(gesture))
+					{
+						yield return gesture;
+					}
+				}
+			}
 
 			foreach (IGestureRecognizer item in new List<IGestureRecognizer>(gestures))
 			{
