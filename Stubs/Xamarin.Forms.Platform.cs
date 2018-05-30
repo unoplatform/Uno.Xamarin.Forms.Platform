@@ -55,6 +55,9 @@ namespace Xamarin.Forms.Platform
 	[RenderWith (typeof (ListViewRenderer))]
 	internal class _ListViewRenderer { }
 	
+	[RenderWith (typeof (CollectionViewRenderer))]
+	internal class _CollectionViewRenderer { }
+
 	[RenderWith (typeof (SliderRenderer))]
 	internal class _SliderRenderer { }
 

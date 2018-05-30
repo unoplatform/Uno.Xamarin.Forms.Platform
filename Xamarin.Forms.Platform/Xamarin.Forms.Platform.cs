@@ -39,6 +39,10 @@
 	{
 	}
 
+	internal class _CollectionViewRenderer
+	{
+	}
+
 	internal class _CarouselViewRenderer
 	{
 	}
