@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Automation.Peers;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class ViewRenderer<TElement, TNativeElement> : VisualElementRenderer<TElement, TNativeElement> where TElement : View where TNativeElement : FrameworkElement
+	public partial class ViewRenderer<TElement, TNativeElement> : VisualElementRenderer<TElement, TNativeElement> where TElement : View where TNativeElement : FrameworkElement
 	{
 		string _defaultAutomationPropertiesName;
 		AccessibilityView? _defaultAutomationPropertiesAccessibilityView;
@@ -134,7 +134,9 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void UpdateMargins()
 		{
-			Margin = new Windows.UI.Xaml.Thickness(Element.Margin.Left, Element.Margin.Top, Element.Margin.Right, Element.Margin.Bottom);
+			// Not sure why this marin is present on all views, this duplicates
+			// the margin everywhere.
+			//Margin = new Windows.UI.Xaml.Thickness(Element.Margin.Left, Element.Margin.Top, Element.Margin.Right, Element.Margin.Bottom);
 		}
 	}
 }

@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	internal class FormsPresenter : Windows.UI.Xaml.Controls.ContentPresenter
+	internal partial class FormsPresenter : Windows.UI.Xaml.Controls.ContentPresenter
 	{
 		public FormsPresenter()
 		{

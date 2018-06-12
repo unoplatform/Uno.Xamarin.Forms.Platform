@@ -13,7 +13,7 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class CellControl : ContentControl
+	public partial class CellControl : ContentControl
 	{
 		public static readonly DependencyProperty CellProperty = DependencyProperty.Register("Cell", typeof(object), typeof(CellControl),
 			new PropertyMetadata(null, (o, e) => ((CellControl)o).SetSource((Cell)e.OldValue, (Cell)e.NewValue)));
@@ -126,7 +126,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 		Windows.UI.Xaml.DataTemplate GetTemplate(Cell cell)
 		{
-			var renderer = Registrar.Registered.GetHandlerForObject<ICellRenderer>(cell);
+			var renderer = Internals.Registrar.Registered.GetHandlerForObject<ICellRenderer>(cell);
 			return renderer.GetTemplate(cell);
 		}
 
@@ -159,7 +159,7 @@ namespace Xamarin.Forms.Platform.UWP
 			}
 		}
 
-		void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+		void OnDataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
 			// We don't want to set the Cell until the ListView is realized, just in case the 
 			// Cell has an ItemTemplate. Instead, we'll store the new data item, and it will be

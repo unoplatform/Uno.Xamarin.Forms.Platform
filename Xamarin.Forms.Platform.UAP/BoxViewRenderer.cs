@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class BoxViewRenderer : ViewRenderer<BoxView, Windows.UI.Xaml.Shapes.Rectangle>
+	public partial class BoxViewRenderer : ViewRenderer<BoxView, Windows.UI.Xaml.Shapes.Rectangle>
 	{
 		protected override void OnElementChanged(ElementChangedEventArgs<BoxView> e)
 		{

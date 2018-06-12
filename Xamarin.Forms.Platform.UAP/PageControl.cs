@@ -6,7 +6,7 @@ using Xamarin.Forms.PlatformConfiguration.WindowsSpecific;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public sealed class PageControl : ContentControl, IToolbarProvider
+	public sealed partial class PageControl : ContentControl, IToolbarProvider
 	{
 		public static readonly DependencyProperty InvisibleBackButtonCollapsedProperty = DependencyProperty.Register("InvisibleBackButtonCollapsed", typeof(bool), typeof(PageControl),
 			new PropertyMetadata(true, OnInvisibleBackButtonCollapsedChanged));

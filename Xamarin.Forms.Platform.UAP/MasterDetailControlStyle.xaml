@@ -15,7 +15,22 @@
 									<RowDefinition Height="*" />
 								</Grid.RowDefinitions>
 								<StackPanel Grid.Row="0" Orientation="Horizontal" Visibility="{TemplateBinding MasterToolbarVisibility}"  Background="{TemplateBinding ToolbarBackground}">
-									<Button Name="PaneTogglePane" Style="{ThemeResource PaneButton}" Foreground="{TemplateBinding ToolbarForeground}" />
+									<!--<Button Name="PaneTogglePane" 
+											Style="{ThemeResource PaneButton}"
+											Foreground="{TemplateBinding ToolbarForeground}" />-->
+									<!-- 
+									The Uno styling system has issues with implicit text styling in 
+									buttons, specifying values explicitly works around the issue
+									-->
+									<Button Name="PaneTogglePane"
+											FontFamily="Symbols"
+											BorderBrush="Transparent"
+											FontSize="20"
+											Height="48"
+											Width="48"
+											Content="&#xE700;"
+											Background="{StaticResource SystemBaseLowColor}"
+											Foreground="{TemplateBinding ToolbarForeground}" />
 									<TextBlock Margin="10,0,0,0" Style="{ThemeResource TitleTextBlockStyle}" VerticalAlignment="Center" Text="{TemplateBinding MasterTitle}" Visibility="{TemplateBinding MasterTitleVisibility}" Foreground="{TemplateBinding ToolbarForeground}"/>
 								</StackPanel>
 								<ContentPresenter x:Name="MasterPresenter" Grid.Row="1" Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Master}" />
@@ -35,7 +50,22 @@
 											<Border x:Name="TitleArea" Height="{ThemeResource TitleBarHeight}" Visibility="{TemplateBinding DetailTitleVisibility}">
 												<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Background="{TemplateBinding ToolbarBackground}" >
 
-													<Button Name="ContentTogglePane" Style="{ThemeResource PaneButton}" Foreground="{TemplateBinding ToolbarForeground}"  
+													<!--<Button Name="ContentTogglePane" Style="{ThemeResource PaneButton}" Foreground="{TemplateBinding ToolbarForeground}"  
+															Visibility="{TemplateBinding ContentTogglePaneButtonVisibility}" />-->
+													
+													<!-- 
+													The Uno styling system has issues with implicit text styling in 
+													buttons, specifying values explicitly works around the issue
+													-->
+													<Button Name="ContentTogglePane" 
+															FontFamily="Symbols"
+															BorderBrush="Transparent"
+															FontSize="20"
+															Height="48"
+															Width="48"
+															Content="&#xE700;"
+															Background="{StaticResource SystemBaseLowColor}"
+															Foreground="{TemplateBinding ToolbarForeground}"  
 															Visibility="{TemplateBinding ContentTogglePaneButtonVisibility}" />
 
 													<Border Height="{ThemeResource TitleBarHeight}" Visibility="{TemplateBinding DetailTitleVisibility}">

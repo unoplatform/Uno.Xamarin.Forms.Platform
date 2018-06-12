@@ -3,7 +3,7 @@ using Windows.UI.Xaml;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class ActivityIndicatorRenderer : ViewRenderer<ActivityIndicator, FormsProgressBar>
+	public partial class ActivityIndicatorRenderer : ViewRenderer<ActivityIndicator, FormsProgressBar>
 	{
 		object _foregroundDefault;
 

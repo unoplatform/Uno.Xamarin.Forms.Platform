@@ -7,7 +7,7 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class CarouselPageRenderer : FlipView, IVisualElementRenderer
+	public partial class CarouselPageRenderer : FlipView, IVisualElementRenderer
 	{
 		bool _fromUpdate;
 		bool _disposed;

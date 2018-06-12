@@ -4,7 +4,7 @@ using Windows.ApplicationModel;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public abstract class WindowsBasePage : Windows.UI.Xaml.Controls.Page
+	public abstract partial class WindowsBasePage : Windows.UI.Xaml.Controls.Page
 	{
 		public WindowsBasePage()
 		{

@@ -9,7 +9,7 @@ using UIView = AppKit.NSView;
 namespace Xamarin.Forms.Platform.MacOS
 #endif
 {
-	public class NativeViewWrapperRenderer : ViewRenderer<NativeViewWrapper, UIView>
+	public partial class NativeViewWrapperRenderer : ViewRenderer<NativeViewWrapper, UIView>
 	{
 		public override SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
 		{

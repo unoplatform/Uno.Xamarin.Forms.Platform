@@ -3,7 +3,7 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class NativeViewWrapperRenderer : ViewRenderer<NativeViewWrapper, FrameworkElement>
+	public partial class NativeViewWrapperRenderer : ViewRenderer<NativeViewWrapper, FrameworkElement>
 	{
 		public override SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
 		{

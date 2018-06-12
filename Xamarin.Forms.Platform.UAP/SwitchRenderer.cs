@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class SwitchRenderer : ViewRenderer<Switch, ToggleSwitch>
+	public partial class SwitchRenderer : ViewRenderer<Switch, ToggleSwitch>
 	{
 		protected override void OnElementChanged(ElementChangedEventArgs<Switch> e)
 		{

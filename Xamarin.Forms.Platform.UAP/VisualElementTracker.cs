@@ -288,8 +288,17 @@ namespace Xamarin.Forms.Platform.UWP
 			if (Element.IsInNativeLayout)
 				return;
 
-			var parent = (FrameworkElement)Container.Parent;
-			parent?.InvalidateMeasure();
+			if(Container.Parent is FrameworkElement parent)
+			{
+				parent?.InvalidateMeasure();
+			}
+#if __IOS__ || __ANDROID__
+			else if(Container.Parent is IFrameworkElement parent2)
+			{
+				parent2?.InvalidateMeasure();
+			}
+#endif
+
 			Container.InvalidateMeasure();
 		}
 

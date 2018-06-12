@@ -68,7 +68,12 @@ namespace Xamarin.Forms.Platform.UWP
 			element.SetBinding(GetForegroundProperty(element), binding);
 		}
 
-		internal static IEnumerable<T> GetDescendantsByName<T>(this DependencyObject parent, string elementName) where T : DependencyObject
+		internal static IEnumerable<T> GetDescendantsByName<T>(this DependencyObject parent, string elementName) 
+			where T:
+#if HAS_UNO
+			class,
+#endif
+			DependencyObject
 		{
 			int myChildrenCount = VisualTreeHelper.GetChildrenCount(parent);
 			for (int i = 0; i < myChildrenCount; i++)
@@ -125,7 +130,13 @@ namespace Xamarin.Forms.Platform.UWP
 			return foregroundProperty;
 		}
 
-		internal static IEnumerable<T> GetChildren<T>(this DependencyObject parent) where T : DependencyObject
+		internal static IEnumerable<T> GetChildren<T>(this DependencyObject parent)
+			where T :
+#if HAS_UNO
+			class,
+#endif
+			DependencyObject
+
 		{
 			int myChildrenCount = VisualTreeHelper.GetChildrenCount(parent);
 			for (int i = 0; i < myChildrenCount; i++)

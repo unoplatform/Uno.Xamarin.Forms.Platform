@@ -6,7 +6,7 @@ using WVisualState = Windows.UI.Xaml.VisualState;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class FormsComboBox : ComboBox
+	public partial class FormsComboBox : ComboBox
 	{
 		internal bool IsClosingAnimated { get; private set; }
 

@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class StepperRenderer : ViewRenderer<Stepper, StepperControl>
+	public partial class StepperRenderer : ViewRenderer<Stepper, StepperControl>
 	{
 		protected override void OnElementChanged(ElementChangedEventArgs<Stepper> e)
 		{

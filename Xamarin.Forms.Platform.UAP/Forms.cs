@@ -32,7 +32,9 @@ namespace Xamarin.Forms
 
 			Log.Listeners.Add(new DelegateLogListener((c, m) => Debug.WriteLine(LogFormat, c, m)));
 
+#if !HAS_UNO
 			Windows.UI.Xaml.Application.Current.Resources.MergedDictionaries.Add(GetTabletResources());
+#endif
 
 			Device.SetIdiom(TargetIdiom.Tablet);
 			Device.SetFlowDirection(GetFlowDirection());
@@ -54,9 +56,9 @@ namespace Xamarin.Forms
 			}
 			ExpressionSearch.Default = new WindowsExpressionSearch();
 
-			Registrar.ExtraAssemblies = rendererAssemblies?.ToArray();
+			Internals.Registrar.ExtraAssemblies = rendererAssemblies?.ToArray();
 
-			Registrar.RegisterAll(new[] { typeof(ExportRendererAttribute), typeof(ExportCellAttribute), typeof(ExportImageSourceHandlerAttribute) });
+			Internals.Registrar.RegisterAll(new[] { typeof(ExportRendererAttribute), typeof(ExportCellAttribute), typeof(ExportImageSourceHandlerAttribute) });
 
 			IsInitialized = true;
 			s_state = launchActivatedEventArgs.PreviousExecutionState;
@@ -76,11 +78,11 @@ namespace Xamarin.Forms
 
 		static FlowDirection GetFlowDirection()
 		{
-			string resourceFlowDirection = ResourceContext.GetForCurrentView().QualifierValues["LayoutDirection"];
-			if (resourceFlowDirection == "LTR")
-				return FlowDirection.LeftToRight;
-			else if (resourceFlowDirection == "RTL")
-				return FlowDirection.RightToLeft;
+			//string resourceFlowDirection = ResourceContext.GetForCurrentView().QualifierValues["LayoutDirection"];
+			//if (resourceFlowDirection == "LTR")
+			//	return FlowDirection.LeftToRight;
+			//else if (resourceFlowDirection == "RTL")
+			//	return FlowDirection.RightToLeft;
 
 			return FlowDirection.MatchParent;
 		}

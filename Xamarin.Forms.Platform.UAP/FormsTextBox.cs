@@ -15,7 +15,7 @@ namespace Xamarin.Forms.Platform.UWP
 	///     An intermediate class for injecting bindings for things the default
 	///     textbox doesn't allow us to bind/modify
 	/// </summary>
-	public class FormsTextBox : TextBox
+	public partial class FormsTextBox : TextBox
 	{
 		const char ObfuscationCharacter = '●';
 
@@ -110,8 +110,11 @@ namespace Xamarin.Forms.Platform.UWP
 				}
 
 				_passwordInputScope = new InputScope();
+
+#if !NETSTANDARD2_0
 				var name = new InputScopeName { NameValue = InputScopeNameValue.Default };
 				_passwordInputScope.Names.Add(name);
+#endif
 
 				return _passwordInputScope;
 			}
@@ -249,7 +252,7 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				// The ctrlDown flag is used to track if the Ctrl key is pressed; if it's actively being used and the most recent
 				// key to trigger OnKeyDown, then treat it as handled.
-				var ctrlDown = Window.Current.CoreWindow.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down);
+				var ctrlDown = Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down);
 
 				// The shift, tab, and directional (Home/End/PgUp/PgDown included) keys can be used to select text and should otherwise
 				// be ignored.

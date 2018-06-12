@@ -9,16 +9,21 @@ namespace Xamarin.Forms.Platform.UWP
 	{
 		public static void WatchForError(this IAsyncAction self)
 		{
+#if !HAS_UNO
 			self.AsTask().WatchForError();
+#endif
 		}
 
 		public static void WatchForError<T>(this IAsyncOperation<T> self)
 		{
+#if !HAS_UNO
 			self.AsTask().WatchForError();
+#endif
 		}
 
 		public static void WatchForError(this Task self)
 		{
+#if !HAS_UNO
 			SynchronizationContext context = SynchronizationContext.Current;
 			if (context == null)
 				return;
@@ -29,6 +34,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 				context.Post(e => { throw (Exception)e; }, exception);
 			}, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted, TaskScheduler.Default);
+#endif
 		}
 	}
 }

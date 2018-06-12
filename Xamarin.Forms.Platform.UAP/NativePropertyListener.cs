@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Data;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	class NativePropertyListener : DependencyObject, INotifyPropertyChanged
+	partial class NativePropertyListener : DependencyObject, INotifyPropertyChanged
 	{
 		readonly DependencyObject _target;
 		readonly string _targetProperty;

@@ -152,7 +152,9 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				oldElement.PropertyChanged -= OnElementPropertyChanged;
 				((INotifyCollectionChanged)oldElement.Children).CollectionChanged -= OnPagesChanged;
+#if !__IOS__
 				Control?.GetDescendantsByName<TextBlock>(TabBarHeaderTextBlockName).ForEach(t => { t.AccessKeyInvoked -= AccessKeyInvokedForTab; });
+#endif
 			}
 
 			if (element != null)
@@ -472,13 +474,16 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void AccessKeyInvokedForTab(UIElement sender, AccessKeyInvokedEventArgs arg)
 		{
+#if !__IOS__
 			var tab = sender as TextBlock;
 			if (tab != null && tab.DataContext is Page page)
 				Element.CurrentPage = page;
+#endif
 		}
 
 		protected void UpdateAccessKey(TextBlock control) {
 
+#if !__IOS__
 			if (control != null && control.DataContext is Page page)
 			{
 				var windowsElement = page.On<PlatformConfiguration.Windows>();
@@ -488,6 +493,7 @@ namespace Xamarin.Forms.Platform.UWP
 				}
 				AccessKeyHelper.UpdateAccessKey(control, page);
 			}
+#endif
 		}
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	internal sealed class DefaultRenderer : ViewRenderer<View, FrameworkElement>
+	internal sealed partial class DefaultRenderer : ViewRenderer<View, FrameworkElement>
 	{
 	}
 }

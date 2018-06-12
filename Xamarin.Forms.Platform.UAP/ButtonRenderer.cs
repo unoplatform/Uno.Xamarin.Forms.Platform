@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Input;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class ButtonRenderer : ViewRenderer<Button, FormsButton>
+	public partial class ButtonRenderer : ViewRenderer<Button, FormsButton>
 	{
 		bool _fontApplied;
 
@@ -27,7 +27,11 @@ namespace Xamarin.Forms.Platform.UWP
 					var button = new FormsButton();
 
 					button.Click += OnButtonClick;
+#if HAS_UNO
+					button.Click += OnPointerPressed;
+#else
 					button.AddHandler(PointerPressedEvent, new PointerEventHandler(OnPointerPressed), true);
+#endif
 					button.Loaded += ButtonOnLoaded;
 
 					SetNativeControl(button);
@@ -118,6 +122,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void OnButtonClick(object sender, RoutedEventArgs e)
 		{
+			Console.WriteLine("OnButtonClick");
 			((IButtonController)Element)?.SendReleased();
 			((IButtonController)Element)?.SendClicked();
 		}

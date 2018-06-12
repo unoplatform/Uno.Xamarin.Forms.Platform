@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Input;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class EntryCellTextBox : TextBox
+	public partial class EntryCellTextBox : TextBox
 	{
 		protected override void OnKeyUp(KeyRoutedEventArgs e)
 		{

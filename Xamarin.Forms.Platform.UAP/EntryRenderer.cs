@@ -10,7 +10,7 @@ using Specifics = Xamarin.Forms.PlatformConfiguration.WindowsSpecific.InputView;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class EntryRenderer : ViewRenderer<Entry, FormsTextBox>
+	public partial class EntryRenderer : ViewRenderer<Entry, FormsTextBox>
 	{
 		bool _fontApplied;
 		Brush _backgroundColorFocusedDefaultBrush;
@@ -76,9 +76,9 @@ namespace Xamarin.Forms.Platform.UWP
 				UpdatePlaceholder();
 			else if (e.PropertyName == Entry.TextColorProperty.PropertyName)
 				UpdateTextColor();
-			else if (e.PropertyName == InputView.KeyboardProperty.PropertyName)
+			else if (e.PropertyName == Xamarin.Forms.InputView.KeyboardProperty.PropertyName)
 				UpdateInputScope();
-			else if (e.PropertyName == InputView.IsSpellCheckEnabledProperty.PropertyName)
+			else if (e.PropertyName == Xamarin.Forms.InputView.IsSpellCheckEnabledProperty.PropertyName)
 				UpdateInputScope();
 			else if (e.PropertyName == Entry.IsTextPredictionEnabledProperty.PropertyName)
 				UpdateInputScope();
@@ -94,7 +94,7 @@ namespace Xamarin.Forms.Platform.UWP
 				UpdatePlaceholderColor();
 			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
 				UpdateAlignment();
-			else if (e.PropertyName == InputView.MaxLengthProperty.PropertyName)
+			else if (e.PropertyName == Xamarin.Forms.InputView.MaxLengthProperty.PropertyName)
 				UpdateMaxLength();
 			else if (e.PropertyName == Specifics.DetectReadingOrderFromContentProperty.PropertyName)
 				UpdateDetectReadingOrderFromContent();
@@ -187,13 +187,15 @@ namespace Xamarin.Forms.Platform.UWP
 					Control.IsTextPredictionEnabled = entry.IsTextPredictionEnabled;
 				else
 					Control.ClearValue(TextBox.IsTextPredictionEnabledProperty);
-				if (entry.IsSet(InputView.IsSpellCheckEnabledProperty))
+				if (entry.IsSet(Xamarin.Forms.InputView.IsSpellCheckEnabledProperty))
 					Control.IsSpellCheckEnabled = entry.IsSpellCheckEnabled;
 				else
 					Control.ClearValue(TextBox.IsSpellCheckEnabledProperty);
 			}
 
+#if !NETSTANDARD2_0
 			Control.InputScope = entry.Keyboard.ToInputScope();
+#endif
 		}
 
 		void UpdateIsPassword()
@@ -263,7 +265,9 @@ namespace Xamarin.Forms.Platform.UWP
 			if (Control == null || Element == null)
 				return;
 
-			Control.InputScope = Element.ReturnType.ToInputScope();
+			#if !NETSTANDARD2_0
+		Control.InputScope = Element.ReturnType.ToInputScope();
+#endif
 		}
 	}
 }

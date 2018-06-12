@@ -26,7 +26,12 @@
                              </uwp:FormsCommandBar>
                         </Border>
 
-						<uwp:FormsPresenter Margin="{TemplateBinding ContentMargin}" ContentTransitions="{TemplateBinding ContentTransitions}" x:Name="presenter" Grid.Row="1" />
+						<uwp:FormsPresenter Margin="{TemplateBinding ContentMargin}" 
+											Content="{TemplateBinding Content}" 
+											ContentTemplateSelector="{TemplateBinding ContentTemplateSelecto}" 
+											ContentTransitions="{TemplateBinding ContentTransitions}" 
+											x:Name="presenter"
+											Grid.Row="1" />
 
 						<Border x:Name="BottomCommandBarArea" Grid.Row="2" HorizontalAlignment="Stretch"></Border>
 					</Grid>

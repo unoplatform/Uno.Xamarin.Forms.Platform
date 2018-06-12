@@ -5,7 +5,7 @@ using WContentPresenter = Windows.UI.Xaml.Controls.ContentPresenter;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class FormsButton : Windows.UI.Xaml.Controls.Button
+	public partial class FormsButton : Windows.UI.Xaml.Controls.Button
 	{
 		public static readonly DependencyProperty BorderRadiusProperty = DependencyProperty.Register(nameof(BorderRadius), typeof(int), typeof(FormsButton),
 			new PropertyMetadata(default(int), OnBorderRadiusChanged));

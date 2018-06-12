@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class LayoutRenderer : ViewRenderer<Layout, FrameworkElement>
+	public partial class LayoutRenderer : ViewRenderer<Layout, FrameworkElement>
 	{
 		protected override void OnElementChanged(ElementChangedEventArgs<Layout> e)
 		{
@@ -54,7 +54,7 @@ namespace Xamarin.Forms.Platform.UWP
 		{
 			base.OnElementPropertyChanged(sender, e);
 
-			if (e.PropertyName == Layout.IsClippedToBoundsProperty.PropertyName)
+			if (e.PropertyName == Xamarin.Forms.Layout.IsClippedToBoundsProperty.PropertyName)
 				UpdateClipToBounds();
 		}
 
@@ -68,6 +68,7 @@ namespace Xamarin.Forms.Platform.UWP
 			Clip = null;
 			if (Element.IsClippedToBounds)
 			{
+				System.Console.WriteLine($"Clipping {Element} to [{ActualWidth};{ActualHeight}]");
 				Clip = new RectangleGeometry { Rect = new Rect(0, 0, ActualWidth, ActualHeight) };
 			}
 		}

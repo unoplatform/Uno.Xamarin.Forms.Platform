@@ -9,7 +9,7 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class PickerRenderer : ViewRenderer<Picker, FormsComboBox>
+	public partial class PickerRenderer : ViewRenderer<Picker, FormsComboBox>
 	{
 		bool _fontApplied;
 		bool _isAnimating;

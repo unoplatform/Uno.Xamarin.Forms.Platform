@@ -1,29 +1,43 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Xamarin.Forms.Internals;
 
+#if __IOS__ || __ANDROID__
+using NativeImage = Windows.UI.Xaml.Controls.Border;
+#else
+using NativeImage = Windows.UI.Xaml.Controls.Image;
+#endif
+
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class ImageRenderer : ViewRenderer<Image, Windows.UI.Xaml.Controls.Image>
+	public partial class ImageRenderer : ViewRenderer<Image, NativeImage>
 	{
 		bool _measured;
 		bool _disposed;
 
 		public override SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
 		{
-			if (Control.Source == null)
+			if (ImageControl.Source == null)
 				return new SizeRequest();
 
 			_measured = true;
 
-			var result = new Size { Width = ((BitmapSource)Control.Source).PixelWidth, Height = ((BitmapSource)Control.Source).PixelHeight };
+			var result = new Size { Width = ((BitmapSource)ImageControl.Source).PixelWidth, Height = ((BitmapSource)ImageControl.Source).PixelHeight };
 
 			return new SizeRequest(result);
 		}
+
+		private Windows.UI.Xaml.Controls.Image ImageControl =>
+#if __IOS__ || __ANDROID__
+			(Windows.UI.Xaml.Controls.Image)Control.Child; 
+#else
+			Control;
+#endif
 
 		protected override void Dispose(bool disposing)
 		{
@@ -38,8 +52,8 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				if (Control != null)
 				{
-					Control.ImageOpened -= OnImageOpened;
-					Control.ImageFailed -= OnImageFailed;
+					ImageControl.ImageOpened -= OnImageOpened;
+					ImageControl.ImageFailed -= OnImageFailed;
 				}
 			}
 
@@ -54,10 +68,16 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				if (Control == null)
 				{
+
 					var image = new Windows.UI.Xaml.Controls.Image();
 					image.ImageOpened += OnImageOpened;
 					image.ImageFailed += OnImageFailed;
+#if __IOS__ || __ANDROID__
+					SetNativeControl(new Windows.UI.Xaml.Controls.Border { Child = image });
+#else
 					SetNativeControl(image);
+#endif
+
 				}
 
 				await TryUpdateSource();
@@ -89,7 +109,11 @@ namespace Xamarin.Forms.Platform.UWP
 			}
 		}
 
+#if HAS_UNO
+		void OnImageOpened(object sender, EventArgs routedEventArgs)
+#else
 		void OnImageOpened(object sender, RoutedEventArgs routedEventArgs)
+#endif
 		{
 			if (_measured)
 			{
@@ -99,11 +123,19 @@ namespace Xamarin.Forms.Platform.UWP
 			Element?.SetIsLoading(false);
 		}
 
+#if HAS_UNO
+		protected virtual void OnImageFailed(object sender, EventArgs exceptionRoutedEventArgs)
+		{
+			//Log.Warning("Image Loading", $"Image failed to load: {exceptionRoutedEventArgs.ErrorMessage}" );
+			//Element?.SetIsLoading(false);
+		}
+#else
 		protected virtual void OnImageFailed(object sender, ExceptionRoutedEventArgs exceptionRoutedEventArgs)
 		{
 			Log.Warning("Image Loading", $"Image failed to load: {exceptionRoutedEventArgs.ErrorMessage}" );
 			Element?.SetIsLoading(false);
 		}
+#endif
 
 		void RefreshImage()
 		{
@@ -117,16 +149,16 @@ namespace Xamarin.Forms.Platform.UWP
 				return;
 			}
 
-			Control.Stretch = GetStretch(Element.Aspect);
+			ImageControl.Stretch = GetStretch(Element.Aspect);
 			if (Element.Aspect == Aspect.AspectFill || Element.Aspect == Aspect.AspectFit) // Then Center Crop
 			{
-				Control.HorizontalAlignment = HorizontalAlignment.Center;
-				Control.VerticalAlignment = VerticalAlignment.Center;
+				ImageControl.HorizontalAlignment = HorizontalAlignment.Center;
+				ImageControl.VerticalAlignment = VerticalAlignment.Center;
 			}
 			else // Default
 			{
-				Control.HorizontalAlignment = HorizontalAlignment.Left;
-				Control.VerticalAlignment = VerticalAlignment.Top;
+				ImageControl.HorizontalAlignment = HorizontalAlignment.Left;
+				ImageControl.VerticalAlignment = VerticalAlignment.Top;
 			}
 		}
 
@@ -161,7 +193,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			ImageSource source = Element.Source;
 			IImageSourceHandler handler;
-			if (source != null && (handler = Registrar.Registered.GetHandlerForObject<IImageSourceHandler>(source)) != null)
+			if (source != null && (handler = Internals.Registrar.Registered.GetHandlerForObject<IImageSourceHandler>(source)) != null)
 			{
 				Windows.UI.Xaml.Media.ImageSource imagesource;
 
@@ -178,14 +210,14 @@ namespace Xamarin.Forms.Platform.UWP
 				// might have disposed of this Image already.
 				if (Control != null)
 				{
-					Control.Source = imagesource;
+					ImageControl.Source = imagesource;
 				}
 
 				RefreshImage();
 			}
 			else
 			{
-				Control.Source = null;
+				ImageControl.Source = null;
 				Element.SetIsLoading(false);
 			}
 		}

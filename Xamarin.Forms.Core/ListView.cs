@@ -65,7 +65,9 @@ namespace Xamarin.Forms
 
 		public ListView()
 		{
-			VerticalOptions = HorizontalOptions = LayoutOptions.FillAndExpand;
+			// See https://github.com/mono/mono/issues/9023
+			VerticalOptions = LayoutOptions.FillAndExpand;
+			HorizontalOptions = LayoutOptions.FillAndExpand;
 
 			TemplatedItems.IsGroupingEnabledProperty = IsGroupingEnabledProperty;
 			TemplatedItems.GroupHeaderTemplateProperty = GroupHeaderTemplateProperty;

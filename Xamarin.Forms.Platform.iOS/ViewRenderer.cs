@@ -18,11 +18,11 @@ using NativeControl = AppKit.NSControl;
 namespace Xamarin.Forms.Platform.MacOS
 #endif
 {
-	public abstract class ViewRenderer : ViewRenderer<View, NativeView>
+	public abstract partial class ViewRenderer : ViewRenderer<View, NativeView>
 	{
 	}
 
-	public abstract class ViewRenderer<TView, TNativeView> : VisualElementRenderer<TView> where TView : View where TNativeView : NativeView
+	public abstract partial class ViewRenderer<TView, TNativeView> : VisualElementRenderer<TView> where TView : View where TNativeView : NativeView
 	{
 #if __MOBILE__
 		string _defaultAccessibilityLabel;

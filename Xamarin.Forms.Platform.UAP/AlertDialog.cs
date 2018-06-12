@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class AlertDialog : ContentDialog
+	public partial class AlertDialog : ContentDialog
 	{
 		public Windows.UI.Xaml.Controls.ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
 

@@ -10,7 +10,7 @@ using WVisualState = Windows.UI.Xaml.VisualState;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public sealed class StepperControl : Control
+	public sealed partial class StepperControl : Control
 	{
 		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(double), typeof(StepperControl), new PropertyMetadata(default(double), OnValueChanged));
 

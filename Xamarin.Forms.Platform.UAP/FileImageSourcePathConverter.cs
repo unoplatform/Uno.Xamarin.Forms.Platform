@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	internal class FileImageSourcePathConverter : Windows.UI.Xaml.Data.IValueConverter
+	public class FileImageSourcePathConverter : Windows.UI.Xaml.Data.IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{

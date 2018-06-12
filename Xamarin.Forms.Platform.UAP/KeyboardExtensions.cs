@@ -17,10 +17,12 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				name.NameValue = InputScopeNameValue.Default;
 			}
+#if !HAS_UNO
 			else if (self == Keyboard.Chat)
 			{
 				name.NameValue = InputScopeNameValue.Chat;
 			}
+#endif
 			else if (self == Keyboard.Email)
 			{
 				name.NameValue = InputScopeNameValue.EmailSmtpAddress;
@@ -67,7 +69,9 @@ namespace Xamarin.Forms.Platform.UWP
 						Log.Warning(null, "CapitalizeWord only works when spell check is enabled");
 					}
 
+#if !HAS_UNO
 					nameValue = InputScopeNameValue.NameOrPhoneNumber;
+#endif
 				}
 
 				if (capitalizedCharacterEnabled)

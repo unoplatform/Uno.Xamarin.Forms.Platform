@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class SliderRenderer : ViewRenderer<Slider, FormsSlider>
+	public partial class SliderRenderer : ViewRenderer<Slider, FormsSlider>
 	{
 		Brush defaultforegroundcolor;
 		Brush defaultbackgroundcolor;

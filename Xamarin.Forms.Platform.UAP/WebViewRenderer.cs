@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class WebViewRenderer : ViewRenderer<WebView, Windows.UI.Xaml.Controls.WebView>, IWebViewDelegate
+	public partial class WebViewRenderer : ViewRenderer<WebView, Windows.UI.Xaml.Controls.WebView>, IWebViewDelegate
 	{
 		WebNavigationEvent _eventState;
 		bool _updating;

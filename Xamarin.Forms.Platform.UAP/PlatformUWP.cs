@@ -23,6 +23,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void InitializeStatusBar()
 		{
+#if !HAS_UNO
 			StatusBar statusBar = MobileStatusBar;
 			if (statusBar != null)
 			{
@@ -43,6 +44,7 @@ namespace Xamarin.Forms.Platform.UWP
 					statusBar.BackgroundOpacity = 1;
 				}
 			}
+#endif
 		}
 
 		internal static void SubscribeAlertsAndActionSheets()
@@ -162,6 +164,9 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void UpdateBounds()
 		{
+#if HAS_UNO
+			_bounds = new Rectangle(0, 0, _container.ActualWidth, _container.ActualHeight);
+#else
 			_bounds = new Rectangle(0, 0, _page.ActualWidth, _page.ActualHeight);
 
 			StatusBar statusBar = MobileStatusBar;
@@ -182,6 +187,7 @@ namespace Xamarin.Forms.Platform.UWP
 					_bounds.Width -= (_bounds.Width - _container.ActualWidth);
 				}
 			}
+#endif
 		}
 
 		internal async Task UpdateToolbarItems()

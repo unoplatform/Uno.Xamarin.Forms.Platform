@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class ListGroupHeaderPresenter : Windows.UI.Xaml.Controls.ContentPresenter
+	public partial class ListGroupHeaderPresenter : Windows.UI.Xaml.Controls.ContentPresenter
 	{
 		void OnTapped(object sender, TappedRoutedEventArgs tappedRoutedEventArgs)
 		{

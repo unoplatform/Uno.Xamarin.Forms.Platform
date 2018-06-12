@@ -9,7 +9,7 @@ using Specifics = Xamarin.Forms.PlatformConfiguration.WindowsSpecific.InputView;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class EditorRenderer : ViewRenderer<Editor, FormsTextBox>
+	public partial class EditorRenderer : ViewRenderer<Editor, FormsTextBox>
 	{
 		private static FormsTextBox _copyOfTextBox;
 		static Windows.Foundation.Size _zeroSize = new Windows.Foundation.Size(0, 0);
@@ -86,11 +86,11 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				UpdateTextColor();
 			}
-			else if (e.PropertyName == InputView.KeyboardProperty.PropertyName)
+			else if (e.PropertyName == Xamarin.Forms.InputView.KeyboardProperty.PropertyName)
 			{
 				UpdateInputScope();
 			}
-			else if (e.PropertyName == InputView.IsSpellCheckEnabledProperty.PropertyName)
+			else if (e.PropertyName == Xamarin.Forms.InputView.IsSpellCheckEnabledProperty.PropertyName)
 			{
 				UpdateInputScope();
 			}
@@ -115,7 +115,7 @@ namespace Xamarin.Forms.Platform.UWP
 				UpdateTextAlignment();
 				UpdateFlowDirection();
 			}
-			else if (e.PropertyName == InputView.MaxLengthProperty.PropertyName)
+			else if (e.PropertyName == Xamarin.Forms.InputView.MaxLengthProperty.PropertyName)
 				UpdateMaxLength();
 			else if (e.PropertyName == Specifics.DetectReadingOrderFromContentProperty.PropertyName)
 				UpdateDetectReadingOrderFromContent();
@@ -283,13 +283,15 @@ namespace Xamarin.Forms.Platform.UWP
 			else
 			{
 				Control.ClearValue(TextBox.IsTextPredictionEnabledProperty);
-				if (editor.IsSet(InputView.IsSpellCheckEnabledProperty))
+				if (editor.IsSet(Xamarin.Forms.InputView.IsSpellCheckEnabledProperty))
 					Control.IsSpellCheckEnabled = editor.IsSpellCheckEnabled;
 				else
 					Control.ClearValue(TextBox.IsSpellCheckEnabledProperty);
 			}
 
+#if !NETSTANDARD2_0
 			Control.InputScope = editor.Keyboard.ToInputScope();
+#endif
 		}
 
 		void UpdateText()

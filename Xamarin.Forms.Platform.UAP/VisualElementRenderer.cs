@@ -10,7 +10,7 @@ using Specifics = Xamarin.Forms.PlatformConfiguration.WindowsSpecific.VisualElem
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class VisualElementRenderer<TElement, TNativeElement> : Panel, IVisualElementRenderer, IDisposable, IEffectControlProvider where TElement : VisualElement
+	public partial class VisualElementRenderer<TElement, TNativeElement> : Panel, IVisualElementRenderer, IDisposable, IEffectControlProvider where TElement : VisualElement
 																																	  where TNativeElement : FrameworkElement
 	{
 		string _defaultAutomationPropertiesName;
@@ -205,13 +205,16 @@ namespace Xamarin.Forms.Platform.UWP
 				var nativeChildren = Children;
 				for (int i = 0; i < nativeChildren.Count; i++)
 				{
-					var nativeChild = nativeChildren[i];
-					if (arrangedChildren?.Contains(nativeChild) == true)
-						// don't try to rearrange renderers that were just arranged, 
-						// lest you suffer a layout cycle
-						continue;
-					else
-						nativeChild.Arrange(myRect);
+					// UNO TODO
+					if (nativeChildren[i] is FrameworkElement nativeChild)
+					{
+						if (arrangedChildren?.Contains(nativeChild) == true)
+							// don't try to rearrange renderers that were just arranged, 
+							// lest you suffer a layout cycle
+							continue;
+						else
+							nativeChild.Arrange(myRect);
+					}
 				}
 			}
 
@@ -311,7 +314,7 @@ namespace Xamarin.Forms.Platform.UWP
 			else if (e.PropertyName == AutomationProperties.LabeledByProperty.PropertyName)
 				SetAutomationPropertiesLabeledBy();
 			else if (e.PropertyName == VisualElement.InputTransparentProperty.PropertyName || 
-					e.PropertyName == Layout.CascadeInputTransparentProperty.PropertyName)
+					e.PropertyName == Xamarin.Forms.Layout.CascadeInputTransparentProperty.PropertyName)
 				UpdateInputTransparent();
 			if (e.PropertyName == Specifics.AccessKeyProperty.PropertyName ||
 					e.PropertyName == Specifics.AccessKeyPlacementProperty.PropertyName ||

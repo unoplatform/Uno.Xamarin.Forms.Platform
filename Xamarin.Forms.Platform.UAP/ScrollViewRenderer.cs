@@ -8,7 +8,7 @@ using UwpScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollBarVisibility;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class ScrollViewRenderer : ViewRenderer<ScrollView, ScrollViewer>
+	public partial class ScrollViewRenderer : ViewRenderer<ScrollView, ScrollViewer>
 	{
 		VisualElement _currentView;
 
@@ -98,7 +98,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			if (e.PropertyName == "Content")
 				LoadContent();
-			else if (e.PropertyName == Layout.PaddingProperty.PropertyName)
+			else if (e.PropertyName == Xamarin.Forms.Layout.PaddingProperty.PropertyName)
 				UpdateMargins();
 			else if (e.PropertyName == ScrollView.OrientationProperty.PropertyName)
 				UpdateOrientation();

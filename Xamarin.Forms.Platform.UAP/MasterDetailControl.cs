@@ -7,7 +7,7 @@ using Xamarin.Forms.PlatformConfiguration.WindowsSpecific;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class MasterDetailControl : Control, IToolbarProvider
+	public partial class MasterDetailControl : Control, IToolbarProvider
 	{
 		public static readonly DependencyProperty MasterProperty = DependencyProperty.Register("Master", typeof(FrameworkElement), typeof(MasterDetailControl),
 			new PropertyMetadata(default(FrameworkElement)));

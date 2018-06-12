@@ -21,7 +21,7 @@ using Specifics = Xamarin.Forms.PlatformConfiguration.WindowsSpecific.ListView;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class ListViewRenderer : ViewRenderer<ListView, FrameworkElement>
+	public partial class ListViewRenderer : ViewRenderer<ListView, FrameworkElement>
 	{
 		ITemplatedItemsView<Cell> TemplatedItemsView => Element;
 		bool _itemWasClicked;
@@ -56,7 +56,7 @@ namespace Xamarin.Forms.Platform.UWP
 						ItemTemplate = (Windows.UI.Xaml.DataTemplate)WApp.Current.Resources["CellTemplate"],
 						HeaderTemplate = (Windows.UI.Xaml.DataTemplate)WApp.Current.Resources["View"],
 						FooterTemplate = (Windows.UI.Xaml.DataTemplate)WApp.Current.Resources["View"],
-						ItemContainerStyle = (Windows.UI.Xaml.Style)WApp.Current.Resources["FormsListViewItem"],
+						// ItemContainerStyle = (Windows.UI.Xaml.Style)WApp.Current.Resources["FormsListViewItem"],
 						GroupStyleSelector = (GroupStyleSelector)WApp.Current.Resources["ListViewGroupSelector"]
 					};
 
@@ -64,6 +64,8 @@ namespace Xamarin.Forms.Platform.UWP
 
 					List.SetBinding(ItemsControl.ItemsSourceProperty, "");
 				}
+
+				Console.WriteLine($"ListViewRenderer.ElementChanged src:{Element.ItemsSource}");
 
 				// WinRT throws an exception if you set ItemsSource directly to a CVS, so bind it.
 				List.DataContext = new CollectionViewSource { Source = Element.ItemsSource, IsSourceGrouped = Element.IsGroupingEnabled };
@@ -147,7 +149,7 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				if (List != null)
 				{
-					foreach (ViewToRendererConverter.WrapperControl wrapperControl in FindDescendants<ViewToRendererConverter.WrapperControl>(List))
+					foreach (WrapperControl wrapperControl in FindDescendants<WrapperControl>(List))
 					{
 						wrapperControl.CleanUp();
 					}

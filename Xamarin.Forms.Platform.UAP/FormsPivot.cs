@@ -6,7 +6,7 @@ using Xamarin.Forms.PlatformConfiguration.WindowsSpecific;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class FormsPivot : Pivot, IToolbarProvider
+	public partial class FormsPivot : Pivot, IToolbarProvider
 	{
 		public static readonly DependencyProperty TitleVisibilityProperty = DependencyProperty.Register(nameof(TitleVisibility), typeof(Visibility), typeof(FormsPivot), new PropertyMetadata(Visibility.Collapsed));
 
@@ -79,6 +79,9 @@ namespace Xamarin.Forms.Platform.UWP
 			tcs?.SetResult(_commandBar); 
 		}
 
+#if !HAS_UNO
+		// Pivot does not inherit from the proper class in Uno.
+
 		protected override DependencyObject GetContainerForItemOverride()
 		{
 			var containerItem = base.GetContainerForItemOverride();
@@ -93,6 +96,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			return containerItem;
 		}
+#endif
 
 		static void SetPivotItemAutomationName(FrameworkElement frameworkElement, 
 			DataContextChangedEventArgs dataContextChangedEventArgs)

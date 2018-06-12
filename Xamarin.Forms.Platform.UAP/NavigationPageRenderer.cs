@@ -357,6 +357,7 @@ namespace Xamarin.Forms.Platform.UWP
 			if (point == null)
 				return;
 
+#if !HAS_UNO
 			if (point.PointerDevice.PointerDeviceType != PointerDeviceType.Mouse)
 				return;
 
@@ -365,6 +366,7 @@ namespace Xamarin.Forms.Platform.UWP
 				e.Handled = true;
 				OnBackClicked(_container, e);
 			}
+#endif
 		}
 
 		void OnPopRequested(object sender, NavigationRequestedEventArgs e)

@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	internal class FormsCancelButton : Windows.UI.Xaml.Controls.Button
+	internal partial class FormsCancelButton : Windows.UI.Xaml.Controls.Button
 	{
 		TextBlock _cancelButtonGlyph;
 		Border _cancelButtonBackground;

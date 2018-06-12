@@ -9,9 +9,15 @@ using Windows.UI.Xaml.Documents;
 using Xamarin.Forms.PlatformConfiguration.WindowsSpecific;
 using Specifics = Xamarin.Forms.PlatformConfiguration.WindowsSpecific.Label;
 
+#if __IOS__ || __ANDROID__
+using NativeTextBlok = Windows.UI.Xaml.Controls.Border;
+#else
+using NativeTextBlok = Windows.UI.Xaml.Controls.TextBlock;
+#endif
+
 namespace Xamarin.Forms.Platform.UWP
 {
-	public static class FormattedStringExtensions
+	public static partial class FormattedStringExtensions
 	{
 		public static Run ToRun(this Span span)
 		{
@@ -29,7 +35,7 @@ namespace Xamarin.Forms.Platform.UWP
 		}
 	}
 
-	public class LabelRenderer : ViewRenderer<Label, TextBlock>
+	public partial class LabelRenderer : ViewRenderer<Label, NativeTextBlok>
 	{
 		bool _fontApplied;
 		bool _isInitiallyDefault;
@@ -48,6 +54,13 @@ namespace Xamarin.Forms.Platform.UWP
 			return new FrameworkElementAutomationPeer(Control);
 		}
 
+		private Windows.UI.Xaml.Controls.TextBlock TextBlockControl
+#if __IOS__ || __ANDROID__
+			=> Control.Child as Windows.UI.Xaml.Controls.TextBlock;
+#else
+			=> Control;
+#endif
+
 		protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
 		{
 			if (Element == null)
@@ -58,20 +71,20 @@ namespace Xamarin.Forms.Platform.UWP
 
 			switch (Element.VerticalTextAlignment)
 			{
-				case TextAlignment.Start:
+				case Xamarin.Forms.TextAlignment.Start:
 					break;
 				default:
-				case TextAlignment.Center:
+				case Xamarin.Forms.TextAlignment.Center:
 					rect.Y = (int)((finalSize.Height - childHeight) / 2);
 					break;
-				case TextAlignment.End:
+				case Xamarin.Forms.TextAlignment.End:
 					rect.Y = finalSize.Height - childHeight;
 					break;
 			}
 			rect.Height = childHeight;
 			rect.Width = finalSize.Width;
 			Control.Arrange(rect);
-			Control.RecalculateSpanPositions(Element, _inlineHeights);
+			TextBlockControl.RecalculateSpanPositions(Element, _inlineHeights);
 			return finalSize;
 		}
 
@@ -122,38 +135,42 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				if (Control == null)
 				{
+#if __IOS__ || __ANDROID__
+					SetNativeControl(new Border { Child = new TextBlock() });
+#else
 					SetNativeControl(new TextBlock());
+#endif
 				}
 
 				_isInitiallyDefault = Element.IsDefault();
 
-				UpdateText(Control);
-				UpdateColor(Control);
-				UpdateAlign(Control);
-				UpdateFont(Control);
-				UpdateLineBreakMode(Control);
-				UpdateDetectReadingOrderFromContent(Control);
+				UpdateText(TextBlockControl);
+				UpdateColor(TextBlockControl);
+				UpdateAlign(TextBlockControl);
+				UpdateFont(TextBlockControl);
+				UpdateLineBreakMode(TextBlockControl);
+				UpdateDetectReadingOrderFromContent(TextBlockControl);
 			}
 		}
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == Label.TextProperty.PropertyName || e.PropertyName == Label.FormattedTextProperty.PropertyName)
-				UpdateText(Control);
+				UpdateText(TextBlockControl);
 			else if (e.PropertyName == Label.TextColorProperty.PropertyName)
-				UpdateColor(Control);
+				UpdateColor(TextBlockControl);
 			else if (e.PropertyName == Label.HorizontalTextAlignmentProperty.PropertyName || e.PropertyName == Label.VerticalTextAlignmentProperty.PropertyName)
-				UpdateAlign(Control);
+				UpdateAlign(TextBlockControl);
 			else if (e.PropertyName == Label.FontProperty.PropertyName)
-				UpdateFont(Control);
+				UpdateFont(TextBlockControl);
 			else if (e.PropertyName == Label.LineBreakModeProperty.PropertyName)
-				UpdateLineBreakMode(Control);
+				UpdateLineBreakMode(TextBlockControl);
 			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
-				UpdateAlign(Control);
+				UpdateAlign(TextBlockControl);
 			else if (e.PropertyName == Specifics.DetectReadingOrderFromContentProperty.PropertyName)
-				UpdateDetectReadingOrderFromContent(Control);
+				UpdateDetectReadingOrderFromContent(TextBlockControl);
 			else if (e.PropertyName == Label.LineHeightProperty.PropertyName)
-				UpdateLineHeight(Control);
+				UpdateLineHeight(TextBlockControl);
 			base.OnElementPropertyChanged(sender, e);
 		}
 
@@ -275,7 +292,7 @@ namespace Xamarin.Forms.Platform.UWP
 						var span = formatted.Spans[i];
 
 						var run = span.ToRun();
-						heights.Add(Control.FindDefaultLineHeight(run));
+						heights.Add(TextBlockControl.FindDefaultLineHeight(run));
 						textBlock.Inlines.Add(run);
 					}
 					_inlineHeights = heights;

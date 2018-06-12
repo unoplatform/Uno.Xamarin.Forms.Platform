@@ -30,7 +30,7 @@ namespace Xamarin.Forms.Platform.UWP
 			if (element == null)
 				throw new ArgumentNullException(nameof(element));
 
-			IVisualElementRenderer renderer = Registrar.Registered.GetHandlerForObject<IVisualElementRenderer>(element) ??
+			IVisualElementRenderer renderer = Internals.Registrar.Registered.GetHandlerForObject<IVisualElementRenderer>(element) ??
 			                                  new DefaultRenderer();
 			renderer.SetElement(element);
 			return renderer;

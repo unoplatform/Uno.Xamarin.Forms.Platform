@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class FrameRenderer : ViewRenderer<Frame, Border>
+	public partial class FrameRenderer : ViewRenderer<Frame, Border>
 	{
 		public FrameRenderer()
 		{
@@ -46,11 +46,11 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				PackChild();
 			}
-			else if (e.PropertyName == Frame.BorderColorProperty.PropertyName || e.PropertyName == Frame.HasShadowProperty.PropertyName)
+			else if (e.PropertyName == Xamarin.Forms.Frame.BorderColorProperty.PropertyName || e.PropertyName == Xamarin.Forms.Frame.HasShadowProperty.PropertyName)
 			{
 				UpdateBorder();
 			}
-			else if (e.PropertyName == Frame.CornerRadiusProperty.PropertyName)
+			else if (e.PropertyName == Xamarin.Forms.Frame.CornerRadiusProperty.PropertyName)
 			{
 				UpdateCornerRadius();
 			}

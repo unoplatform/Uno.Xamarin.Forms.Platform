@@ -391,7 +391,7 @@ namespace Xamarin.Forms
 		{
 			return new Color(h, s, l, a, Mode.Hsl);
 		}
-#if !NETSTANDARD1_0
+#if !NETSTANDARD1_0 && !__IOS__
 		public static implicit operator System.Drawing.Color(Color color)
 		{
 			if (color.IsDefault)

@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Automation.Peers;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class PageRenderer : VisualElementRenderer<Page, FrameworkElement>
+	public partial class PageRenderer : VisualElementRenderer<Page, FrameworkElement>
 	{
 		bool _disposed;
 

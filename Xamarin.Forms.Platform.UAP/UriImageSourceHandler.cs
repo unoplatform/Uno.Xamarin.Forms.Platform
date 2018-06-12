@@ -16,6 +16,9 @@ namespace Xamarin.Forms.Platform.UWP
 			if (imageLoader?.Uri == null)
 				return null;
 
+#if HAS_UNO
+			return new BitmapImage(imageLoader?.Uri);
+#else
 			Stream streamImage = await imageLoader.GetStreamAsync(cancellationToken);
 			if (streamImage == null || !streamImage.CanRead)
 			{
@@ -40,6 +43,7 @@ namespace Xamarin.Forms.Platform.UWP
 					return null;
 				}
 			}
+#endif
 		}
 	}
 }

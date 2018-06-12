@@ -8,7 +8,7 @@ using WVisualStateManager = Windows.UI.Xaml.VisualStateManager;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class SearchBarRenderer : ViewRenderer<SearchBar, AutoSuggestBox>
+	public partial class SearchBarRenderer : ViewRenderer<SearchBar, AutoSuggestBox>
 	{
 		Brush _defaultPlaceholderColorBrush;
 		Brush _defaultPlaceholderColorFocusBrush;

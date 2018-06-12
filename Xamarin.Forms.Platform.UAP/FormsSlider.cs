@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class FormsSlider : Windows.UI.Xaml.Controls.Slider
+	public partial class FormsSlider : Windows.UI.Xaml.Controls.Slider
 	{
 		internal Thumb Thumb { get; set; }
 		internal Thumb ImageThumb { get; set; }

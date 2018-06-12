@@ -5,7 +5,7 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class ProgressBarRenderer : ViewRenderer<ProgressBar, Windows.UI.Xaml.Controls.ProgressBar>
+	public partial class ProgressBarRenderer : ViewRenderer<ProgressBar, Windows.UI.Xaml.Controls.ProgressBar>
 	{
 		object _foregroundDefault;
 

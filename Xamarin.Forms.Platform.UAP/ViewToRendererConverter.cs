@@ -31,74 +31,77 @@ namespace Xamarin.Forms.Platform.UWP
 			throw new NotSupportedException();
 		}
 
-		internal class WrapperControl : Panel
+	}
+	internal partial class WrapperControl : Panel
+	{
+		readonly View _view;
+
+		FrameworkElement FrameworkElement { get; }
+
+		internal void CleanUp() => _view?.Cleanup();
+
+		public WrapperControl(View view)
 		{
-			readonly View _view;
+			_view = view;
+			_view.MeasureInvalidated += (sender, args) => { InvalidateMeasure(); };
 
-			FrameworkElement FrameworkElement { get; }
+			IVisualElementRenderer renderer = Platform.CreateRenderer(view);
+			Platform.SetRenderer(view, renderer);
 
-			internal void CleanUp() => _view?.Cleanup();
+			FrameworkElement = renderer.ContainerElement;
+			Children.Add(renderer.ContainerElement);
 
-			public WrapperControl(View view)
+			// make sure we re-measure once the template is applied
+			if (FrameworkElement != null)
 			{
-				_view = view;
-				_view.MeasureInvalidated += (sender, args) => { InvalidateMeasure(); };
-
-				IVisualElementRenderer renderer = Platform.CreateRenderer(view);
-				Platform.SetRenderer(view, renderer);
-
-				FrameworkElement = renderer.ContainerElement;
-				Children.Add(renderer.ContainerElement);
-
-				// make sure we re-measure once the template is applied
-				if (FrameworkElement != null)
+				FrameworkElement.Loaded += (sender, args) =>
 				{
-					FrameworkElement.Loaded += (sender, args) =>
-					{
-						// If the view is a layout (stacklayout, grid, etc) we need to trigger a layout pass
-						// with all the controls in a consistent native state (i.e., loaded) so they'll actually
-						// have Bounds set
-						(_view as Layout)?.ForceLayout();
-						InvalidateMeasure();
-					};
-				}
+					// If the view is a layout (stacklayout, grid, etc) we need to trigger a layout pass
+					// with all the controls in a consistent native state (i.e., loaded) so they'll actually
+					// have Bounds set
+					(_view as Layout)?.ForceLayout();
+					InvalidateMeasure();
+				};
+			}
+		}
+
+		protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
+		{
+			_view.IsInNativeLayout = true;
+			Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(_view, new Rectangle(0, 0, finalSize.Width, finalSize.Height));
+			_view.IsInNativeLayout = false;
+
+			var finalRect = new Rect(_view.X, _view.Y, _view.Width, _view.Height);
+			FrameworkElement?.Arrange(finalRect);
+
+			Console.WriteLine($"ArrangeOverride({finalSize}, {FrameworkElement}) = {finalRect}");
+			return finalSize;
+		}
+
+		protected override Windows.Foundation.Size MeasureOverride(Windows.Foundation.Size availableSize)
+		{
+			Size request = _view.Measure(availableSize.Width, availableSize.Height, MeasureFlags.IncludeMargins).Request;
+
+			if (request.Height < 0)
+			{
+				request.Height = availableSize.Height;
 			}
 
-			protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
+			Windows.Foundation.Size result;
+			if (_view.HorizontalOptions.Alignment == LayoutAlignment.Fill && !double.IsInfinity(availableSize.Width) && availableSize.Width != 0)
 			{
-				_view.IsInNativeLayout = true;
-				Layout.LayoutChildIntoBoundingRegion(_view, new Rectangle(0, 0, finalSize.Width, finalSize.Height));
-				_view.IsInNativeLayout = false;
-
-				FrameworkElement?.Arrange(new Rect(_view.X, _view.Y, _view.Width, _view.Height));
-				return finalSize;
+				result = new Windows.Foundation.Size(availableSize.Width, request.Height);
+			}
+			else
+			{
+				result = new Windows.Foundation.Size(request.Width, request.Height);
 			}
 
-			protected override Windows.Foundation.Size MeasureOverride(Windows.Foundation.Size availableSize)
-			{
-				Size request = _view.Measure(availableSize.Width, availableSize.Height, MeasureFlags.IncludeMargins).Request;
+			_view.Layout(new Rectangle(0, 0, result.Width, result.Height));
 
-				if (request.Height < 0)
-				{
-					request.Height = availableSize.Height;
-				}
+			FrameworkElement?.Measure(availableSize);
 
-				Windows.Foundation.Size result;
-				if (_view.HorizontalOptions.Alignment == LayoutAlignment.Fill && !double.IsInfinity(availableSize.Width) && availableSize.Width != 0)
-				{
-					result = new Windows.Foundation.Size(availableSize.Width, request.Height);
-				}
-				else
-				{
-					result = new Windows.Foundation.Size(request.Width, request.Height);
-				}
-
-				_view.Layout(new Rectangle(0, 0, result.Width, result.Height));
-
-				FrameworkElement?.Measure(availableSize);
-
-				return result;
-			}
+			return result;
 		}
 	}
 }

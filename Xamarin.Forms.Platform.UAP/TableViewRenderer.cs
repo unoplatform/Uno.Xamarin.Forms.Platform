@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Data;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class TableViewRenderer : ViewRenderer<TableView, Windows.UI.Xaml.Controls.ListView>
+	public partial class TableViewRenderer : ViewRenderer<TableView, Windows.UI.Xaml.Controls.ListView>
 	{
 		bool _ignoreSelectionEvent;
 		bool _disposed;
