@@ -4,9 +4,12 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
+
+#if !HAS_UNO
 //using FileMode = Xamarin.Forms.Internals.FileMode;
 //using FileAccess = Xamarin.Forms.Internals.FileAccess;
 //using FileShare = Xamarin.Forms.Internals.FileShare;
+#endif
 
 namespace Xamarin.Forms.Platform.UWP
 {
