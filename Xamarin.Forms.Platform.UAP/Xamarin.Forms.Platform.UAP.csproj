@@ -32,12 +32,14 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
 	</PropertyGroup>
+	
+	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFrameworkIdentifier)' == 'MonoAndroid' ">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid80' ">
 		<PackageReference Include="Uno.UI" Version="1.31.0-dev.161" PrivateAssets="All" />
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
-	<ItemGroup Condition="  '$(TargetFramework)' == 'xamarinios10' or '$(TargetFrameworkIdentifier)' == 'MonoAndroid' ">
+	<ItemGroup Condition="  '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid80' ">
 		<Reference Include="System.Runtime.Serialization" />
 	</ItemGroup>
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
@@ -50,7 +52,5 @@
 			<Name>Xamarin.Forms.Core</Name>
 		</ProjectReference>
 	</ItemGroup>
-
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
 </Project>
