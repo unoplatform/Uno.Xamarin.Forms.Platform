@@ -42,11 +42,19 @@ phases:
       packagesToPack: .nuspec\Uno.Xamarin.Forms.nuspec
       configuration: '$(BuildConfiguration)'
       packDestination: '$(Build.ArtifactStagingDirectory)'
+        
+  - task: PublishBuildArtifacts@1
+    displayName: Publish ControlGallery Wasm Artifacts
+    inputs:
+      pathToPublish: .\Xamarin.Forms.ControlGallery.Uno.Wasm\bin\Release\netstandard2.0\dist
+      artifactType: container
+      artifactName: FormsControlGallery-Wasm
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    displayName: Publish Nuget Artifacts
     inputs:
       PathtoPublish: '$(build.artifactstagingdirectory)'
-      ArtifactName: drop
+      ArtifactName: XamarinForms
       publishLocation: Container
       versioningScheme: byBuildNumber

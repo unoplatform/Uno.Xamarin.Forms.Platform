@@ -124,65 +124,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AttachedStateEffectRenderer.cs" />
-    <Compile Include="BorderEffect.cs" />
-    <Compile Include="DisposePageRenderer.cs" />
-    <Compile Include="_2489CustomRenderer.cs" />
-    <Compile Include="_57114Renderer.cs" />
-    <Compile Include="_58406EffectRenderer.cs" />
-    <Compile Include="_60122ImageRenderer.cs" />
-    <Content Include="Assets\Fonts\OFL.txt" />
-    <Content Include="bank.png" />
-    <Content Include="coffee.png" />
-    <Content Include="cover1.jpg" />
-    <Content Include="cover1small.jpg" />
-    <Content Include="crimsonsmall.jpg" />
-    <Content Include="default.css" />
-    <Content Include="invalidimage.jpg" />
-    <Content Include="local.html" />
-    <Content Include="test.jpg" />
-    <Content Include="oasis.jpg" />
-    <Content Include="oasissmall.jpg" />
-    <Content Include="photo.jpg" />
-    <Content Include="seth.png" />
-    <Content Include="toolbar_close.png" />
-    <Content Include="WebImages\XamarinLogo.png" />
-    <Content Include="Assets\Fonts\Lobster-Regular.ttf" />
     <Content Include="Properties\default.rd.xml" />
-    <Compile Include="BrokenImageSourceHandler.cs" />
-    <Compile Include="StringProvider.cs" />
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="BrokenNativeControl.cs" />
-    <Compile Include="CustomRenderers.cs" />
-    <Compile Include="FocusEffect.cs" />
-    <Compile Include="MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\Logo.png" />
-    <Content Include="Assets\SmallLogo.png" />
-    <Content Include="Assets\SplashScreen.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\WideLogo.scale-100.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
@@ -198,6 +146,7 @@
       <Version>3.0.2</Version>
     </PackageReference>
   </ItemGroup>
+  <Import Project="..\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

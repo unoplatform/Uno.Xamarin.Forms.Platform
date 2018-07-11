@@ -50,10 +50,12 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 			}
 			else if (flags.Value.HasFlag(KeyboardFlags.CapitalizeWord))
 			{
+#if !HAS_UNO
 				if (!Control.InputScope.Names.Select(x => x.NameValue).Contains(InputScopeNameValue.NameOrPhoneNumber))
 				{
 					throw new System.Exception("Input Scope Not Set to NameOrPhoneNumber");
 				}
+#endif
 
 				if (!Control.IsSpellCheckEnabled)
 				{
@@ -79,7 +81,9 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 			}
 			else if (flags.Value.HasFlag(KeyboardFlags.CapitalizeWord))
 			{
+#if !HAS_UNO
 				value = InputScopeNameValue.NameOrPhoneNumber;
+#endif
 				Control.IsSpellCheckEnabled = true;
 			}
 			else

@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>3acb38ce-cae4-4760-9e31-2bbd2537754e</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Xamarin.Forms.ControlGallery.WindowsUniversal.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Lobster-Regular.ttf" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\OFL.txt" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Logo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\WideLogo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)bank.png" />
+    <Content Include="$(MSBuildThisFileDirectory)coffee.png" />
+    <Content Include="$(MSBuildThisFileDirectory)cover1.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)cover1small.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)crimsonsmall.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)default.css" />
+    <Content Include="$(MSBuildThisFileDirectory)invalidimage.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)local.html" />
+    <Content Include="$(MSBuildThisFileDirectory)oasis.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)oasissmall.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)photo.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)seth.png" />
+    <Content Include="$(MSBuildThisFileDirectory)test.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)toolbar_close.png" />
+    <Content Include="$(MSBuildThisFileDirectory)WebImages\XamarinLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)AttachedStateEffectRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BorderEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BrokenImageSourceHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BrokenNativeControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CustomRenderers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DisposePageRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FocusEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)StringProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)_2489CustomRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)_57114Renderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)_58406EffectRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)_60122ImageRenderer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>

@@ -42,7 +42,9 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 
 			LoadApplication(_app);
 
+#if !HAS_UNO
 			CoreWindow.GetForCurrentThread().KeyDown += OnKeyDown;
+#endif
 		}
 
 		void OnKeyDown(CoreWindow coreWindow, KeyEventArgs args)

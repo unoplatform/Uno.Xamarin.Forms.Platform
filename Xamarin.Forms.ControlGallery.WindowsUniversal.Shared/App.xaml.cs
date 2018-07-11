@@ -60,8 +60,11 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Windows.UI.Xaml.Controls.Frame();
-                // Set the default language
-                rootFrame.Language = Windows.Globalization.ApplicationLanguages.Languages[0];
+
+#if !HAS_UNO
+				// Set the default language
+				rootFrame.Language = Windows.Globalization.ApplicationLanguages.Languages[0];
+#endif
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
@@ -103,7 +106,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
         /// <param name="e">Details about the navigation failure</param>
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+            throw new Exception($"Failed to load Page {e.SourcePageType.FullName}: {e.Exception}");
         }
 
         /// <summary>
