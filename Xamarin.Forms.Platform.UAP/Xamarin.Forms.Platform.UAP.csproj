@@ -1,6 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<!--<TargetFrameworks>uap10.0.16299;netstandard2.0</TargetFrameworks>-->
 		<TargetFrameworks>netstandard2.0;xamarinios10;uap10.0.16299;MonoAndroid80</TargetFrameworks>
 	</PropertyGroup>
 
