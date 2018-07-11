@@ -11,7 +11,17 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Build native UIs for WebAssembly, iOS, Android, and Windows Phone from a single, shared C# codebase</description>
 		<copyright>© Microsoft Corporation. All rights reserved.</copyright>
+		
 		<dependencies>
+			<group targetFramework="xamarinios10">
+				<dependency id="Uno.UI" version="1.31.0-dev.161"/>
+			</group>
+			<group targetFramework="MonoAndroid10">
+				<dependency id="Uno.UI" version="1.31.0-dev.161"/>
+			</group>
+			<group targetFramework="netstandard2.0">
+				<dependency id="Uno.UI" version="1.31.0-dev.161"/>
+			</group>
 		</dependencies>
 
 		<references>
