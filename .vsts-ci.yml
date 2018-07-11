@@ -40,9 +40,10 @@ phases:
     inputs:
       command: pack
       packagesToPack: .nuspec\Uno.Xamarin.Forms.nuspec
-      configuration: '$(BuildConfiguration)'
+      configuration: Release
       packDestination: '$(Build.ArtifactStagingDirectory)'
-        
+      versioningScheme: byBuildNumber
+
   - task: PublishBuildArtifacts@1
     displayName: Publish ControlGallery Wasm Artifacts
     inputs:
