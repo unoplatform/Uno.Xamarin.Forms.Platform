@@ -34,11 +34,19 @@ phases:
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
-  
+
+  - task: NuGetCommand@2
+    displayName: NuGet pack
+    inputs:
+      command: pack
+      packagesToPack: .nuspec\Uno.Xamarin.Forms.nuspec
+      configuration: '$(BuildConfiguration)'
+      packDestination: '$(Build.ArtifactStagingDirectory)'
+
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
       PathtoPublish: '$(build.artifactstagingdirectory)'
       ArtifactName: drop
       publishLocation: Container
-  
+      versioningScheme: byBuildNumber
