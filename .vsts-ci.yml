@@ -42,7 +42,8 @@ phases:
       packagesToPack: .nuspec\Uno.Xamarin.Forms.nuspec
       configuration: Release
       packDestination: '$(Build.ArtifactStagingDirectory)'
-      versioningScheme: byBuildNumber
+      versioningScheme: byEnvVar
+      versionEnvVar: GITVERSION_FullSemVer
 
   - task: PublishBuildArtifacts@1
     displayName: Publish ControlGallery Wasm Artifacts
