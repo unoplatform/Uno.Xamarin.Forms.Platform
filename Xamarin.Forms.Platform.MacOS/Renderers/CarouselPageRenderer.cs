@@ -165,6 +165,9 @@ namespace Xamarin.Forms.Platform.MacOS
 
 		void UpdateSource()
 		{
+			if (Element.LogicalChildren.Count == 0 && ArrangedObjects.Length == 0)
+				return;
+			
 			var pages = new List<NSPageContainer>();
 			for (var i = 0; i < Element.LogicalChildren.Count; i++)
 			{
@@ -189,7 +192,7 @@ namespace Xamarin.Forms.Platform.MacOS
 				UpdateCurrentPage();
 			else if (e.PropertyName == VisualElement.BackgroundColorProperty.PropertyName)
 				UpdateBackground();
-			else if (e.PropertyName == Page.BackgroundImageProperty.PropertyName)
+			else if (e.PropertyName == Page.BackgroundImageSourceProperty.PropertyName)
 				UpdateBackground();
 		}
 
@@ -198,16 +201,18 @@ namespace Xamarin.Forms.Platform.MacOS
 			if (View.Layer == null)
 				return;
 
-			string bgImage = ((Page)Element).BackgroundImage;
-
-			if (!string.IsNullOrEmpty(bgImage))
+			this.ApplyNativeImageAsync(Page.BackgroundImageSourceProperty, image =>
 			{
-				View.Layer.BackgroundColor = NSColor.FromPatternImage(NSImage.ImageNamed(bgImage)).CGColor;
-				return;
-			}
-
-			Color bgColor = Element.BackgroundColor;
-			View.Layer.BackgroundColor = bgColor.IsDefault ? NSColor.White.CGColor : bgColor.ToCGColor();
+				if (image != null)
+				{
+					View.Layer.BackgroundColor = NSColor.FromPatternImage(image).CGColor;
+				}
+				else
+				{
+					Color bgColor = Element.BackgroundColor;
+					View.Layer.BackgroundColor = bgColor.IsDefault ? NSColor.White.CGColor : bgColor.ToCGColor();
+				}
+			});
 		}
 
 		void UpdateCurrentPage(bool animated = true)

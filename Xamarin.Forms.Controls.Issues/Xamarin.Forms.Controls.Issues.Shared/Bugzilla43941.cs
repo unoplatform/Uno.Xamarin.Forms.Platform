@@ -20,7 +20,7 @@ namespace Xamarin.Forms.Controls.Issues
 			PushAsync(new LandingPage43941());
 		}
 
-#if UITEST && __IOS__
+#if UITEST
 		[Test]
 		public void Bugzilla43941Test()
 		{
@@ -106,9 +106,7 @@ namespace Xamarin.Forms.Controls.Issues
 						AutomationId = "GC",
 						Command = new Command(o =>
 						{
-							GC.Collect();
-							GC.WaitForPendingFinalizers();
-							GC.Collect();
+							GarbageCollectionHelper.Collect();
 							Label.Text = "Counter: " + Counter;
 						})
 					},

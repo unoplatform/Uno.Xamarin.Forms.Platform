@@ -129,6 +129,8 @@ namespace Xamarin.Forms.Platform.MacOS
 			remove { _elementChangedHandlers.Remove(value); }
 		}
 
+
+
 		public virtual SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
 		{
 			return NativeView.GetSizeRequest(widthConstraint, heightConstraint);
@@ -136,9 +138,14 @@ namespace Xamarin.Forms.Platform.MacOS
 
 		public NativeView NativeView => this;
 
+
+		protected internal virtual NativeView GetControl() => NativeView;
+
 		void IVisualElementRenderer.SetElement(VisualElement element)
 		{
 			SetElement((TElement)element);
+			UpdateTabStop();
+			UpdateTabIndex();
 		}
 
 		public void SetElementSize(Size size)
@@ -150,13 +157,90 @@ namespace Xamarin.Forms.Platform.MacOS
 
 		public event EventHandler<ElementChangedEventArgs<TElement>> ElementChanged;
 
+		protected int TabIndex { get; set; } = 0;
+
+		protected bool TabStop { get; set; } = true;
+
+		protected void UpdateTabStop()
+		{
+			if (Element == null)
+				return;
+
+			TabStop = Element.IsTabStop;
+			UpdateParentPageAccessibilityElements();
+		}
+
+		protected void UpdateTabIndex()
+		{
+			if (Element == null)
+				return;
+
+			TabIndex = Element.TabIndex;
+			UpdateParentPageAccessibilityElements();
+		}
+
+		public NativeView FocusSearch(bool forwardDirection)
+		{
+			VisualElement element = Element as VisualElement;
+			int maxAttempts = 0;
+			var tabIndexes = element?.GetTabIndexesOnParentPage(out maxAttempts);
+			if (tabIndexes == null)
+				return null;
+
+			int tabIndex = Element.TabIndex;
+			int attempt = 0;
+
+			do
+			{
+				element = element.FindNextElement(forwardDirection, tabIndexes, ref tabIndex) as VisualElement;
+#if __MACOS__
+				var renderer = Platform.GetRenderer(element);
+				var control = (renderer as ITabStop)?.TabStop;
+				if (control != null && control.AcceptsFirstResponder())
+					return control;
+#endif
+				element.Focus();
+			} while (!(element.IsFocused || ++attempt >= maxAttempts));
+			return null;
+		}
+
+#if __MACOS__
+		public override void KeyUp(NSEvent theEvent)
+		{
+			if (theEvent.KeyCode == (ushort)NSKey.Tab)
+			{
+				bool shift = (theEvent.ModifierFlags & NSEventModifierMask.ShiftKeyMask) == NSEventModifierMask.ShiftKeyMask;
+				var nextControl = FocusSearch(forwardDirection: !shift);
+				if (nextControl != null)
+				{
+					Window?.MakeFirstResponder(nextControl);
+					return;
+				}
+			}
+			base.KeyUp(theEvent);
+		}
+#else
+		UIKeyCommand [] tabCommands = {
+			UIKeyCommand.Create ((Foundation.NSString)"\t", 0, new ObjCRuntime.Selector ("tabForward:")),
+			UIKeyCommand.Create ((Foundation.NSString)"\t", UIKeyModifierFlags.Shift, new ObjCRuntime.Selector ("tabBackward:"))
+		};
+
+		public override UIKeyCommand [] KeyCommands => tabCommands;
+
+
+		[Foundation.Export ("tabForward:")]
+		void TabForward (UIKeyCommand cmd) => FocusSearch (forwardDirection: true);
+
+		[Foundation.Export ("tabBackward:")]
+		void TabBackward (UIKeyCommand cmd) => FocusSearch (forwardDirection: false);
+#endif
+
 		public void SetElement(TElement element)
 		{
 			var oldElement = Element;
 			Element = element;
 
-			var reference = Guid.NewGuid().ToString();
-			Performance.Start(reference);
+			Performance.Start(out string reference);
 
 			if (oldElement != null)
 				oldElement.PropertyChanged -= _propertyChangedHandler;
@@ -296,6 +380,10 @@ namespace Xamarin.Forms.Platform.MacOS
 				SetBackgroundColor(Element.BackgroundColor);
 			else if (e.PropertyName == Xamarin.Forms.Layout.IsClippedToBoundsProperty.PropertyName)
 				UpdateClipToBounds();
+			else if (e.PropertyName == VisualElement.IsTabStopProperty.PropertyName)
+				UpdateTabStop();
+			else if (e.PropertyName == VisualElement.TabIndexProperty.PropertyName)
+				UpdateTabIndex();
 #if __MOBILE__
 			else if (e.PropertyName == PlatformConfiguration.iOSSpecific.VisualElement.BlurEffectProperty.PropertyName)
 				SetBlur((BlurEffectStyle)Element.GetValue(PlatformConfiguration.iOSSpecific.VisualElement.BlurEffectProperty));
@@ -306,6 +394,7 @@ namespace Xamarin.Forms.Platform.MacOS
 			else if (e.PropertyName == AutomationProperties.IsInAccessibleTreeProperty.PropertyName)
 				SetIsAccessibilityElement();
 #endif
+
 		}
 
 		protected virtual void OnRegisterEffect(PlatformEffect effect)
@@ -316,35 +405,17 @@ namespace Xamarin.Forms.Platform.MacOS
 #if __MOBILE__
 		protected virtual void SetAccessibilityHint()
 		{
-			if (Element == null)
-				return;
-
-			if (_defaultAccessibilityHint == null)
-				_defaultAccessibilityHint = AccessibilityHint;
-
-			AccessibilityHint = (string)Element.GetValue(AutomationProperties.HelpTextProperty) ?? _defaultAccessibilityHint;
+			_defaultAccessibilityHint = this.SetAccessibilityHint(Element, _defaultAccessibilityHint);
 		}
 
 		protected virtual void SetAccessibilityLabel()
 		{
-			if (Element == null)
-				return;
-
-			if (_defaultAccessibilityLabel == null)
-				_defaultAccessibilityLabel = AccessibilityLabel;
-
-			AccessibilityLabel = (string)Element.GetValue(AutomationProperties.NameProperty) ?? _defaultAccessibilityLabel;
+			_defaultAccessibilityLabel = this.SetAccessibilityLabel(Element, _defaultAccessibilityLabel);
 		}
 
 		protected virtual void SetIsAccessibilityElement()
 		{
-			if (Element == null)
-				return;
-
-			if (!_defaultIsAccessibilityElement.HasValue)
-				_defaultIsAccessibilityElement = IsAccessibilityElement;
-
-			IsAccessibilityElement = (bool)((bool?)Element.GetValue(AutomationProperties.IsInAccessibleTreeProperty) ?? _defaultIsAccessibilityElement);
+			_defaultIsAccessibilityElement = this.SetIsAccessibilityElement(Element, _defaultIsAccessibilityElement);
 		}
 #endif
 		protected virtual void SetAutomationId(string id)
@@ -424,6 +495,18 @@ namespace Xamarin.Forms.Platform.MacOS
 			var clippableLayout = Element as Layout;
 			if (clippableLayout != null)
 				ClipsToBounds = clippableLayout.IsClippedToBounds;
+#endif
+		}
+
+		void UpdateParentPageAccessibilityElements()
+		{
+#if __MOBILE__
+			UIView parentRenderer = Superview;
+			while (parentRenderer != null && !(parentRenderer is IAccessibilityElementsController))
+				parentRenderer = parentRenderer.Superview;
+
+			if (parentRenderer is IAccessibilityElementsController controller)
+				controller.ResetAccessibilityElements();
 #endif
 		}
 

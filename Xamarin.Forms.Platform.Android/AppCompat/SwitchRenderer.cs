@@ -5,6 +5,7 @@ using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Support.V7.Widget;
 using Android.Widget;
+using Xamarin.Forms.Platform.Android.FastRenderers;
 
 namespace Xamarin.Forms.Platform.Android.AppCompat
 {
@@ -12,6 +13,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 	{
 		bool _disposed;
 		Drawable _defaultTrackDrawable;
+		string _defaultContentDescription;
 
 		public SwitchRenderer(Context context) : base(context)
 		{
@@ -19,10 +21,14 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 		}
 
 		[Obsolete("This constructor is obsolete as of version 2.5. Please use SwitchRenderer(Context) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public SwitchRenderer()
 		{
 			AutoPackage = false;
 		}
+
+		protected override void SetContentDescription()
+			=> AutomationPropertiesProvider.SetBasicContentDescription(this, Element, ref _defaultContentDescription);
 
 		void CompoundButton.IOnCheckedChangeListener.OnCheckedChanged(CompoundButton buttonView, bool isChecked)
 		{
@@ -60,7 +66,10 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 				if (Element != null)
 					Element.Toggled -= HandleToggled;
 
-				Control.SetOnCheckedChangeListener(null);
+				Control?.SetOnCheckedChangeListener(null);
+
+				_defaultTrackDrawable?.Dispose();
+				_defaultTrackDrawable = null;
 			}
 
 			base.Dispose(disposing);
@@ -112,12 +121,12 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 				}
 				else
 				{
-					Control.TrackDrawable.SetColorFilter(Element.OnColor.ToAndroid(), PorterDuff.Mode.Multiply);
+					Control.TrackDrawable?.SetColorFilter(Element.OnColor.ToAndroid(), PorterDuff.Mode.Multiply);
 				}
 			}
 			else
 			{
-				Control.TrackDrawable.ClearColorFilter();
+				Control.TrackDrawable?.ClearColorFilter();
 			}
 		}
 

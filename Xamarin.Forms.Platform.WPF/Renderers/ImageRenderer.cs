@@ -78,41 +78,24 @@ namespace Xamarin.Forms.Platform.WPF
 				return;
 			}
 
+			var source = Element.Source;
+
 			Element.SetIsLoading(true);
-			
-			ImageSource source = Element.Source;
-			IImageSourceHandler handler;
-			if (source != null && (handler = Registrar.Registered.GetHandlerForObject<IImageSourceHandler>(source)) != null)
+			try
 			{
-				System.Windows.Media.ImageSource imagesource;
+				var imagesource = await source.ToWindowsImageSourceAsync();
 
-				try
-				{
-					imagesource = await handler.LoadImageAsync(source);
-				}
-				catch (OperationCanceledException)
-				{
-					imagesource = null;
-				}
-
-				// In the time it takes to await the imagesource, some zippy little app
-				// might have disposed of this Image already.
-				if (Control != null)
-				{
+				// only set if we are still on the same image
+				if (Control != null && Element.Source == source)
 					Control.Source = imagesource;
-				}
-
-				RefreshImage();
 			}
-			else
+			finally
 			{
-				Control.Source = null;
-				Element.SetIsLoading(false);
+				// only mark as finished if we are still on the same image
+				if (Element.Source == source)
+					Element.SetIsLoading(false);
 			}
-		}
 
-		void RefreshImage()
-		{
 			((IVisualElementController)Element)?.InvalidateMeasure(InvalidationTrigger.RendererReady);
 		}
 	}
@@ -141,19 +124,22 @@ namespace Xamarin.Forms.Platform.WPF
 	{
 		public async Task<System.Windows.Media.ImageSource> LoadImageAsync(ImageSource imagesource, CancellationToken cancelationToken = new CancellationToken())
 		{
-			BitmapImage bitmapimage = null;
-			StreamImageSource streamsource = imagesource as StreamImageSource;
-			if (streamsource != null && streamsource.Stream != null)
+			BitmapImage bitmapImage = null;
+			StreamImageSource streamImageSource = imagesource as StreamImageSource;
+
+			if (streamImageSource != null && streamImageSource.Stream != null)
 			{
-				using (Stream stream = await ((IStreamImageSource)streamsource).GetStreamAsync(cancelationToken))
+				using (Stream stream = await ((IStreamImageSource)streamImageSource).GetStreamAsync(cancelationToken))
 				{
-					bitmapimage = new BitmapImage()
-					{
-						StreamSource = stream
-					};
+					bitmapImage = new BitmapImage();
+					bitmapImage.BeginInit();
+					bitmapImage.StreamSource = stream;
+					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+					bitmapImage.EndInit();
 				}
 			}
-			return bitmapimage;
+
+			return bitmapImage;
 		}
 	}
 

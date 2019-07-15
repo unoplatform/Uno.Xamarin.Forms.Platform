@@ -42,18 +42,26 @@ namespace Xamarin.Forms
 			Device.SetFlags(s_flags);
 			Device.Info = new WindowsDeviceInfo();
 
-			switch (DetectPlatform())
+			switch (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily)
 			{
-				case Windows.Foundation.Metadata.Platform.Windows:
-					Device.SetIdiom(TargetIdiom.Desktop);
+				case "Windows.Desktop":
+					if (Windows.UI.ViewManagement.UIViewSettings.GetForCurrentView().UserInteractionMode ==
+						Windows.UI.ViewManagement.UserInteractionMode.Touch)
+						Device.SetIdiom(TargetIdiom.Tablet);
+					else
+						Device.SetIdiom(TargetIdiom.Desktop);
 					break;
-				case Windows.Foundation.Metadata.Platform.WindowsPhone:
+				case "Windows.Mobile":
 					Device.SetIdiom(TargetIdiom.Phone);
 					break;
+				case "Windows.Xbox":
+					Device.SetIdiom(TargetIdiom.TV);
+					break;
 				default:
-					Device.SetIdiom(TargetIdiom.Tablet);
+					Device.SetIdiom(TargetIdiom.Unsupported);
 					break;
 			}
+
 			ExpressionSearch.Default = new WindowsExpressionSearch();
 
 			Internals.Registrar.ExtraAssemblies = rendererAssemblies?.ToArray();
@@ -63,19 +71,9 @@ namespace Xamarin.Forms
 			IsInitialized = true;
 			s_state = launchActivatedEventArgs.PreviousExecutionState;
 
-			SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
 			Platform.UWP.Platform.SubscribeAlertsAndActionSheets();
 		}
-
-		static Windows.Foundation.Metadata.Platform DetectPlatform()
-		{
-			bool isHardwareButtonsAPIPresent = ApiInformation.IsTypePresent("Windows.Phone.UI.Input.HardwareButtons");
-
-			if (isHardwareButtonsAPIPresent)
-				return Windows.Foundation.Metadata.Platform.WindowsPhone;
-			return Windows.Foundation.Metadata.Platform.Windows;
-		}
-
+		 
 		static FlowDirection GetFlowDirection()
 		{
 			//string resourceFlowDirection = ResourceContext.GetForCurrentView().QualifierValues["LayoutDirection"];
@@ -87,28 +85,11 @@ namespace Xamarin.Forms
 			return FlowDirection.MatchParent;
 		}
 
-		static Windows.UI.Xaml.ResourceDictionary GetTabletResources()
+		internal static Windows.UI.Xaml.ResourceDictionary GetTabletResources()
 		{
 			return new Windows.UI.Xaml.ResourceDictionary {
 				Source = new Uri("ms-appx:///Xamarin.Forms.Platform.UAP/Resources.xbf")
 			};
-		}
-
-		static void OnBackRequested(object sender, BackRequestedEventArgs e)
-		{
-			Application app = Application.Current;
-			if (app == null)
-				return;
-
-			Page page = app.MainPage;
-			if (page == null)
-				return;
-
-			var platform = page.Platform as Platform.UWP.Platform;
-			if (platform == null)
-				return;
-
-			e.Handled = platform.BackButtonPressed();
 		}
 	}
 }

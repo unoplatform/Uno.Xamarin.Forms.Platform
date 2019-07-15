@@ -2211,5 +2211,53 @@ namespace Xamarin.Forms.Core.UnitTests
 			Assert.That(view.GetValue(bp1w), Is.EqualTo("qux"));
 			Assert.That(view.GetValue(bp1t), Is.EqualTo("qux"));
 		}
+
+		[Test]
+		public void FallbackValueWhenSourceIsNull()
+		{
+			var bindable = new MockBindable();
+			var property = BindableProperty.Create("Foo", typeof(string), typeof(MockBindable), "default");
+			bindable.SetBinding(property, new Binding("Foo.Bar") { FallbackValue = "fallback" });
+			Assert.That(bindable.GetValue(property), Is.EqualTo("fallback"));
+		}
+
+		[Test]
+		//https://github.com/xamarin/Xamarin.Forms/issues/3467
+		public void TargetNullValueIgnoredWhenBindingIsResolved()
+		{
+			var bindable = new MockBindable();
+			var property = BindableProperty.Create("Foo", typeof(string), typeof(MockBindable), "default");
+			bindable.SetBinding(property, new Binding("Text") { TargetNullValue = "fallback" });
+			Assert.That(bindable.GetValue(property), Is.EqualTo("default"));
+			bindable.BindingContext = new MockViewModel { Text="Foo"};
+			Assert.That(bindable.GetValue(property), Is.EqualTo("Foo"));
+		}
+
+		[Test]
+		public void TargetNullValueFallback()
+		{
+			var bindable = new MockBindable();
+			var property = BindableProperty.Create("Foo", typeof(string), typeof(MockBindable), "default");
+			bindable.SetBinding(property, new Binding("Text") { TargetNullValue = "fallback" });
+			Assert.That(bindable.GetValue(property), Is.EqualTo("default"));
+			bindable.BindingContext = new MockViewModel();
+			Assert.That(bindable.GetValue(property), Is.EqualTo("fallback"));
+		}
+
+		[Test]
+		//https://github.com/xamarin/Xamarin.Forms/issues/3994
+		public void INPCOnBindingWithSource()
+		{
+			var page = new ContentPage {Title = "Foo"};
+			page.BindingContext = page;
+			var label = new Label();
+			page.Content = label;
+
+			label.SetBinding(Label.TextProperty, new Binding("BindingContext.Title", source:page));
+			Assert.That(label.Text, Is.EqualTo("Foo"));
+
+			page.Title = "Bar";
+			Assert.That(label.Text, Is.EqualTo("Bar"));
+		}
 	}
 }

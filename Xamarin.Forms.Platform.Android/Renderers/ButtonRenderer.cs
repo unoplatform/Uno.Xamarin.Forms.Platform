@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using Android.Content;
 using Android.Graphics;
 using Android.Util;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using static System.String;
 using AButton = Android.Widget.Button;
@@ -10,27 +11,36 @@ using AView = Android.Views.View;
 using AMotionEvent = Android.Views.MotionEvent;
 using AMotionEventActions = Android.Views.MotionEventActions;
 using Object = Java.Lang.Object;
+using AColor = Android.Graphics.Color;
 
 namespace Xamarin.Forms.Platform.Android
 {
-	public class ButtonRenderer : ViewRenderer<Button, AButton>, AView.IOnAttachStateChangeListener
+	public class ButtonRenderer : ViewRenderer<Button, AButton>, AView.IOnAttachStateChangeListener, IBorderVisualElementRenderer
 	{
-		ButtonBackgroundTracker _backgroundTracker;
+		BorderBackgroundManager _backgroundTracker;
 		TextColorSwitcher _textColorSwitcher;
 		float _defaultFontSize;
 		Typeface _defaultTypeface;
 		bool _isDisposed;
 		int _imageHeight = -1;
+		Thickness _paddingDeltaPix = new Thickness();
+		IVisualElementRenderer _visualElementRenderer;
 
 		public ButtonRenderer(Context context) : base(context)
 		{
 			AutoPackage = false;
+			_visualElementRenderer = this;
+			_backgroundTracker = new BorderBackgroundManager(this);
 		}
 
 		[Obsolete("This constructor is obsolete as of version 2.5. Please use ButtonRenderer(Context) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public ButtonRenderer()
 		{
 			AutoPackage = false;
+			_visualElementRenderer = this;
+			_backgroundTracker = new BorderBackgroundManager(this);
+			
 		}
 
 		AButton NativeButton
@@ -59,9 +69,13 @@ namespace Xamarin.Forms.Platform.Android
 			{
 				// We've got an image (and no text); it's already centered horizontally,
 				// we just need to adjust the padding so it centers vertically
-				var diff = (b - t - _imageHeight) / 2;
+				var diff = ((b - Context.ToPixels(Element.Padding.Bottom + Element.Padding.Top)) - t - _imageHeight) / 2;
 				diff = Math.Max(diff, 0);
-				Control?.SetPadding(0, diff, 0, -diff);
+				UpdateContentEdge(new Thickness(0, diff, 0, -diff));
+			}
+			else
+			{
+				UpdateContentEdge();
 			}
 
 			base.OnLayout(changed, l, t, r, b);
@@ -77,6 +91,8 @@ namespace Xamarin.Forms.Platform.Android
 			if (disposing)
 			{
 				_backgroundTracker?.Dispose();
+				_backgroundTracker = null;
+				_visualElementRenderer = null;
 			}
 
 			base.Dispose(disposing);
@@ -109,11 +125,6 @@ namespace Xamarin.Forms.Platform.Android
 				}
 			}
 
-			if (_backgroundTracker == null)
-				_backgroundTracker = new ButtonBackgroundTracker(Element, Control);
-			else
-				_backgroundTracker.Button = e.NewElement;
-
 			UpdateAll();
 		}
 
@@ -127,11 +138,13 @@ namespace Xamarin.Forms.Platform.Android
 				UpdateEnabled();
 			else if (e.PropertyName == Button.FontProperty.PropertyName)
 				UpdateFont();
-			else if (e.PropertyName == Button.ImageProperty.PropertyName)
+			else if (e.PropertyName == Button.ImageSourceProperty.PropertyName)
 				UpdateBitmap();
 			else if (e.PropertyName == VisualElement.IsVisibleProperty.PropertyName)
 				UpdateText();
-			
+			else if (e.PropertyName == Button.PaddingProperty.PropertyName)
+				UpdatePadding();
+
 			base.OnElementPropertyChanged(sender, e);
 		}
 
@@ -140,7 +153,7 @@ namespace Xamarin.Forms.Platform.Android
 			if (Element == null || Control == null)
 				return;
 
-			_backgroundTracker?.UpdateBackgroundColor();
+			_backgroundTracker?.UpdateDrawable();
 		}
 
 		void UpdateAll()
@@ -150,22 +163,20 @@ namespace Xamarin.Forms.Platform.Android
 			UpdateBitmap();
 			UpdateTextColor();
 			UpdateEnabled();
-			UpdateDrawable();
+			UpdateBackgroundColor();
+			UpdatePadding();
 		}
 
 		void UpdateBitmap()
 		{
-			var elementImage = Element.Image;
-			var imageFile = elementImage?.File;
+			var elementImage = Element.ImageSource;
 			_imageHeight = -1;
 
-			if (elementImage == null || IsNullOrEmpty(imageFile))
+			if (elementImage == null || elementImage.IsEmpty)
 			{
 				Control.SetCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 				return;
 			}
-
-			var image = Context.GetDrawable(imageFile);
 
 			if (IsNullOrEmpty(Element.Text))
 			{
@@ -174,44 +185,45 @@ namespace Xamarin.Forms.Platform.Android
 				// (which handles the horizontal centering) and some tricksy padding (in OnLayout)
 				// to handle the vertical centering 
 
-				// Clear any previous padding and set the image as top/center
-				Control.SetPadding(0, 0, 0, 0);
-				Control.SetCompoundDrawablesWithIntrinsicBounds(null, image, null, null);
+				this.ApplyDrawableAsync(Button.ImageSourceProperty, Context, image =>
+				{
+					// Clear any previous padding and set the image as top/center
+					UpdateContentEdge();
+					Control.SetCompoundDrawablesWithIntrinsicBounds(null, image, null, null);
 
-				// Keep track of the image height so we can use it in OnLayout
-				_imageHeight = image.IntrinsicHeight;
+					// Keep track of the image height so we can use it in OnLayout
+					_imageHeight = image?.IntrinsicHeight ?? -1;
 
-				image?.Dispose();
+					Element?.InvalidateMeasureNonVirtual(InvalidationTrigger.MeasureChanged);
+				});
 				return;
 			}
 
-			var layout = Element.ContentLayout;
-
-			Control.CompoundDrawablePadding = (int)layout.Spacing;
-
-			switch (layout.Position)
+			this.ApplyDrawableAsync(Button.ImageSourceProperty, Context, image =>
 			{
-				case Button.ButtonContentLayout.ImagePosition.Top:
-					Control.SetCompoundDrawablesWithIntrinsicBounds(null, image, null, null);
-					break;
-				case Button.ButtonContentLayout.ImagePosition.Bottom:
-					Control.SetCompoundDrawablesWithIntrinsicBounds(null, null, null, image);
-					break;
-				case Button.ButtonContentLayout.ImagePosition.Right:
-					Control.SetCompoundDrawablesWithIntrinsicBounds(null, null, image, null);
-					break;
-				default:
-					// Defaults to image on the left
-					Control.SetCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
-					break;
-			}
+				var layout = Element.ContentLayout;
 
-			image?.Dispose();
-		}
+				Control.CompoundDrawablePadding = (int)layout.Spacing;
 
-		void UpdateDrawable()
-		{
-			_backgroundTracker.UpdateDrawable();
+				switch (layout.Position)
+				{
+					case Button.ButtonContentLayout.ImagePosition.Top:
+						Control.SetCompoundDrawablesWithIntrinsicBounds(null, image, null, null);
+						break;
+					case Button.ButtonContentLayout.ImagePosition.Bottom:
+						Control.SetCompoundDrawablesWithIntrinsicBounds(null, null, null, image);
+						break;
+					case Button.ButtonContentLayout.ImagePosition.Right:
+						Control.SetCompoundDrawablesWithIntrinsicBounds(null, null, image, null);
+						break;
+					default:
+						// Defaults to image on the left
+						Control.SetCompoundDrawablesWithIntrinsicBounds(image, null, null, null);
+						break;
+				}
+
+				Element?.InvalidateMeasureNonVirtual(InvalidationTrigger.MeasureChanged);
+			});
 		}
 
 		void UpdateEnabled()
@@ -258,6 +270,37 @@ namespace Xamarin.Forms.Platform.Android
 		void UpdateTextColor()
 		{
 			_textColorSwitcher?.UpdateTextColor(Control, Element.TextColor);
+		}
+
+		float IBorderVisualElementRenderer.ShadowRadius => Control.ShadowRadius;
+		float IBorderVisualElementRenderer.ShadowDx => Control.ShadowDx;
+		float IBorderVisualElementRenderer.ShadowDy => Control.ShadowDy;
+		AColor IBorderVisualElementRenderer.ShadowColor => Control.ShadowColor;
+		bool IBorderVisualElementRenderer.UseDefaultPadding() => Element.OnThisPlatform().UseDefaultPadding();
+		bool IBorderVisualElementRenderer.UseDefaultShadow() => Element.OnThisPlatform().UseDefaultShadow();
+		bool IBorderVisualElementRenderer.IsShadowEnabled() => true;
+		VisualElement IBorderVisualElementRenderer.Element => Element;
+		AView IBorderVisualElementRenderer.View => Control;
+		event EventHandler<VisualElementChangedEventArgs> IBorderVisualElementRenderer.ElementChanged
+		{
+			add => _visualElementRenderer.ElementChanged += value;
+			remove => _visualElementRenderer.ElementChanged -= value;
+		}
+
+		void UpdatePadding()
+		{
+			Control?.SetPadding(
+				(int)(Context.ToPixels(Element.Padding.Left) + _paddingDeltaPix.Left),
+				(int)(Context.ToPixels(Element.Padding.Top) + _paddingDeltaPix.Top),
+				(int)(Context.ToPixels(Element.Padding.Right) + _paddingDeltaPix.Right),
+				(int)(Context.ToPixels(Element.Padding.Bottom) + _paddingDeltaPix.Bottom)
+			);
+		}
+
+		void UpdateContentEdge(Thickness? delta = null)
+		{
+			_paddingDeltaPix = delta ?? new Thickness();
+			UpdatePadding();
 		}
 
 		class ButtonClickListener : Object, IOnClickListener

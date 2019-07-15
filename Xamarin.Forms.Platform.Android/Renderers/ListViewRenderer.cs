@@ -9,6 +9,7 @@ using Xamarin.Forms.Internals;
 using System;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Android.Widget;
+using Android.Runtime;
 
 namespace Xamarin.Forms.Platform.Android
 {
@@ -27,12 +28,16 @@ namespace Xamarin.Forms.Platform.Android
 		IListViewController Controller => Element;
 		ITemplatedItemsView<Cell> TemplatedItemsView => Element;
 
+		ScrollBarVisibility _defaultHorizontalScrollVisibility = 0;
+		ScrollBarVisibility _defaultVerticalScrollVisibility = 0;
+
 		public ListViewRenderer(Context context) : base(context)
 		{
 			AutoPackage = false;
 		}
 
 		[Obsolete("This constructor is obsolete as of version 2.5. Please use ListViewRenderer(Context) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public ListViewRenderer()
 		{
 			AutoPackage = false;
@@ -57,7 +62,7 @@ namespace Xamarin.Forms.Platform.Android
 			{
 				if (_headerRenderer != null)
 				{
-					ClearRenderer(_headerRenderer.View);
+					Platform.ClearRenderer(_headerRenderer.View);
 					_headerRenderer.Dispose();
 					_headerRenderer = null;
 				}
@@ -67,13 +72,19 @@ namespace Xamarin.Forms.Platform.Android
 
 				if (_footerRenderer != null)
 				{
-					ClearRenderer(_footerRenderer.View);
+					Platform.ClearRenderer(_footerRenderer.View);
 					_footerRenderer.Dispose();
 					_footerRenderer = null;
 				}
 
 				_footerView?.Dispose();
 				_footerView = null;
+
+				// Unhook the adapter from the ListView before disposing of it
+				if (Control != null)
+				{
+					Control.Adapter = null;
+				}
 
 				if (_adapter != null)
 				{
@@ -91,6 +102,9 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			return new Size(40, 40);
 		}
+
+		protected virtual SwipeRefreshLayout CreateNativePullToRefresh(Context context)
+			=> new SwipeRefreshLayoutWithFixedNestedScrolling(context);
 
 		protected override void OnAttachedToWindow()
 		{
@@ -124,6 +138,12 @@ namespace Xamarin.Forms.Platform.Android
 
 				if (_adapter != null)
 				{
+					// Unhook the adapter from the ListView before disposing of it
+					if (Control != null)
+					{
+						Control.Adapter = null;
+					}
+
 					_adapter.Dispose();
 					_adapter = null;
 				}
@@ -136,9 +156,11 @@ namespace Xamarin.Forms.Platform.Android
 				{
 					var ctx = Context;
 					nativeListView = CreateNativeControl();
-					_refresh = new SwipeRefreshLayout(ctx);
+					if (Forms.IsLollipopOrNewer)
+						nativeListView.NestedScrollingEnabled = true;
+					_refresh = CreateNativePullToRefresh(ctx);
 					_refresh.SetOnRefreshListener(this);
-					_refresh.AddView(nativeListView, LayoutParams.MatchParent);
+					_refresh.AddView(nativeListView, new LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent));
 					SetNativeControl(nativeListView, _refresh);
 
 					_headerView = new Container(ctx);
@@ -163,6 +185,9 @@ namespace Xamarin.Forms.Platform.Android
 				UpdateIsSwipeToRefreshEnabled();
 				UpdateFastScrollEnabled();
 				UpdateSelectionMode();
+				UpdateSpinnerColor();
+				UpdateHorizontalScrollBarVisibility();
+				UpdateVerticalScrollBarVisibility();
 			}
 		}
 
@@ -200,6 +225,12 @@ namespace Xamarin.Forms.Platform.Android
 				UpdateFastScrollEnabled();
 			else if (e.PropertyName == ListView.SelectionModeProperty.PropertyName)
 				UpdateSelectionMode();
+			else if (e.PropertyName == ListView.RefreshControlColorProperty.PropertyName)
+				UpdateSpinnerColor();
+			else if (e.PropertyName == ScrollView.HorizontalScrollBarVisibilityProperty.PropertyName)
+				UpdateHorizontalScrollBarVisibility();
+			else if (e.PropertyName == ScrollView.VerticalScrollBarVisibilityProperty.PropertyName)
+				UpdateVerticalScrollBarVisibility();
 		}
 
 		protected override void OnLayout(bool changed, int l, int t, int r, int b)
@@ -286,23 +317,6 @@ namespace Xamarin.Forms.Platform.Android
 				Control.SetSelectionFromTop(realPositionWithHeader, y);
 		}
 
-		void ClearRenderer(AView renderedView)
-		{
-			var element = (renderedView as IVisualElementRenderer)?.Element;
-			var view = element as View;
-			if (view != null)
-			{
-				var renderer = Platform.GetRenderer(view);
-				if (renderer == renderedView)
-					element.ClearValue(Platform.RendererProperty);
-				renderer?.Dispose();
-				renderer = null;
-			}
-			var layout = view as IVisualElementRenderer;
-			layout?.Dispose();
-			layout = null;
-		}
-
 		void UpdateFooter()
 		{
 			var footer = (VisualElement)Controller.FooterElement;
@@ -314,7 +328,7 @@ namespace Xamarin.Forms.Platform.Android
 				{
 					if (_footerView != null)
 						_footerView.Child = null;
-					ClearRenderer(_footerRenderer.View);
+					Platform.ClearRenderer(_footerRenderer.View);
 					_footerRenderer.Dispose();
 					_footerRenderer = null;
 				}
@@ -346,7 +360,7 @@ namespace Xamarin.Forms.Platform.Android
 				{
 					if (_headerView != null)
 						_headerView.Child = null;
-					ClearRenderer(_headerRenderer.View);
+					Platform.ClearRenderer(_headerRenderer.View);
 					_headerRenderer.Dispose();
 					_headerRenderer = null;
 				}
@@ -377,6 +391,9 @@ namespace Xamarin.Forms.Platform.Android
 					_refresh.Refreshing = false;
 					_refresh.Post(() =>
 					{
+					    if(_refresh.IsDisposed())
+						    return;
+						
 						_refresh.Refreshing = true;
 					});
 				}
@@ -415,6 +432,42 @@ namespace Xamarin.Forms.Platform.Android
 			}
 		}
 
+		void UpdateSpinnerColor()
+		{
+			if (_refresh != null)
+				_refresh.SetColorSchemeColors(Element.RefreshControlColor.ToAndroid());
+		}
+
+		void UpdateHorizontalScrollBarVisibility()
+		{
+			if (_defaultHorizontalScrollVisibility == 0)
+			{
+				_defaultHorizontalScrollVisibility = Control.HorizontalScrollBarEnabled ? ScrollBarVisibility.Always : ScrollBarVisibility.Never;
+			}
+
+			var newHorizontalScrollVisiblility = Element.HorizontalScrollBarVisibility;
+
+			if (newHorizontalScrollVisiblility == ScrollBarVisibility.Default)
+			{
+				newHorizontalScrollVisiblility = _defaultHorizontalScrollVisibility;
+			}
+
+			Control.HorizontalScrollBarEnabled = newHorizontalScrollVisiblility == ScrollBarVisibility.Always;
+		}
+
+		void UpdateVerticalScrollBarVisibility()
+		{
+			if (_defaultVerticalScrollVisibility == 0)
+				_defaultVerticalScrollVisibility = Control.VerticalScrollBarEnabled ? ScrollBarVisibility.Always : ScrollBarVisibility.Never;
+
+			var newVerticalScrollVisibility = Element.VerticalScrollBarVisibility;
+
+			if (newVerticalScrollVisibility == ScrollBarVisibility.Default)
+				newVerticalScrollVisibility = _defaultVerticalScrollVisibility;
+
+			Control.VerticalScrollBarEnabled = newVerticalScrollVisibility == ScrollBarVisibility.Always;
+		}
+		
 		internal class Container : ViewGroup
 		{
 			IVisualElementRenderer _child;
@@ -452,7 +505,7 @@ namespace Xamarin.Forms.Platform.Android
 
 			protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 			{
-				if (_child == null)
+				if (_child?.Element == null)
 				{
 					SetMeasuredDimension(0, 0);
 					return;
@@ -464,14 +517,63 @@ namespace Xamarin.Forms.Platform.Android
 
 				var width = (int)ctx.FromPixels(MeasureSpecFactory.GetSize(widthMeasureSpec));
 
-				SizeRequest request = _child.Element.Measure(width, double.PositiveInfinity, MeasureFlags.IncludeMargins);
-				Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(_child.Element, new Rectangle(0, 0, width, request.Request.Height));
+				SizeRequest request = element.Measure(width, double.PositiveInfinity, MeasureFlags.IncludeMargins);
+				Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(element, new Rectangle(0, 0, width, request.Request.Height));
 
 				int widthSpec = MeasureSpecFactory.MakeMeasureSpec((int)ctx.ToPixels(width), MeasureSpecMode.Exactly);
 				int heightSpec = MeasureSpecFactory.MakeMeasureSpec((int)ctx.ToPixels(request.Request.Height), MeasureSpecMode.Exactly);
 
 				_child.View.Measure(widthMeasureSpec, heightMeasureSpec);
 				SetMeasuredDimension(widthSpec, heightSpec);
+			}
+		}
+
+		class SwipeRefreshLayoutWithFixedNestedScrolling : SwipeRefreshLayout
+		{
+			float _touchSlop;
+			float _initialDownY;
+			bool _nestedScrollAccepted;
+			bool _nestedScrollCalled;
+
+			public SwipeRefreshLayoutWithFixedNestedScrolling(Context ctx) : base(ctx)
+			{
+				_touchSlop = ViewConfiguration.Get(ctx).ScaledTouchSlop;
+			}
+
+			public override bool OnInterceptTouchEvent(MotionEvent ev)
+			{
+				if (ev.Action == MotionEventActions.Down)
+					_initialDownY = ev.GetAxisValue(Axis.Y);
+
+				var isBeingDragged = base.OnInterceptTouchEvent(ev);
+
+				if (!isBeingDragged && ev.Action == MotionEventActions.Move && _nestedScrollAccepted && !_nestedScrollCalled)
+				{
+					var y = ev.GetAxisValue(Axis.Y);
+					var dy = (y - _initialDownY) / 2;
+					isBeingDragged = dy > _touchSlop;
+				}
+
+				return isBeingDragged;
+			}
+
+			public override void OnNestedScrollAccepted(AView child, AView target, [GeneratedEnum] ScrollAxis axes)
+			{
+				base.OnNestedScrollAccepted(child, target, axes);
+				_nestedScrollAccepted = true;
+				_nestedScrollCalled = false;
+			}
+
+			public override void OnStopNestedScroll(AView child)
+			{
+				base.OnStopNestedScroll(child);
+				_nestedScrollAccepted = false;
+			}
+
+			public override void OnNestedScroll(AView target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed)
+			{
+				base.OnNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
+				_nestedScrollCalled = true;
 			}
 		}
 	}

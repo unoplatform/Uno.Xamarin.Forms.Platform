@@ -26,6 +26,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 		TaskCompletionSource<CommandBar> _commandBarTcs;
 	    ToolbarPlacement _toolbarPlacement;
+		bool _toolbarDynamicOverflowEnabled = true;
 
 		public Brush ToolbarBackground
 		{
@@ -56,6 +57,16 @@ namespace Xamarin.Forms.Platform.UWP
 	        }
 	    }
 
+		public bool ToolbarDynamicOverflowEnabled
+		{
+			get { return _toolbarDynamicOverflowEnabled; }
+			set
+			{
+				_toolbarDynamicOverflowEnabled = value; 
+				UpdateToolbarDynamicOverflowEnabled();
+			}
+		}
+
 		Task<CommandBar> IToolbarProvider.GetCommandBarAsync()
 		{
 			if (_commandBar != null)
@@ -69,14 +80,15 @@ namespace Xamarin.Forms.Platform.UWP
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
-			
+
 			_commandBar = GetTemplateChild("CommandBar") as CommandBar;
 
 
 			_toolbarPlacementHelper.Initialize(_commandBar, () => ToolbarPlacement, GetTemplateChild);
+			UpdateToolbarDynamicOverflowEnabled();
 
 			TaskCompletionSource<CommandBar> tcs = _commandBarTcs;
-			tcs?.SetResult(_commandBar); 
+			tcs?.SetResult(_commandBar);
 		}
 
 #if !HAS_UNO
@@ -108,6 +120,14 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				// This way we can find tabs with automation (for testing, etc.)
 				Windows.UI.Xaml.Automation.AutomationProperties.SetName(pivotItem, page.Title);	
+			}
+		}
+
+		void UpdateToolbarDynamicOverflowEnabled()
+		{
+			if (_commandBar != null)
+			{
+				_commandBar.IsDynamicOverflowEnabled = ToolbarDynamicOverflowEnabled;
 			}
 		}
 	}

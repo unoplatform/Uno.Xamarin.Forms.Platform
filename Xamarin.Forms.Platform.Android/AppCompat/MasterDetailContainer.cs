@@ -24,7 +24,9 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			_isMaster = isMaster;
 		}
 
-		FragmentManager FragmentManager => _fragmentManager ?? (_fragmentManager = ((FormsAppCompatActivity)Context).SupportFragmentManager);
+		public bool MarkedForDispose { get; internal set; } = false;
+
+		FragmentManager FragmentManager => _fragmentManager ?? (_fragmentManager = Context.GetFragmentManager());
 
 		protected override void OnLayout(bool changed, int l, int t, int r, int b)
 		{
@@ -55,6 +57,8 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			}
 		}
 
+		public void UpdateFlowDirection() => _pageContainer?.UpdateFlowDirection(_parent);
+
 		protected override void AddChildView(VisualElement childView)
 		{
 			_pageContainer = null;
@@ -67,61 +71,54 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 
 				if (_currentFragment != null)
 				{
+					if (!_parent.IsAttachedToRoot())
+						return;
+
 					// But first, if the previous occupant of this container was a fragment, we need to remove it properly
-					FragmentTransaction transaction = FragmentManager.BeginTransaction();
-					transaction.Remove(_currentFragment);
-					transaction.SetTransition((int)FragmentTransit.None);
+					FragmentTransaction transaction = FragmentManager.BeginTransactionEx();
+					transaction.RemoveEx(_currentFragment);
+					transaction.SetTransitionEx((int)FragmentTransit.None);
 
 					// This is a removal of a fragment that's not going on the back stack; there's no reason to care
 					// whether its state gets successfully saved, since we'll never restore it. Ergo, CommitAllowingStateLoss
-					transaction.CommitAllowingStateLoss();
+					transaction.CommitAllowingStateLossEx();
 
 					_currentFragment = null;
 				}
-				
+
 				base.AddChildView(childView);
 			}
 			else
 			{
+				if (!_parent.IsAttachedToRoot())
+					return;
+
 				// The renderers for NavigationPage and TabbedPage both host fragments, so they need to be wrapped in a 
 				// FragmentContainer in order to get isolated fragment management
 				Fragment fragment = FragmentContainer.CreateInstance(page);
-				
+
 				var fc = fragment as FragmentContainer;
 
 				fc?.SetOnCreateCallback(pc =>
 				{
 					_pageContainer = pc;
+					UpdateFlowDirection();
 					SetDefaultBackgroundColor(pc.Child);
 				});
 
-				FragmentTransaction transaction = FragmentManager.BeginTransaction();
+				FragmentTransaction transaction = FragmentManager.BeginTransactionEx();
 
 				if (_currentFragment != null)
-				{
-					transaction.Remove(_currentFragment);
-				}
+					transaction.RemoveEx(_currentFragment);
 
-				transaction.Add(Id, fragment);
-				transaction.SetTransition((int)FragmentTransit.None);
+				transaction.AddEx(Id, fragment);
+				transaction.SetTransitionEx((int)FragmentTransit.None);
 
 				// We don't currently support fragment restoration 
 				// So we don't need to worry about loss of this fragment's state
-				transaction.CommitAllowingStateLoss();
+				transaction.CommitAllowingStateLossEx();
 
 				_currentFragment = fragment;
-
-				new Handler(Looper.MainLooper).PostAtFrontOfQueue(() =>
-				{
-					if (_pageContainer == null)
-					{
-						// The view we're hosting in the fragment was never created (possibly we're already 
-						// navigating to another page?) so there's nothing to commit
-						return;
-					}
-
-					FragmentManager.ExecutePendingTransactions();
-				});
 			}
 		}
 
@@ -138,11 +135,11 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			{
 				if (_currentFragment != null && !FragmentManager.IsDestroyed)
 				{
-					FragmentTransaction transaction = FragmentManager.BeginTransaction();
-					transaction.Remove(_currentFragment);
-					transaction.SetTransition((int)FragmentTransit.None);
-					transaction.CommitAllowingStateLoss();
-					FragmentManager.ExecutePendingTransactions();
+					FragmentTransaction transaction = FragmentManager.BeginTransactionEx();
+					transaction.RemoveEx(_currentFragment);
+					transaction.SetTransitionEx((int)FragmentTransit.None);
+					transaction.CommitAllowingStateLossEx();
+					FragmentManager.ExecutePendingTransactionsEx();
 
 					_currentFragment = null;
 				}

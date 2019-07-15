@@ -19,6 +19,7 @@ namespace Xamarin.Forms.Platform.Android
 		}
 
 		[Obsolete("This constructor is obsolete as of version 2.5. Please use SwitchRenderer(Context) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public SwitchRenderer()
 		{
 			AutoPackage = false;
@@ -54,6 +55,9 @@ namespace Xamarin.Forms.Platform.Android
 					Element.Toggled -= HandleToggled;
 
 				Control.SetOnCheckedChangeListener(null);
+
+				_defaultTrackDrawable?.Dispose();
+				_defaultTrackDrawable = null;
 			}
 
 			base.Dispose(disposing);
@@ -78,13 +82,15 @@ namespace Xamarin.Forms.Platform.Android
 					var aswitch = CreateNativeControl();
 					aswitch.SetOnCheckedChangeListener(this);
 					SetNativeControl(aswitch);
+					_defaultTrackDrawable = Control.TrackDrawable;
 				}
 				else
+				{
 					UpdateEnabled(); // Normally set by SetNativeControl, but not when the Control is reused.
+				}
 
 				e.NewElement.Toggled += HandleToggled;
 				Control.Checked = e.NewElement.IsToggled;
-				_defaultTrackDrawable = Control.TrackDrawable;
 				UpdateOnColor();
 			}
 		}
@@ -111,13 +117,13 @@ namespace Xamarin.Forms.Platform.Android
 					{
 						if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean)
 						{
-							Control.TrackDrawable.SetColorFilter(Element.OnColor.ToAndroid(), PorterDuff.Mode.Multiply);
+							Control.TrackDrawable?.SetColorFilter(Element.OnColor.ToAndroid(), PorterDuff.Mode.Multiply);
 						}
 					}
 				}
 				else
 				{
-					Control.TrackDrawable.ClearColorFilter();
+					Control.TrackDrawable?.ClearColorFilter();
 				}
 			}
 		}

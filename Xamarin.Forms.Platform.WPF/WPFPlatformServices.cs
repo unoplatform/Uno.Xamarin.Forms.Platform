@@ -25,7 +25,7 @@ namespace Xamarin.Forms.Platform.WPF
 
 		public void OpenUriAction(Uri uri)
 		{
-			//TODO : OpenUriAction
+			System.Diagnostics.Process.Start(uri.AbsoluteUri);
 		}
 		
 		public void BeginInvokeOnMainThread(Action action)
@@ -144,6 +144,11 @@ namespace Xamarin.Forms.Platform.WPF
 		public void QuitApplication()
 		{
 			System.Windows.Application.Current.Shutdown();
+		}
+
+		public SizeRequest GetNativeSize(VisualElement view, double widthConstraint, double heightConstraint)
+		{
+			return Platform.GetNativeSize(view, widthConstraint, heightConstraint);
 		}
 	}
 }

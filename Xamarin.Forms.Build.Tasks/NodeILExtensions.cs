@@ -54,8 +54,49 @@ namespace Xamarin.Forms.Build.Tasks
 				return toType.InheritsFromOrImplements(targetTypeRef);
 			}
 
-			///No reason to return false
-			return true;
+			//check if it's assignable from a string
+			if (targetTypeRef.ResolveCached().FullName == "System.Nullable`1")
+				targetTypeRef = ((GenericInstanceType)targetTypeRef).GenericArguments[0];
+			if (targetTypeRef.ResolveCached().BaseType != null && targetTypeRef.ResolveCached().BaseType.FullName == "System.Enum")
+				return true;
+			if (targetTypeRef.FullName == "System.Char")
+				return true;
+			if (targetTypeRef.FullName == "System.SByte")
+				return true;
+			if (targetTypeRef.FullName == "System.Int16")
+				return true;
+			if (targetTypeRef.FullName == "System.Int32")
+				return true;
+			if (targetTypeRef.FullName == "System.Int64")
+				return true;
+			if (targetTypeRef.FullName == "System.Byte")
+				return true;
+			if (targetTypeRef.FullName == "System.UInt16")
+				return true;
+			if (targetTypeRef.FullName == "System.UInt32")
+				return true;
+			if (targetTypeRef.FullName == "System.UInt64")
+				return true;
+			if (targetTypeRef.FullName == "System.Single")
+				return true;
+			if (targetTypeRef.FullName == "System.Double")
+				return true;
+			if (targetTypeRef.FullName == "System.Boolean")
+				return true;
+			if (targetTypeRef.FullName == "System.TimeSpan")
+				return true;
+			if (targetTypeRef.FullName == "System.DateTime")
+				return true;
+			if (targetTypeRef.FullName == "System.String")
+				return true;
+			if (targetTypeRef.FullName == "System.Object")
+				return true;
+			if (targetTypeRef.FullName == "System.Decimal")
+				return true;
+			var implicitOperator = module.TypeSystem.String.GetImplicitOperatorTo(targetTypeRef, module);
+			if (implicitOperator != null)
+				return true;
+			return false;
 		}
 
 		public static IEnumerable<Instruction> PushConvertedValue(this ValueNode node, ILContext context,
@@ -103,8 +144,13 @@ namespace Xamarin.Forms.Build.Tasks
 			if (compiledConverterName != null && (compiledConverterType = Type.GetType (compiledConverterName)) != null) {
 				var compiledConverter = Activator.CreateInstance (compiledConverterType);
 				var converter = typeof(ICompiledTypeConverter).GetMethods ().FirstOrDefault (md => md.Name == "ConvertFromString");
-				var instructions = (IEnumerable<Instruction>)converter.Invoke (compiledConverter, new object[] {
+				IEnumerable<Instruction> instructions;
+				try {
+					instructions = (IEnumerable<Instruction>)converter.Invoke(compiledConverter, new object[] {
 					node.Value as string, context, node as BaseNode});
+				} catch (System.Reflection.TargetInvocationException tie) when (tie.InnerException is XamlParseException) {
+					throw tie.InnerException;
+				}
 				foreach (var i in instructions)
 					yield return i;
 				if (targetTypeRef.IsValueType && boxValueTypes)
@@ -123,7 +169,7 @@ namespace Xamarin.Forms.Build.Tasks
 						.Methods.FirstOrDefault(md => md.Name == "ConvertFromInvariantString" && md.Parameters.Count == 2)
 					: typeConverter.ResolveCached()
 						.AllMethods()
-						.FirstOrDefault(md => md.Name == "ConvertFromInvariantString" && md.Parameters.Count == 1);
+						.FirstOrDefault(md => md.methodDef.Name == "ConvertFromInvariantString" && md.methodDef.Parameters.Count == 1).methodDef;
 				var convertFromInvariantStringReference = module.ImportReference(convertFromInvariantStringDefinition);
 
 				yield return Instruction.Create(OpCodes.Newobj, typeConverterCtorRef);
@@ -161,17 +207,17 @@ namespace Xamarin.Forms.Build.Tasks
 			if (targetTypeRef.ResolveCached().BaseType != null && targetTypeRef.ResolveCached().BaseType.FullName == "System.Enum")
 				yield return PushParsedEnum(targetTypeRef, str, node);
 			else if (targetTypeRef.FullName == "System.Char")
-				yield return Instruction.Create(OpCodes.Ldc_I4, Char.Parse(str));
+				yield return Instruction.Create(OpCodes.Ldc_I4, unchecked((int)Char.Parse(str)));
 			else if (targetTypeRef.FullName == "System.SByte")
-				yield return Instruction.Create(OpCodes.Ldc_I4, SByte.Parse(str, CultureInfo.InvariantCulture));
+				yield return Instruction.Create(OpCodes.Ldc_I4, unchecked((int)SByte.Parse(str, CultureInfo.InvariantCulture)));
 			else if (targetTypeRef.FullName == "System.Int16")
-				yield return Instruction.Create(OpCodes.Ldc_I4, Int16.Parse(str, CultureInfo.InvariantCulture));
+				yield return Instruction.Create(OpCodes.Ldc_I4, unchecked((int)Int16.Parse(str, CultureInfo.InvariantCulture)));
 			else if (targetTypeRef.FullName == "System.Int32")
 				yield return Instruction.Create(OpCodes.Ldc_I4, Int32.Parse(str, CultureInfo.InvariantCulture));
 			else if (targetTypeRef.FullName == "System.Int64")
 				yield return Instruction.Create(OpCodes.Ldc_I8, Int64.Parse(str, CultureInfo.InvariantCulture));
 			else if (targetTypeRef.FullName == "System.Byte")
-				yield return Instruction.Create(OpCodes.Ldc_I4, Byte.Parse(str, CultureInfo.InvariantCulture));
+				yield return Instruction.Create(OpCodes.Ldc_I4, unchecked((int)Byte.Parse(str, CultureInfo.InvariantCulture)));
 			else if (targetTypeRef.FullName == "System.UInt16")
 				yield return Instruction.Create(OpCodes.Ldc_I4, unchecked((int)UInt16.Parse(str, CultureInfo.InvariantCulture)));
 			else if (targetTypeRef.FullName == "System.UInt32")
@@ -433,9 +479,8 @@ namespace Xamarin.Forms.Build.Tasks
 					var en = nodes[i];
 					yield return Instruction.Create(OpCodes.Dup);
 					yield return Instruction.Create(OpCodes.Ldc_I4, i);
-					yield return Instruction.Create(OpCodes.Ldloc, context.Variables[en]);
-					if (context.Variables[en].VariableType.IsValueType)
-						yield return Instruction.Create(OpCodes.Box, module.ImportReference(context.Variables[en].VariableType));
+					foreach (var instruction in context.Variables[en].LoadAs(module.TypeSystem.Object, module))
+						yield return instruction;
 					yield return Instruction.Create(OpCodes.Stelem_Ref);
 				}
 			}
@@ -495,7 +540,12 @@ namespace Xamarin.Forms.Build.Tasks
 				foreach (var instruction in PushTargetProperty(bpRef, propertyRef, declaringTypeReference, module))
 					yield return instruction;
 
-				yield return Create(Newobj, module.ImportCtorReference(("Xamarin.Forms.Xaml", "Xamarin.Forms.Xaml.Internals", "SimpleValueTargetProvider"), paramCount: 2));
+				if (context.Scopes.TryGetValue(node, out var scope))
+					yield return Create(Ldloc, scope.Item1);
+				else
+					yield return Create(Ldnull);
+
+				yield return Create(Newobj, module.ImportCtorReference(("Xamarin.Forms.Xaml", "Xamarin.Forms.Xaml.Internals", "SimpleValueTargetProvider"), paramCount: 3));
 				//store the provider so we can register it again with a different key
 				yield return Create(Dup);
 				var refProvider = new VariableDefinition(module.ImportReference(("mscorlib", "System", "Object")));

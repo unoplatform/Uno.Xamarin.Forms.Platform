@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Microsoft.Graphics.Canvas.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Xamarin.Forms.Internals;
@@ -15,10 +17,17 @@ using NativeImage = Windows.UI.Xaml.Controls.Image;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public partial class ImageRenderer : ViewRenderer<Image, NativeImage>
+	public partial class ImageRenderer : ViewRenderer<Image, Windows.UI.Xaml.Controls.Image>, IImageVisualElementRenderer
 	{
 		bool _measured;
 		bool _disposed;
+
+		public ImageRenderer() : base()
+		{
+			ImageElementManager.Init(this);
+		}
+
+		bool IImageVisualElementRenderer.IsDisposed => _disposed;
 
 		public override SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
 		{
@@ -27,9 +36,10 @@ namespace Xamarin.Forms.Platform.UWP
 
 			_measured = true;
 
-			var result = new Size { Width = ((BitmapSource)ImageControl.Source).PixelWidth, Height = ((BitmapSource)ImageControl.Source).PixelHeight };
+            var size = Control.Source.GetImageSourceSize();
+            var result = new Size { Width = size.PixelWidth, Height = size.PixelHeight };
 
-			return new SizeRequest(result);
+            return new SizeRequest();
 		}
 
 		private Windows.UI.Xaml.Controls.Image ImageControl =>
@@ -50,6 +60,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			if (disposing)
 			{
+				ImageElementManager.Dispose(this);
 				if (Control != null)
 				{
 					ImageControl.ImageOpened -= OnImageOpened;
@@ -80,8 +91,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 				}
 
-				await TryUpdateSource();
-				UpdateAspect();
+				await TryUpdateSource().ConfigureAwait(false);
 			}
 		}
 
@@ -90,24 +100,9 @@ namespace Xamarin.Forms.Platform.UWP
 			base.OnElementPropertyChanged(sender, e);
 
 			if (e.PropertyName == Image.SourceProperty.PropertyName)
-				await TryUpdateSource();
-			else if (e.PropertyName == Image.AspectProperty.PropertyName)
-				UpdateAspect();
+				await TryUpdateSource().ConfigureAwait(false);
 		}
 
-		static Stretch GetStretch(Aspect aspect)
-		{
-			switch (aspect)
-			{
-				case Aspect.Fill:
-					return Stretch.Fill;
-				case Aspect.AspectFill:
-					return Stretch.UniformToFill;
-				default:
-				case Aspect.AspectFit:
-					return Stretch.Uniform;
-			}
-		}
 
 #if HAS_UNO
 		void OnImageOpened(object sender, EventArgs routedEventArgs)
@@ -117,7 +112,7 @@ namespace Xamarin.Forms.Platform.UWP
 		{
 			if (_measured)
 			{
-				RefreshImage();
+				ImageElementManager.RefreshImage(Element);
 			}
 
 			Element?.SetIsLoading(false);
@@ -132,35 +127,11 @@ namespace Xamarin.Forms.Platform.UWP
 #else
 		protected virtual void OnImageFailed(object sender, ExceptionRoutedEventArgs exceptionRoutedEventArgs)
 		{
-			Log.Warning("Image Loading", $"Image failed to load: {exceptionRoutedEventArgs.ErrorMessage}" );
+			Log.Warning("Image Loading", $"Image failed to load: {exceptionRoutedEventArgs.ErrorMessage}");
 			Element?.SetIsLoading(false);
 		}
 #endif
 
-		void RefreshImage()
-		{
-			((IVisualElementController)Element)?.InvalidateMeasure(InvalidationTrigger.RendererReady);
-		}
-
-		void UpdateAspect()
-		{
-			if (_disposed || Element == null || Control == null)
-			{
-				return;
-			}
-
-			ImageControl.Stretch = GetStretch(Element.Aspect);
-			if (Element.Aspect == Aspect.AspectFill || Element.Aspect == Aspect.AspectFit) // Then Center Crop
-			{
-				ImageControl.HorizontalAlignment = HorizontalAlignment.Center;
-				ImageControl.VerticalAlignment = VerticalAlignment.Center;
-			}
-			else // Default
-			{
-				ImageControl.HorizontalAlignment = HorizontalAlignment.Left;
-				ImageControl.VerticalAlignment = VerticalAlignment.Top;
-			}
-		}
 
 		protected virtual async Task TryUpdateSource()
 		{
@@ -184,42 +155,13 @@ namespace Xamarin.Forms.Platform.UWP
 
 		protected async Task UpdateSource()
 		{
-			if (_disposed || Element == null || Control == null)
-			{
-				return;
-			}
+			await ImageElementManager.UpdateSource(this).ConfigureAwait(false);		}
 
-			Element.SetIsLoading(true);
-
-			ImageSource source = Element.Source;
-			IImageSourceHandler handler;
-			if (source != null && (handler = Internals.Registrar.Registered.GetHandlerForObject<IImageSourceHandler>(source)) != null)
-			{
-				Windows.UI.Xaml.Media.ImageSource imagesource;
-
-				try
-				{
-					imagesource = await handler.LoadImageAsync(source);
-				}
-				catch (OperationCanceledException)
-				{
-					imagesource = null;
-				}
-
-				// In the time it takes to await the imagesource, some zippy little app
-				// might have disposed of this Image already.
-				if (Control != null)
-				{
-					ImageControl.Source = imagesource;
-				}
-
-				RefreshImage();
-			}
-			else
-			{
-				ImageControl.Source = null;
-				Element.SetIsLoading(false);
-			}
+		void IImageVisualElementRenderer.SetImage(Windows.UI.Xaml.Media.ImageSource image)
+		{
+			Control.Source = image;
 		}
+
+		Windows.UI.Xaml.Controls.Image IImageVisualElementRenderer.GetImage() => Control;
 	}
 }

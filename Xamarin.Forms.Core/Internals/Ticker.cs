@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Xamarin.Forms.Internals
 {
@@ -24,11 +23,41 @@ namespace Xamarin.Forms.Internals
 			_stopwatch = new Stopwatch();
 		}
 
+		// Some devices may suspend the services we use for the ticker (e.g., in power save mode)
+		// The native implementations can override this value as needed
+		public virtual bool SystemEnabled => true;
+
+		// Native ticker implementations can let us know that the ticker has been enabled/disabled by the system 
+		protected void OnSystemEnabledChanged()
+		{
+			if (!SystemEnabled)
+			{
+				// Something (possibly power save mode) has disabled the ticker; tell all the current in-progress
+				// timeouts to finish
+				SendFinish();
+			}
+		}
+
 		public static void SetDefault(Ticker ticker) => Default = ticker;
 		public static Ticker Default
 		{
 			internal set { s_ticker = value; }
-			get { return s_ticker ?? (s_ticker =  Device.PlatformServices.CreateTicker()); }
+			get
+			{
+				if (s_ticker == null)
+				{
+					s_ticker = Device.PlatformServices.CreateTicker();
+				}
+
+				return s_ticker.GetTickerInstance(); 
+			}
+		}
+
+		protected virtual Ticker GetTickerInstance()
+		{
+			// This method is provided so platforms can override it and return something other than
+			// the normal Ticker singleton
+			return s_ticker;
 		}
 
 		public virtual int Insert(Func<long, bool> timeout)
@@ -51,7 +80,7 @@ namespace Xamarin.Forms.Internals
 			{
 				_timeouts.RemoveAll(t => t.Item1 == handle);
 
-				if (!_timeouts.Any())
+				if (_timeouts.Count == 0)
 				{
 					_enabled = false;
 					Disable();
@@ -62,10 +91,23 @@ namespace Xamarin.Forms.Internals
 		protected abstract void DisableTimer();
 
 		protected abstract void EnableTimer();
-		
+
+		protected void SendFinish()
+		{
+			SendSignals(long.MaxValue);
+		}
+
 		protected void SendSignals(int timestep = -1)
 		{
-			long step = timestep >= 0 ? timestep : _stopwatch.ElapsedMilliseconds;
+			long step = timestep >= 0 
+				? timestep 
+				: _stopwatch.ElapsedMilliseconds;
+
+			SendSignals(step);
+		}
+
+		protected void SendSignals(long step)
+		{
 			_stopwatch.Reset();
 			_stopwatch.Start();
 
@@ -77,7 +119,7 @@ namespace Xamarin.Forms.Internals
 					_timeouts.RemoveAll(t => t.Item1 == timeout.Item1);
 			}
 
-			if (!_timeouts.Any())
+			if (_timeouts.Count == 0)
 			{
 				_enabled = false;
 				Disable();

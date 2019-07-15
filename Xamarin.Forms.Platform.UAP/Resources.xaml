@@ -13,10 +13,12 @@
 		<ResourceDictionary Source="PageControlStyle.xaml" />
 		<ResourceDictionary Source="FormsProgressBarStyle.xaml" />
 		<ResourceDictionary Source="FormsTextBoxStyle.xaml" />
+		<ResourceDictionary Source="FormsCheckBoxStyle.xaml" />
 		<ResourceDictionary Source="AutoSuggestStyle.xaml" />
 		<ResourceDictionary Source="MasterDetailControlStyle.xaml" />
 		<ResourceDictionary Source="TabbedPageStyle.xaml" />
 		<ResourceDictionary Source="SliderStyle.xaml" />
+		<ResourceDictionary Source="Items/ItemsViewStyles.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 	
 	<uwp:CaseConverter x:Key="LowerConverter" ConvertToUpper="False" />
@@ -29,11 +31,11 @@
 	<uwp:ImageConverter x:Key="ImageConverter" />
 	<uwp:ViewToRendererConverter x:Key="ViewToRenderer" />
 	<uwp:ColorConverter x:Key="ColorConverter" />
-    <uwp:HorizontalTextAlignmentConverter x:Key="HorizontalTextAlignmentConverter" />
+	<uwp:HorizontalTextAlignmentConverter x:Key="HorizontalTextAlignmentConverter" />
 	<uwp:TextAlignmentToHorizontalAlignmentConverter x:Key="AlignmentConverter" />
 	<uwp:KeyboardConverter x:Key="KeyboardConverter" />
 	<uwp:MasterBackgroundConverter x:Key="MasterBackgroundConverter" />
-	<uwp:FileImageSourcePathConverter x:Key="FileImageSourcePathConverter" />
+	<uwp:ImageSourceIconElementConverter x:Key="ImageSourceIconElementConverter" />
 	<x:Double x:Key="TitleBarHeight">48</x:Double>
 
 	<DataTemplate x:Key="PushPinTemplate">
@@ -100,7 +102,7 @@
 	</DataTemplate>
 
 	<DataTemplate x:Key="TableSection">
-		<TextBlock Margin="0,20,0,0" Text="{Binding Title,Converter={StaticResource LowerConverter}}" Style="{ThemeResource SubtitleTextBlockStyle}" Visibility="{Binding Text,RelativeSource={RelativeSource Mode=Self},Converter={StaticResource CollapseWhenEmpty}}" />
+		<TextBlock Margin="0,20,0,0" Text="{Binding Title,Converter={StaticResource LowerConverter}}" Style="{ThemeResource SubtitleTextBlockStyle}" Visibility="{Binding Text,RelativeSource={RelativeSource Mode=Self},Converter={StaticResource CollapseWhenEmpty}}" Foreground="{Binding TextColor,Converter={StaticResource ColorConverter},ConverterParameter=DefaultTextForegroundThemeBrush}" />
 	</DataTemplate>
 	
 	<uwp:ListViewGroupStyleSelector x:Key="ListViewGroupSelector" />
@@ -151,21 +153,6 @@
 
 	<SolidColorBrush x:Key="TabButtonPointerOverBackgroundBrush" Color="#44888888" />
 	<SolidColorBrush x:Key="TabButtonBackgroundBrush" Color="#29888888" />
-
-	<Style x:Key="TitleToolbar" TargetType="uwp:FormsCommandBar">
-		<Setter Property="ContentTemplate">
-			<Setter.Value>
-				<DataTemplate>
-					<Grid Background="{Binding ToolbarBackground}">
-						<TextBlock Text="{Binding}" Margin="10,0,0,0" VerticalAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}" Foreground="{Binding ToolbarForeground}" />
-					</Grid>
-				</DataTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
-
-	<Style TargetType="uwp:FormsButton" BasedOn="{StaticResource XamlDefaultButton}">
-	</Style>
 
 	<Style x:Key="FormsListViewItem" TargetType="ListViewItem">
 		<Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -255,7 +242,7 @@
     </Style>
 
     <DataTemplate x:Key="TextCell">
-		<StackPanel>
+		<StackPanel AutomationProperties.AutomationId="{Binding AutomationId}">
 			<TextBlock
 				Text="{Binding Text}"
 				Style="{ThemeResource BaseTextBlockStyle}"
@@ -289,7 +276,7 @@
 	</DataTemplate>
 
 	<DataTemplate x:Key="ImageCell">
-		<Grid>
+		<Grid AutomationProperties.AutomationId="{Binding AutomationId}">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition />
@@ -321,7 +308,7 @@
 	</DataTemplate>
 	
 	<DataTemplate x:Key="SwitchCell">
-		<Grid HorizontalAlignment="Stretch" x:Name="ParentGrid">
+		<Grid HorizontalAlignment="Stretch" x:Name="ParentGrid"  AutomationProperties.AutomationId="{Binding AutomationId}">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="Auto" />
@@ -334,10 +321,10 @@
 	</DataTemplate>
 
 	<DataTemplate x:Key="EntryCell">
-        <uwp:EntryCellTextBox IsEnabled="{Binding IsEnabled}" Header="{Binding}" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="{Binding HorizontalTextAlignment,Converter={StaticResource HorizontalTextAlignmentConverter}}" PlaceholderText="{Binding Placeholder}"  InputScope="{Binding Keyboard,Converter={StaticResource KeyboardConverter}}" HorizontalAlignment="Stretch">
+        <uwp:EntryCellTextBox  AutomationProperties.AutomationId="{Binding AutomationId}" IsEnabled="{Binding IsEnabled}" Header="{Binding}" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="{Binding HorizontalTextAlignment,Converter={StaticResource HorizontalTextAlignmentConverter}}" PlaceholderText="{Binding Placeholder}"  InputScope="{Binding Keyboard,Converter={StaticResource KeyboardConverter}}" HorizontalAlignment="Stretch">
 			<uwp:EntryCellTextBox.HeaderTemplate>
 				<DataTemplate>
-					<TextBlock Text="{Binding Label}" Style="{ThemeResource BaseTextBlockStyle}" Foreground="{Binding LabelColor, Converter={StaticResource ColorConverter}, ConverterParameter=DefaultTextForegroundThemeBrush}" />
+                    <TextBlock Text="{Binding Label}" IsHitTestVisible="False" Style="{ThemeResource BaseTextBlockStyle}" Foreground="{Binding LabelColor, Converter={StaticResource ColorConverter}, ConverterParameter=DefaultTextForegroundThemeBrush}" />
 				</DataTemplate>
 			</uwp:EntryCellTextBox.HeaderTemplate>
 		</uwp:EntryCellTextBox>
@@ -368,5 +355,8 @@
 	<Style TargetType="ToggleSwitch">
 		<Setter Property="MinWidth" Value="0"/>
 	</Style>
-    
+
+    <DataTemplate x:Key="ComboBoxHeader">
+        <TextBlock Text="{Binding Title}" Foreground="{Binding TitleColor,Converter={StaticResource ColorConverter},ConverterParameter=DefaultTextForegroundThemeBrush}" />
+    </DataTemplate>
 </ResourceDictionary>

@@ -18,6 +18,9 @@ namespace Xamarin.Forms
 		public static readonly BindableProperty TitleProperty =
 			BindableProperty.Create(nameof(Title), typeof(string), typeof(Picker), default(string));
 
+		public static readonly BindableProperty TitleColorProperty =
+			BindableProperty.Create(nameof(TitleColor), typeof(Color), typeof(Picker), default(Color));
+
 		public static readonly BindableProperty SelectedIndexProperty =
 			BindableProperty.Create(nameof(SelectedIndex), typeof(int), typeof(Picker), -1, BindingMode.TwoWay,
 									propertyChanged: OnSelectedIndexChanged, coerceValue: CoerceSelectedIndex);
@@ -107,6 +110,12 @@ namespace Xamarin.Forms
 			set { SetValue(TitleProperty, value); }
 		}
 
+		public Color TitleColor
+		{
+			get { return (Color)GetValue(TitleColorProperty); }
+			set { SetValue(TitleColorProperty, value); }
+		}
+
 		BindingBase _itemDisplayBinding;
 		public BindingBase ItemDisplayBinding {
 			get { return _itemDisplayBinding; }
@@ -150,8 +159,11 @@ namespace Xamarin.Forms
 
 		void OnItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
-			SelectedIndex = SelectedIndex.Clamp(-1, Items.Count - 1);
-			UpdateSelectedItem();
+			var oldIndex = SelectedIndex;
+			var newIndex = SelectedIndex = SelectedIndex.Clamp(-1, Items.Count - 1);
+			// If the index has not changed, still need to change the selected item
+			if (newIndex == oldIndex)
+				UpdateSelectedItem(newIndex);
 		}
 
 		static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
@@ -214,13 +226,13 @@ namespace Xamarin.Forms
 			((LockableObservableListWrapper)Items).InternalClear();
 			foreach (object item in ItemsSource)
 				((LockableObservableListWrapper)Items).InternalAdd(GetDisplayMember(item));
-			UpdateSelectedItem();
+			UpdateSelectedItem(SelectedIndex);
 		}
 
 		static void OnSelectedIndexChanged(object bindable, object oldValue, object newValue)
 		{
 			var picker = (Picker)bindable;
-			picker.UpdateSelectedItem();
+			picker.UpdateSelectedItem(picker.SelectedIndex);
 			picker.SelectedIndexChanged?.Invoke(bindable, EventArgs.Empty);
 		}
 
@@ -239,19 +251,19 @@ namespace Xamarin.Forms
 			SelectedIndex = Items.IndexOf(selectedItem);
 		}
 
-		void UpdateSelectedItem()
+		void UpdateSelectedItem(int index)
 		{
-			if (SelectedIndex == -1) {
+			if (index == -1) {
 				SelectedItem = null;
 				return;
 			}
 
 			if (ItemsSource != null) {
-				SelectedItem = ItemsSource [SelectedIndex];
+				SelectedItem = ItemsSource [index];
 				return;
 			}
 
-			SelectedItem = Items [SelectedIndex];
+			SelectedItem = Items [index];
 		}
 
 		public IPlatformElementConfiguration<T, Picker> On<T>() where T : IConfigPlatform

@@ -2,13 +2,13 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.PlatformConfiguration.WindowsSpecific;
 using Specifics = Xamarin.Forms.PlatformConfiguration.WindowsSpecific.SearchBar;
-using WVisualStateManager = Windows.UI.Xaml.VisualStateManager;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public partial class SearchBarRenderer : ViewRenderer<SearchBar, AutoSuggestBox>
+	public partial class SearchBarRenderer : ViewRenderer<SearchBar, AutoSuggestBox>, ITabStopOnDescendants
 	{
 		Brush _defaultPlaceholderColorBrush;
 		Brush _defaultPlaceholderColorFocusBrush;
@@ -47,7 +47,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			base.OnElementChanged(e);
 		}
-		
+
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			base.OnElementPropertyChanged(sender, e);
@@ -74,6 +74,10 @@ namespace Xamarin.Forms.Platform.UWP
 				UpdateAlignment();
 			else if (e.PropertyName == Specifics.IsSpellCheckEnabledProperty.PropertyName)
 				UpdateIsSpellCheckEnabled();
+			else if(e.PropertyName == InputView.MaxLengthProperty.PropertyName)
+				UpdateMaxLength();
+			else if(e.PropertyName == InputView.IsSpellCheckEnabledProperty.PropertyName)
+				UpdateInputScope();
 		}
 
 		void OnControlLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -93,11 +97,14 @@ namespace Xamarin.Forms.Platform.UWP
 			UpdatePlaceholderColor();
 			UpdateBackgroundColor();
 			UpdateIsSpellCheckEnabled();
+			UpdateInputScope();
+			UpdateMaxLength();
 
 			// If the Forms VisualStateManager is in play or the user wants to disable the Forms legacy
 			// color stuff, then the underlying textbox should just use the Forms VSM states
-			_queryTextBox.UseFormsVsm = Element.HasVisualStateGroups()
-							|| !Element.OnThisPlatform().GetIsLegacyColorModeEnabled();
+			if (_queryTextBox != null)
+				_queryTextBox.UseFormsVsm = Element.HasVisualStateGroups()
+								|| !Element.OnThisPlatform().GetIsLegacyColorModeEnabled();
 		}
 
 		void OnQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs e)
@@ -224,6 +231,44 @@ namespace Xamarin.Forms.Platform.UWP
 
 			if (Element.IsSet(Specifics.IsSpellCheckEnabledProperty))
 				_queryTextBox.IsSpellCheckEnabled = Element.OnThisPlatform().GetIsSpellCheckEnabled();
+		}
+
+		void UpdateMaxLength()
+		{
+			if (_queryTextBox == null)
+				return;
+
+			_queryTextBox.MaxLength = Element.MaxLength;
+
+			var currentControlText = Control.Text;
+
+			if (currentControlText.Length > Element.MaxLength)
+				Control.Text = currentControlText.Substring(0, Element.MaxLength);
+		}
+
+		void UpdateInputScope()
+		{
+			if(_queryTextBox == null)
+				return;
+
+			InputView model = Element;
+
+			if (model.Keyboard is CustomKeyboard custom)
+			{
+				_queryTextBox.IsTextPredictionEnabled = (custom.Flags & KeyboardFlags.Suggestions) != 0;
+				_queryTextBox.IsSpellCheckEnabled = (custom.Flags & KeyboardFlags.Spellcheck) != 0;
+			}
+			else
+			{
+				_queryTextBox.ClearValue(TextBox.IsTextPredictionEnabledProperty);
+
+				if (model.IsSet(InputView.IsSpellCheckEnabledProperty))
+					_queryTextBox.IsSpellCheckEnabled = model.IsSpellCheckEnabled;
+				else
+					_queryTextBox.ClearValue(TextBox.IsSpellCheckEnabledProperty);
+			}
+
+			_queryTextBox.InputScope = model.Keyboard.ToInputScope();
 		}
 
 		protected override void UpdateBackgroundColor()

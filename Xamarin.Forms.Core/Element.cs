@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Xml;
 using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
@@ -26,9 +25,9 @@ namespace Xamarin.Forms
 
 		internal static readonly ReadOnlyCollection<Element> EmptyChildren = new ReadOnlyCollection<Element>(new Element[0]);
 
-		public static readonly BindableProperty ClassIdProperty = BindableProperty.Create("ClassId", typeof(string), typeof(View), null);
+		public static readonly BindableProperty AutomationIdProperty = BindableProperty.Create(nameof(AutomationId), typeof(string), typeof(Element), null);
 
-		string _automationId;
+		public static readonly BindableProperty ClassIdProperty = BindableProperty.Create(nameof(ClassId), typeof(string), typeof(Element), null);
 
 		IList<BindableObject> _bindableResources;
 
@@ -44,18 +43,18 @@ namespace Xamarin.Forms
 
 		Element _parentOverride;
 
-		IPlatform _platform;
-
 		string _styleId;
+		
 
 		public string AutomationId
 		{
-			get { return _automationId; }
+			get { return (string)GetValue(AutomationIdProperty); }
 			set
 			{
-				if (_automationId != null)
-					throw new InvalidOperationException("AutomationId may only be set one time");
-				_automationId = value;
+				if (AutomationId != null)
+					throw new InvalidOperationException($"{nameof(AutomationId)} may only be set one time.");
+
+				SetValue(AutomationIdProperty, value);
 			}
 		}
 
@@ -90,6 +89,7 @@ namespace Xamarin.Forms
 		}
 
 		[Obsolete("ParentView is obsolete as of version 2.1.0. Please use Parent instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public VisualElement ParentView
 		{
 			get
@@ -121,6 +121,20 @@ namespace Xamarin.Forms
 		}
 
 		internal virtual ReadOnlyCollection<Element> LogicalChildrenInternal => EmptyChildren;
+		internal IEnumerable<Element> AllChildren
+		{
+			get
+			{
+				foreach (var child in LogicalChildrenInternal)
+					yield return child;
+
+				foreach (var child in ChildrenNotDrawnByThisElement)
+					yield return child;
+			}
+		}
+
+		internal virtual IEnumerable<Element> ChildrenNotDrawnByThisElement => EmptyChildren;
+
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public ReadOnlyCollection<Element> LogicalChildren => LogicalChildrenInternal;
@@ -144,29 +158,6 @@ namespace Xamarin.Forms
 
 				if (emitChange)
 					OnPropertyChanged(nameof(Parent));
-			}
-		}
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public IPlatform Platform
-		{
-			get
-			{
-				if (_platform == null && RealParent != null)
-					return RealParent.Platform;
-				return _platform;
-			}
-			set
-			{
-				if (_platform == value)
-					return;
-				_platform = value;
-				PlatformSet?.Invoke(this, EventArgs.Empty);
-				foreach (Element descendant in Descendants())
-				{
-					descendant._platform = _platform;
-					descendant.PlatformSet?.Invoke(this, EventArgs.Empty);
-				}
 			}
 		}
 
@@ -196,7 +187,13 @@ namespace Xamarin.Forms
 				OnPropertyChanging();
 
 				if (RealParent != null)
+				{
 					((IElement)RealParent).RemoveResourcesChangedListener(OnParentResourcesChanged);
+
+					if(value != null && (RealParent is Layout || RealParent is IControlTemplated))
+						Log.Warning("Element", $"{this} is already a child of {RealParent}. Remove {this} from {RealParent} before adding to {value}.");
+				}
+
 				RealParent = value;
 				if (RealParent != null)
 				{
@@ -215,13 +212,6 @@ namespace Xamarin.Forms
 				}
 
 				OnParentSet();
-
-				if (RealParent != null)
-				{
-					IPlatform platform = RealParent.Platform;
-					if (platform != null)
-						Platform = platform;
-				}
 
 				OnPropertyChanged();
 			}
@@ -319,21 +309,10 @@ namespace Xamarin.Forms
 
 		protected override void OnBindingContextChanged()
 		{
-			var gotBindingContext = false;
-			object bc = null;
-
-			for (var index = 0; index < LogicalChildrenInternal.Count; index++)
+			this.PropagateBindingContext(LogicalChildrenInternal, (child, bc) =>
 			{
-				Element child = LogicalChildrenInternal[index];
-
-				if (!gotBindingContext)
-				{
-					bc = BindingContext;
-					gotBindingContext = true;
-				}
-
-				SetChildInheritedBindingContext(child, bc);
-			}
+				SetChildInheritedBindingContext((Element)child, bc);
+			});
 
 			if (_bindableResources != null)
 				foreach (BindableObject item in _bindableResources)
@@ -347,10 +326,8 @@ namespace Xamarin.Forms
 		protected virtual void OnChildAdded(Element child)
 		{
 			child.Parent = this;
-			if (Platform != null)
-				child.Platform = Platform;
 
-			child.ApplyBindings(skipBindingContext: false, fromBindingContextChanged:true);
+			child.ApplyBindings(skipBindingContext: false, fromBindingContextChanged: true);
 
 			ChildAdded?.Invoke(this, new ElementEventArgs(child));
 
@@ -374,11 +351,17 @@ namespace Xamarin.Forms
 		{
 			ParentSet?.Invoke(this, EventArgs.Empty);
 			ApplyStyleSheetsOnParentSet();
+			(this as IPropertyPropagationController)?.PropagatePropertyChanged(null);
 		}
 
 		protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			base.OnPropertyChanged(propertyName);
+			foreach(var logicalChildren in ChildrenNotDrawnByThisElement)
+			{
+				if(logicalChildren is IPropertyPropagationController controller)
+					PropertyPropagationExtensions.PropagatePropertyChanged(propertyName, this, new[] { logicalChildren });
+			}
 
 			if (_effects == null || _effects.Count == 0)
 				return;
@@ -507,8 +490,21 @@ namespace Xamarin.Forms
 			}
 		}
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public event EventHandler PlatformSet;
+		internal static void SetVisualfromParent(Element child)
+		{
+			IVisualController controller = child as IVisualController;
+			if (controller == null)
+				return;
+
+			if (controller.Visual != VisualMarker.MatchParent)
+			{
+				controller.EffectiveVisual = controller.Visual;
+				return;
+			}
+
+			if (child.Parent is IVisualController parentView)
+				controller.EffectiveVisual = parentView.EffectiveVisual;
+		}
 
 		internal virtual void SetChildInheritedBindingContext(Element child, object context)
 		{
@@ -609,7 +605,8 @@ namespace Xamarin.Forms
 		internal INameScope GetNameScope()
 		{
 			var element = this;
-			do {
+			do
+			{
 				var ns = NameScope.GetNameScope(element);
 				if (ns != null)
 					return ns;
@@ -633,5 +630,41 @@ namespace Xamarin.Forms
 		{
 			SetValueCore(property, value, SetValueFlags.ClearOneWayBindings | SetValueFlags.ClearTwoWayBindings);
 		}
+
+		#region Obsolete IPlatform Stuff
+
+#pragma warning disable CS0618 // Type or member is obsolete
+		private IPlatform _platform;
+#pragma warning restore CS0618 // Type or member is obsolete
+
+		// Platform isn't needed anymore, but the Previewer will still try to set it via reflection
+		// and throw an NRE if it's not available
+		// So even if this property eventually gets removed, we still need to keep something settable on
+		// Page called Platform
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("IPlatform is obsolete as of 3.5.0. Do not use this property.")]
+		public IPlatform Platform
+		{
+			get => _platform;
+			set
+			{
+				if (_platform == value)	
+					return;	
+				_platform = value;	
+				PlatformSet?.Invoke(this, EventArgs.Empty);	
+				foreach (Element descendant in Descendants())
+				{	
+					descendant._platform = _platform;	
+					descendant.PlatformSet?.Invoke(this, EventArgs.Empty);	
+				}
+			}
+		}
+
+		[Obsolete("PlatformSet is obsolete as of 3.5.0. Do not use this event.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public event EventHandler PlatformSet;
+
+		#endregion
 	}
 }
