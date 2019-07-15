@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class CheckBoxRenderer : ViewRenderer<CheckBox, FormsCheckBox>
+	public partial class CheckBoxRenderer : ViewRenderer<CheckBox, FormsCheckBox>
 	{
 		static Brush _tintDefaultBrush = Color.Blue.ToBrush();
 		bool _disposed = false;

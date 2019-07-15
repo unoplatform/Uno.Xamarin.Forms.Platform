@@ -5,7 +5,7 @@ using Xamarin.Forms.Platform.UWP;
 namespace Xamarin.Forms.Platform.UAP
 {
 	// TODO hartez 2018/06/06 10:01:48 Consider whether this should be internal; it might be that we just want to make the ItemsPanel resources configurable in CollectionViewRenderer
-	internal class FormsGridView : GridView
+	internal partial class FormsGridView : GridView
 	{
 		int _maximumRowsOrColumns;
 		ItemsWrapGrid _wrapGrid;

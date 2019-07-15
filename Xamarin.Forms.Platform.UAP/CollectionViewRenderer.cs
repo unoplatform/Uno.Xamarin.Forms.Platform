@@ -14,7 +14,7 @@ using Xamarin.Forms.Platform.UAP;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class CollectionViewRenderer : ViewRenderer<CollectionView, ItemsControl>
+	public partial class CollectionViewRenderer : ViewRenderer<CollectionView, ItemsControl>
 	{
 		IItemsLayout _layout;
 		CollectionViewSource _collectionViewSource;

@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class ImageButtonRenderer : ViewRenderer<ImageButton, FormsButton>, IImageVisualElementRenderer
+	public partial class ImageButtonRenderer : ViewRenderer<ImageButton, FormsButton>, IImageVisualElementRenderer
 	{
 		bool _measured;
 		bool _disposed;
@@ -156,11 +156,19 @@ namespace Xamarin.Forms.Platform.UWP
 			Element?.SetIsLoading(false);
 		}
 
+#if !HAS_UNO
 		protected virtual void OnImageFailed(object sender, ExceptionRoutedEventArgs exceptionRoutedEventArgs)
 		{
 			Log.Warning("Image Loading", $"Image failed to load: {exceptionRoutedEventArgs.ErrorMessage}");
 			Element?.SetIsLoading(false);
 		}
+#else
+		protected virtual void OnImageFailed(object sender, object exceptionRoutedEventArgs)
+		{
+			Log.Warning("Image Loading", $"Image failed to load");
+			Element?.SetIsLoading(false);
+		}
+#endif
 
 
 

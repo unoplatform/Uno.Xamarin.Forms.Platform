@@ -260,11 +260,13 @@ namespace Xamarin.Forms.Platform.UWP
 			return finalSize;
 		}
 
+#if !HAS_UNO
 		public void Dispose()
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+#endif
 
 		protected virtual void Dispose(bool disposing)
 		{

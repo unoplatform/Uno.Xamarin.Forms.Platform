@@ -26,10 +26,12 @@ namespace Xamarin.Forms.Platform.UWP
 
 		public CarouselPage Element { get; private set; }
 
+#if !HAS_UNO
 		public void Dispose()
 		{
 			Dispose(true);
 		}
+#endif
 
 		public FrameworkElement ContainerElement
 		{

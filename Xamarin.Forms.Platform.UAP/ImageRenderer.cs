@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using Microsoft.Graphics.Canvas.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -37,7 +36,7 @@ namespace Xamarin.Forms.Platform.UWP
 			_measured = true;
 
             var size = Control.Source.GetImageSourceSize();
-            var result = new Size { Width = size.PixelWidth, Height = size.PixelHeight };
+            var result = new Size { Width = size.Width, Height = size.Height };
 
             return new SizeRequest();
 		}

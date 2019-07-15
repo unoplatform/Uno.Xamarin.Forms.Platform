@@ -10,7 +10,7 @@ using WindowsCheckbox = Windows.UI.Xaml.Controls.CheckBox;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class FormsCheckBox : WindowsCheckbox
+	public partial class FormsCheckBox : WindowsCheckbox
 	{
 		public static readonly DependencyProperty TintBrushProperty =
 			DependencyProperty.Register(nameof(TintBrush), typeof(Brush), typeof(FormsCheckBox),

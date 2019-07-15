@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+
+#if !HAS_UNO
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Graphics.Canvas.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+#endif
 
 namespace Xamarin.Forms.Platform.UWP
 {
@@ -19,6 +22,7 @@ namespace Xamarin.Forms.Platform.UWP
 			if (!(imagesource is FontImageSource fontsource))
 				return null;
 
+#if !HAS_UNO
 			var device = CanvasDevice.GetSharedDevice();
 			var dpi = Math.Max(_minimumDpi, Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi);
 			var canvasSize = (float)fontsource.Size + 2;
@@ -42,6 +46,9 @@ namespace Xamarin.Forms.Platform.UWP
 			}
 
 			return Task.FromResult((Windows.UI.Xaml.Media.ImageSource)imageSource);
+#else
+			return null;
+#endif
 		}
 
 		public Task<IconElement> LoadIconElementAsync(ImageSource imagesource, CancellationToken cancellationToken = default(CancellationToken))

@@ -8,7 +8,7 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class ItemContentControl : ContentControl
+	public partial class ItemContentControl : ContentControl
 	{
 		IVisualElementRenderer _renderer;
 

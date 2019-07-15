@@ -77,7 +77,10 @@ namespace Xamarin.Forms.Platform.UWP
 			Control.Child = renderer.ContainerElement;
 		}
 
-		void UpdateBorder()
+#if HAS_UNO
+		new
+#endif
+			void UpdateBorder()
 		{
 			if (Element.BorderColor != Color.Default)
 			{

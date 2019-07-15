@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Graphics.Canvas.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -11,6 +10,10 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Xamarin.Forms.Internals;
 using WImageSource = Windows.UI.Xaml.Media.ImageSource;
+
+#if !HAS_UNO
+using Microsoft.Graphics.Canvas.UI.Xaml;
+#endif
 
 namespace Xamarin.Forms.Platform.UWP
 {
@@ -30,6 +33,7 @@ namespace Xamarin.Forms.Platform.UWP
 					Height = bitmap.PixelHeight
 				};
 			}
+#if !HAS_UNO
 			else if (source is CanvasImageSource canvas)
 			{
 				return new Size
@@ -38,6 +42,7 @@ namespace Xamarin.Forms.Platform.UWP
 					Height = canvas.Size.Height
 				};
 			}
+#endif
 
 			throw new InvalidCastException($"\"{source.GetType().FullName}\" is not supported.");
 		}

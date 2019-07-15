@@ -24,6 +24,16 @@ using WSelectionChangedEventArgs = Windows.UI.Xaml.Controls.SelectionChangedEven
 
 namespace Xamarin.Forms.Platform.UWP
 {
+	public partial class ListViewTransparent : WListView
+	{
+		public ListViewTransparent() : base() { }
+
+		// Container is not created when the item is null. 
+		// To prevent this, base container preparationan receives an empty object.
+		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+			=> base.PrepareContainerForItemOverride(element, item ?? new object());
+	}
+
 	public partial class ListViewRenderer : ViewRenderer<ListView, FrameworkElement>
 	{
 		ITemplatedItemsView<Cell> TemplatedItemsView => Element;
@@ -39,16 +49,6 @@ namespace Xamarin.Forms.Platform.UWP
 		UwpScrollBarVisibility? _defaultVerticalScrollVisibility;
 
 		protected WListView List { get; private set; }
-
-		protected class ListViewTransparent : WListView
-		{
-			public ListViewTransparent() : base() { }
-
-			// Container is not created when the item is null. 
-			// To prevent this, base container preparationan receives an empty object.
-			protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
-				=> base.PrepareContainerForItemOverride(element, item ?? new object());
-		}
 
 		protected override void OnElementChanged(ElementChangedEventArgs<ListView> e)
 		{
