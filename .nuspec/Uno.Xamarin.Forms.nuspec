@@ -14,13 +14,13 @@
 		
 		<dependencies>
 			<group targetFramework="xamarinios10">
-				<dependency id="Uno.UI" version="1.31.0-dev.161"/>
+				<dependency id="Uno.UI" version="1.46.0-dev.2264"/>
 			</group>
 			<group targetFramework="MonoAndroid10">
-				<dependency id="Uno.UI" version="1.31.0-dev.161"/>
+				<dependency id="Uno.UI" version="1.46.0-dev.2264"/>
 			</group>
 			<group targetFramework="netstandard2.0">
-				<dependency id="Uno.UI" version="1.31.0-dev.161"/>
+				<dependency id="Uno.UI" version="1.46.0-dev.2264"/>
 			</group>
 		</dependencies>
 

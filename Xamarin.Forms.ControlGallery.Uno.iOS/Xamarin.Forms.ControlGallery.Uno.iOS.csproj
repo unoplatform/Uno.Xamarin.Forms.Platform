@@ -100,7 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Uno.UI">
-      <Version>1.28.1-dev.2183</Version>
+      <Version>1.46.0-dev.2264</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="..\Xamarin.Forms.ControlGallery.Uno.Shared\Xamarin.Forms.ControlGallery.Uno.Shared.projitems" Label="Shared" Condition="Exists('..\Xamarin.Forms.ControlGallery.Uno.Shared\Xamarin.Forms.ControlGallery.Uno.Shared.projitems')" />
