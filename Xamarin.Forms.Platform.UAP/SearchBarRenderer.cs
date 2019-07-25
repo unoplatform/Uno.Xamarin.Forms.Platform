@@ -74,9 +74,9 @@ namespace Xamarin.Forms.Platform.UWP
 				UpdateAlignment();
 			else if (e.PropertyName == Specifics.IsSpellCheckEnabledProperty.PropertyName)
 				UpdateIsSpellCheckEnabled();
-			else if(e.PropertyName == InputView.MaxLengthProperty.PropertyName)
+			else if(e.PropertyName == Xamarin.Forms.InputView.MaxLengthProperty.PropertyName)
 				UpdateMaxLength();
-			else if(e.PropertyName == InputView.IsSpellCheckEnabledProperty.PropertyName)
+			else if(e.PropertyName == Xamarin.Forms.InputView.IsSpellCheckEnabledProperty.PropertyName)
 				UpdateInputScope();
 		}
 
@@ -262,7 +262,7 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				_queryTextBox.ClearValue(TextBox.IsTextPredictionEnabledProperty);
 
-				if (model.IsSet(InputView.IsSpellCheckEnabledProperty))
+				if (model.IsSet(Xamarin.Forms.InputView.IsSpellCheckEnabledProperty))
 					_queryTextBox.IsSpellCheckEnabled = model.IsSpellCheckEnabled;
 				else
 					_queryTextBox.ClearValue(TextBox.IsSpellCheckEnabledProperty);
