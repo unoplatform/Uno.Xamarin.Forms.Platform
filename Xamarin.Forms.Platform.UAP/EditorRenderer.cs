@@ -128,7 +128,7 @@ namespace Xamarin.Forms.Platform.UWP
 				UpdatePlaceholderText();
 			else if (e.PropertyName == Editor.PlaceholderColorProperty.PropertyName)
 				UpdatePlaceholderColor();
-			else if (e.PropertyName == InputView.IsReadOnlyProperty.PropertyName)
+			else if (e.PropertyName == Xamarin.Forms.InputView.IsReadOnlyProperty.PropertyName)
 				UpdateIsReadOnly();
 		}
 
