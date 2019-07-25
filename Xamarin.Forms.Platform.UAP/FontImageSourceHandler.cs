@@ -14,8 +14,6 @@ namespace Xamarin.Forms.Platform.UWP
 {
 	public sealed class FontImageSourceHandler : IImageSourceHandler, IIconElementHandler
 	{
-		float _minimumDpi = 300;
-
 		public Task<Windows.UI.Xaml.Media.ImageSource> LoadImageAsync(ImageSource imagesource,
 			CancellationToken cancelationToken = default(CancellationToken))
 		{
@@ -23,6 +21,8 @@ namespace Xamarin.Forms.Platform.UWP
 				return null;
 
 #if !HAS_UNO
+			float _minimumDpi = 300;
+
 			var device = CanvasDevice.GetSharedDevice();
 			var dpi = Math.Max(_minimumDpi, Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi);
 			var canvasSize = (float)fontsource.Size + 2;
