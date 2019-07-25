@@ -137,7 +137,7 @@ namespace Xamarin.Forms.Platform.UWP
 				UpdateCursorPosition();
 			else if (e.PropertyName == Entry.SelectionLengthProperty.PropertyName)
 				UpdateSelectionLength();
-			else if (e.PropertyName == InputView.IsReadOnlyProperty.PropertyName)
+			else if (e.PropertyName == Xamarin.Forms.InputView.IsReadOnlyProperty.PropertyName)
 				UpdateIsReadOnly();
 		}
 
