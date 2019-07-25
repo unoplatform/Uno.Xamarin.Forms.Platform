@@ -10,9 +10,9 @@ using Xamarin.Forms.PlatformConfiguration.WindowsSpecific;
 using Specifics = Xamarin.Forms.PlatformConfiguration.WindowsSpecific.Label;
 
 #if __IOS__ || __ANDROID__
-using NativeTextBlok = Windows.UI.Xaml.Controls.Border;
+using NativeTextBlock = Windows.UI.Xaml.Controls.Border;
 #else
-using NativeTextBlok = Windows.UI.Xaml.Controls.TextBlock;
+using NativeTextBlock = Windows.UI.Xaml.Controls.TextBlock;
 #endif
 
 namespace Xamarin.Forms.Platform.UWP
@@ -38,7 +38,7 @@ namespace Xamarin.Forms.Platform.UWP
 		}
 	}
 
-	public partial class LabelRenderer : ViewRenderer<Label, NativeTextBlok>
+	public partial class LabelRenderer : ViewRenderer<Label, NativeTextBlock>
 	{
 		bool _fontApplied;
 		bool _isInitiallyDefault;
@@ -152,15 +152,15 @@ namespace Xamarin.Forms.Platform.UWP
 
 				_isInitiallyDefault = Element.IsDefault();
 
-				UpdateText(Control);
-				UpdateTextDecorations(Control);
-				UpdateColor(Control);
-				UpdateAlign(Control);
-				UpdateFont(Control);
-				UpdateLineBreakMode(Control);
-				UpdateMaxLines(Control);
-				UpdateDetectReadingOrderFromContent(Control);
-				UpdateLineHeight(Control);
+				UpdateText(TextBlockControl);
+				UpdateTextDecorations(TextBlockControl);
+				UpdateColor(TextBlockControl);
+				UpdateAlign(TextBlockControl);
+				UpdateFont(TextBlockControl);
+				UpdateLineBreakMode(TextBlockControl);
+				UpdateMaxLines(TextBlockControl);
+				UpdateDetectReadingOrderFromContent(TextBlockControl);
+				UpdateLineHeight(TextBlockControl);
 			}
 		}
 
@@ -169,16 +169,16 @@ namespace Xamarin.Forms.Platform.UWP
 			if (e.PropertyName == Label.TextProperty.PropertyName ||
 				e.PropertyName == Label.FormattedTextProperty.PropertyName)
 			{
-				UpdateText(Control);
+				UpdateText(TextBlockControl);
 			}
 			else if (e.PropertyName == Label.TextColorProperty.PropertyName)
 				UpdateColor(TextBlockControl);
 			else if (e.PropertyName == Label.HorizontalTextAlignmentProperty.PropertyName || e.PropertyName == Label.VerticalTextAlignmentProperty.PropertyName)
 				UpdateAlign(TextBlockControl);
 			else if (e.PropertyName == Label.FontProperty.PropertyName)
-				UpdateFont(Control);
+				UpdateFont(TextBlockControl);
 			else if (e.PropertyName == Label.TextDecorationsProperty.PropertyName)
-				UpdateTextDecorations(Control);
+				UpdateTextDecorations(TextBlockControl);
 			else if (e.PropertyName == Label.LineBreakModeProperty.PropertyName)
 				UpdateLineBreakMode(TextBlockControl);
 			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
@@ -186,9 +186,9 @@ namespace Xamarin.Forms.Platform.UWP
 			else if (e.PropertyName == Specifics.DetectReadingOrderFromContentProperty.PropertyName)
 				UpdateDetectReadingOrderFromContent(TextBlockControl);
 			else if (e.PropertyName == Label.LineHeightProperty.PropertyName)
-				UpdateLineHeight(Control);
+				UpdateLineHeight(TextBlockControl);
 			else if (e.PropertyName == Label.MaxLinesProperty.PropertyName)
-				UpdateMaxLines(Control);
+				UpdateMaxLines(TextBlockControl);
 			base.OnElementPropertyChanged(sender, e);
 		}
 
