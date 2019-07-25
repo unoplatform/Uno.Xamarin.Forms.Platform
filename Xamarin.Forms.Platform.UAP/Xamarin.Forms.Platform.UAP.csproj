@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.31" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;xamarinios10;uap10.0.17763;MonoAndroid80</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;xamarinios10;uap10.0.17763;MonoAndroid90</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -29,11 +29,11 @@
 	
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid80' ">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
 		<PackageReference Include="Uno.UI" Version="1.46.0-dev.2264" PrivateAssets="All" />
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
-	<ItemGroup Condition="  '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid80' ">
+	<ItemGroup Condition="  '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
 		<Reference Include="System.Runtime.Serialization" />
 	</ItemGroup>
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
