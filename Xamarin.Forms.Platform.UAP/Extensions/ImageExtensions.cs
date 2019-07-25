@@ -57,7 +57,7 @@ namespace Xamarin.Forms.Platform.UWP
 			if (source == null || source.IsEmpty)
 				return null;
 
-			var handler = Registrar.Registered.GetHandlerForObject<IIconElementHandler>(source);
+			var handler = Internals.Registrar.Registered.GetHandlerForObject<IIconElementHandler>(source);
 			if (handler == null)
 				return null;
 
@@ -83,7 +83,7 @@ namespace Xamarin.Forms.Platform.UWP
 			if (source == null || source.IsEmpty)
 				return null;
 
-			var handler = Registrar.Registered.GetHandlerForObject<IImageSourceHandler>(source);
+			var handler = Internals.Registrar.Registered.GetHandlerForObject<IImageSourceHandler>(source);
 			if (handler == null)
 				return null;
 
