@@ -268,7 +268,11 @@ namespace Xamarin.Forms.Platform.UWP
 		}
 #endif
 
+#if __ANDROID__ || __IOS__
+		protected new virtual void Dispose(bool disposing)
+#else
 		protected virtual void Dispose(bool disposing)
+#endif
 		{
 			if (!disposing || _disposed)
 				return;
