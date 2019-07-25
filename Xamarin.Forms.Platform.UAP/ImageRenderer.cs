@@ -16,7 +16,7 @@ using NativeImage = Windows.UI.Xaml.Controls.Image;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public partial class ImageRenderer : ViewRenderer<Image, Windows.UI.Xaml.Controls.Image>, IImageVisualElementRenderer
+	public partial class ImageRenderer : ViewRenderer<Image, NativeImage>, IImageVisualElementRenderer
 	{
 		bool _measured;
 		bool _disposed;
@@ -35,7 +35,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			_measured = true;
 
-            var size = Control.Source.GetImageSourceSize();
+            var size = ImageControl.Source.GetImageSourceSize();
             var result = new Size { Width = size.Width, Height = size.Height };
 
             return new SizeRequest();
@@ -158,9 +158,9 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void IImageVisualElementRenderer.SetImage(Windows.UI.Xaml.Media.ImageSource image)
 		{
-			Control.Source = image;
+			ImageControl.Source = image;
 		}
 
-		Windows.UI.Xaml.Controls.Image IImageVisualElementRenderer.GetImage() => Control;
+		Windows.UI.Xaml.Controls.Image IImageVisualElementRenderer.GetImage() => ImageControl;
 	}
 }
