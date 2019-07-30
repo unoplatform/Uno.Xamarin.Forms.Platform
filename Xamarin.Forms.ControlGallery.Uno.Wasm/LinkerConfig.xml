@@ -1,27 +1,18 @@
 ﻿<linker>
 	<assembly fullname="Xamarin.Forms.ControlGallery.Uno.Wasm">
-		<type fullname="*" />
 	</assembly>
 	<assembly fullname="Xamarin.Forms.Core">
-		<type fullname="*" />
 	</assembly>
 	<assembly fullname="Xamarin.Forms.Platform">
-		<type fullname="*" />
 	</assembly>
 	<assembly fullname="Xamarin.Forms.Platform.UAP">
-		<type fullname="*" />
 	</assembly>
 	<assembly fullname="Xamarin.Forms.Xaml">
-		<type fullname="*" />
 	</assembly>
 	<assembly fullname="Uno.UI">
-		<type fullname="*" />
 	</assembly>
 	<assembly fullname="System.ComponentModel">
-		<type fullname="*" />
 	</assembly>
 	<assembly fullname="System.Core">
-		<!-- This is required by JSon.NET and any expression.Compile caller -->
-		<type fullname="System.Linq.Expressions*" />
 	</assembly>
 </linker>

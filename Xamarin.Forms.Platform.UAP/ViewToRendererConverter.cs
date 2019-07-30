@@ -68,7 +68,7 @@ namespace Xamarin.Forms.Platform.UWP
 			protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
 			{
 				_view.IsInNativeLayout = true;
-				Layout.LayoutChildIntoBoundingRegion(_view, new Rectangle(0, 0, finalSize.Width, finalSize.Height));
+				Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(_view, new Rectangle(0, 0, finalSize.Width, finalSize.Height));
 
 				if (_view.Width <= 0 || _view.Height <= 0)
 				{
@@ -105,7 +105,7 @@ namespace Xamarin.Forms.Platform.UWP
 				result = new Windows.Foundation.Size(request.Width, request.Height);
 			}
 
-				Layout.LayoutChildIntoBoundingRegion(_view, new Rectangle(0, 0, result.Width, result.Height));
+			Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(_view, new Rectangle(0, 0, result.Width, result.Height));
 
 			FrameworkElement?.Measure(availableSize);
 

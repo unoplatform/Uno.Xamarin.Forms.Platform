@@ -132,6 +132,7 @@
     </CreateItem>
     <Copy SourceFiles="@(ConfigFile)" DestinationFiles="controlgallery.config" Condition="!Exists('controlgallery.config')" />
   </Target>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 
   <Import Project="..\Xamarin.Forms.Controls.Issues\Xamarin.Forms.Controls.Issues.Shared\Xamarin.Forms.Controls.Issues.Shared.projitems" Label="Shared" />
 

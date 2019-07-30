@@ -47,7 +47,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)StringProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)_2489CustomRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)_57114Renderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)_58406EffectRenderer.cs" />
