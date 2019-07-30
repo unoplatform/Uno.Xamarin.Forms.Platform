@@ -15,4 +15,5 @@
 	</assembly>
 	<assembly fullname="System.Core">
 	</assembly>
+	<assembly fullname="Xamarin.Forms.Controls"/>
 </linker>
