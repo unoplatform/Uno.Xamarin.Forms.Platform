@@ -42,25 +42,25 @@ namespace Xamarin.Forms
 			Device.SetFlags(s_flags);
 			Device.Info = new WindowsDeviceInfo();
 
-			switch (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily)
-			{
-				case "Windows.Desktop":
-					if (Windows.UI.ViewManagement.UIViewSettings.GetForCurrentView().UserInteractionMode ==
-						Windows.UI.ViewManagement.UserInteractionMode.Touch)
-						Device.SetIdiom(TargetIdiom.Tablet);
-					else
+			// switch (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily)
+			// {
+			// 	case "Windows.Desktop":
+			// 		if (Windows.UI.ViewManagement.UIViewSettings.GetForCurrentView().UserInteractionMode ==
+			// 			Windows.UI.ViewManagement.UserInteractionMode.Touch)
+			// 			Device.SetIdiom(TargetIdiom.Tablet);
+			// 		else
 						Device.SetIdiom(TargetIdiom.Desktop);
-					break;
-				case "Windows.Mobile":
-					Device.SetIdiom(TargetIdiom.Phone);
-					break;
-				case "Windows.Xbox":
-					Device.SetIdiom(TargetIdiom.TV);
-					break;
-				default:
-					Device.SetIdiom(TargetIdiom.Unsupported);
-					break;
-			}
+			//		break;
+			//	case "Windows.Mobile":
+			//		Device.SetIdiom(TargetIdiom.Phone);
+			//		break;
+			//	case "Windows.Xbox":
+			//		Device.SetIdiom(TargetIdiom.TV);
+			//		break;
+			//	default:
+			//		Device.SetIdiom(TargetIdiom.Unsupported);
+			//		break;
+			//}
 
 			ExpressionSearch.Default = new WindowsExpressionSearch();
 

@@ -208,6 +208,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Forms.ControlGaller
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Forms.ControlGallery.Uno.UWP", "Xamarin.Forms.ControlGallery.Uno.UWP\Xamarin.Forms.ControlGallery.Uno.UWP.csproj", "{C8B2D9FF-CE7B-463B-B9D6-8A776D6CBEDE}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "BasicXamarinForms", "BasicXamarinForms\BasicXamarinForms.shproj", "{9F984062-D5C6-42FD-93B4-85C6A7365E7F}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Xamarin.Forms.Controls.Issues\Xamarin.Forms.Controls.Issues.Shared\Xamarin.Forms.Controls.Issues.Shared.projitems*{0a39a74b-6f7a-4d41-84f2-b0ccdce899df}*SharedItemsImports = 4
@@ -216,6 +218,7 @@ Global
 		Xamarin.Forms.ControlGallery.WindowsUniversal.Shared\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared.projitems*{3acb38ce-cae4-4760-9e31-2bbd2537754e}*SharedItemsImports = 13
 		Xamarin.Forms.Controls.Issues\Xamarin.Forms.Controls.Issues.Shared\Xamarin.Forms.Controls.Issues.Shared.projitems*{9db0cabb-24cc-4538-88ec-6e0a0fe40248}*SharedItemsImports = 4
 		Xamarin.Forms.Core.UITests.Shared\Xamarin.Forms.Core.UITests.projitems*{9db0cabb-24cc-4538-88ec-6e0a0fe40248}*SharedItemsImports = 4
+		BasicXamarinForms\BasicXamarinForms.projitems*{9f984062-d5c6-42fd-93b4-85c6a7365e7f}*SharedItemsImports = 13
 		Xamarin.Forms.Controls.Issues\Xamarin.Forms.Controls.Issues.Shared\Xamarin.Forms.Controls.Issues.Shared.projitems*{a34ebe01-25bf-4e69-a2dc-2288dc625541}*SharedItemsImports = 4
 		Xamarin.Forms.Core.UITests.Shared\Xamarin.Forms.Core.UITests.projitems*{a34ebe01-25bf-4e69-a2dc-2288dc625541}*SharedItemsImports = 4
 		Xamarin.Flex\Xamarin.Flex.projitems*{a6703c7d-d362-452a-a7a5-73771194d38c}*SharedItemsImports = 13
@@ -3619,6 +3622,7 @@ Global
 		{BC2534B2-8025-4F54-A8A6-976BDFAD132F} = {4F5E2D21-17F6-4A42-B8FB-D03D82E24EC8}
 		{B83BC7C5-FA0F-4D03-9D8D-1D0FF84DA088} = {4F5E2D21-17F6-4A42-B8FB-D03D82E24EC8}
 		{C8B2D9FF-CE7B-463B-B9D6-8A776D6CBEDE} = {4F5E2D21-17F6-4A42-B8FB-D03D82E24EC8}
+		{9F984062-D5C6-42FD-93B4-85C6A7365E7F} = {4F5E2D21-17F6-4A42-B8FB-D03D82E24EC8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {650AE971-2F29-46A8-822C-FB4FCDC6A9A0}

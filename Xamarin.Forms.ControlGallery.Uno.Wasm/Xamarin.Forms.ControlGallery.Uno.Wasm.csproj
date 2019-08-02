@@ -49,6 +49,6 @@
 
   <Import Project="..\Xamarin.Forms.ControlGallery.Uno.Shared\Xamarin.Forms.ControlGallery.Uno.Shared.projitems" Label="Shared" Condition="Exists('..\Xamarin.Forms.ControlGallery.Uno.Shared\Xamarin.Forms.ControlGallery.Uno.Shared.projitems')" />
 
-	<Import Project="..\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared.projitems" Label="Shared" />
+	<Import Project="..\BasicXamarinForms\BasicXamarinForms.projitems" Label="Shared" />
 
 </Project>

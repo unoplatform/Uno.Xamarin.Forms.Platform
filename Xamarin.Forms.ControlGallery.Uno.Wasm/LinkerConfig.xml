@@ -7,13 +7,10 @@
 	</assembly>
 	<assembly fullname="Xamarin.Forms.Platform.UAP">
 	</assembly>
-	<assembly fullname="Xamarin.Forms.Xaml">
-	</assembly>
 	<assembly fullname="Uno.UI">
 	</assembly>
 	<assembly fullname="System.ComponentModel">
 	</assembly>
 	<assembly fullname="System.Core">
 	</assembly>
-	<assembly fullname="Xamarin.Forms.Controls"/>
 </linker>

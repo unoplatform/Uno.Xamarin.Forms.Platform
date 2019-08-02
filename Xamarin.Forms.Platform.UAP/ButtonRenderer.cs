@@ -27,11 +27,11 @@ namespace Xamarin.Forms.Platform.UWP
 					var button = new FormsButton();
 
 					button.Click += OnButtonClick;
-#if HAS_UNO
-					button.Click += OnPointerPressed;
-#else
-					button.AddHandler(PointerPressedEvent, new PointerEventHandler(OnPointerPressed), true);
-#endif
+// #if HAS_UNO
+// 					button.Click += OnPointerPressed;
+// #else
+// 					button.AddHandler(PointerPressedEvent, new PointerEventHandler(OnPointerPressed), true);
+// #endif
 					button.Loaded += ButtonOnLoaded;
 
 					SetNativeControl(button);
