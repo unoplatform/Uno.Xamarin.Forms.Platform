@@ -84,8 +84,8 @@
 		<file src="..\Xamarin.Forms.Build.Tasks\bin\$Configuration$\netstandard2.0\System.CodeDom.dll" target="build\netstandard2.0" />
 
 		<!--Android-->
-		<file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\MonoAndroid90\Xamarin.Forms.Platform.UAP.dll" target="lib\MonoAndroid90" />
-		<file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\MonoAndroid90\Xamarin.Forms.Platform.UAP.*pdb" target="lib\MonoAndroid90" />
+		<file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\MonoAndroid90\90\Xamarin.Forms.Platform.UAP.dll" target="lib\MonoAndroid90" />
+		<file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\MonoAndroid90\90\Xamarin.Forms.Platform.UAP.*pdb" target="lib\MonoAndroid90" />
 		<file src="..\Xamarin.Forms.Core\bin\$Configuration$\netstandard2.0\Xamarin.Forms.Core.dll" target="lib\MonoAndroid90" />
 		<file src="..\Xamarin.Forms.Core\bin\$Configuration$\netstandard2.0\Xamarin.Forms.Core.*pdb" target="lib\MonoAndroid90" />
 		<file src="..\Xamarin.Forms.Platform\bin\$Configuration$\netstandard2.0\Xamarin.Forms.Platform.dll" target="lib\MonoAndroid90" />
