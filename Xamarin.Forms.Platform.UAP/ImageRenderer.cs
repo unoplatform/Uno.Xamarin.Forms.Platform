@@ -43,7 +43,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 		private Windows.UI.Xaml.Controls.Image ImageControl =>
 #if __IOS__ || __ANDROID__
-			(Windows.UI.Xaml.Controls.Image)Control.Child; 
+			Control?.Child as Windows.UI.Xaml.Controls.Image; 
 #else
 			Control;
 #endif
