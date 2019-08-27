@@ -71,7 +71,8 @@ namespace Xamarin.Forms.Platform.UWP
 
 			if (!current.Resources.ContainsKey("RootContainerStyle"))
 			{
-				Windows.UI.Xaml.Application.Current.Resources.MergedDictionaries.Add(Forms.GetTabletResources());
+				// UNO TODO https://github.com/unoplatform/uno/pull/1416
+				// Windows.UI.Xaml.Application.Current.Resources.MergedDictionaries.Add(Forms.GetTabletResources());
 			}
 
 			_container = new Canvas

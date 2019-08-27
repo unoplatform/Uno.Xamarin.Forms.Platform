@@ -42,6 +42,7 @@ namespace Xamarin.Forms
 			Device.SetFlags(s_flags);
 			Device.Info = new WindowsDeviceInfo();
 
+#if !HAS_UNO
 			switch (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily)
 			{
 				case "Windows.Desktop":
@@ -61,6 +62,10 @@ namespace Xamarin.Forms
 					Device.SetIdiom(TargetIdiom.Unsupported);
 					break;
 			}
+#else
+			// UNO TODO
+			Device.SetIdiom(TargetIdiom.Desktop);
+#endif
 
 			ExpressionSearch.Default = new WindowsExpressionSearch();
 
