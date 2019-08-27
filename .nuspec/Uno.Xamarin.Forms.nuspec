@@ -112,20 +112,20 @@
 		<file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP.pri" target="lib\uap10.0.17763" />
 		<file src="..\Xamarin.Forms.Platform\bin\$Configuration$\netstandard2.0\Xamarin.Forms.Platform.dll" target="lib\uap10.0.17763" />
 
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\FormsFlyout.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\FormsCommandBarStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\FormsProgressBarStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Resources.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\FormsTextBoxStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\AutoSuggestStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\SliderStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\MasterDetailControlStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\PageControlStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\TabbedPageStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\FormsEmbeddedPageWrapper.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\StepperControl.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Items\ItemsViewStyles.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP\Items" />
-    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\FormsCheckBoxStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\FormsFlyout.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\FormsCommandBarStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\FormsProgressBarStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\Resources.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\FormsTextBoxStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\AutoSuggestStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\SliderStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\MasterDetailControlStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\PageControlStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\TabbedPageStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\FormsEmbeddedPageWrapper.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+    <!--<file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\StepperControl.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />-->
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\Items\ItemsViewStyles.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP\Items" />
+    <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\FormsCheckBoxStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
 	</files>
 
 </package>
