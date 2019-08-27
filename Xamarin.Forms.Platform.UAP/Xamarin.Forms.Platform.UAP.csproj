@@ -24,7 +24,9 @@
 				
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
-
+    
+    <!-- Disable support for embedded XBF so the files are present for nuget to get -->
+    <DisableEmbeddedXbf>true</DisableEmbeddedXbf>
 	</PropertyGroup>
 	
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
