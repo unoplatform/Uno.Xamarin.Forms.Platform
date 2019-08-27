@@ -70,8 +70,8 @@
 		<file src="..\Xamarin.Forms.Platform\bin\$Configuration$\netstandard2.0\Xamarin.Forms.Platform.dll" target="lib\netstandard2.0" />
 
     <!--Xamlc stuff-->
-    <file src="Xamarin.Forms.targets" target="build" />
-    <file src="Xamarin.Forms.props" target="build" />
+    <file src="Xamarin.Forms.targets" target="build\Uno.Xamarin.Forms.targets" />
+    <file src="Xamarin.Forms.props" target="build\Uno.Xamarin.Forms.props" />
     <file src="Xamarin.Forms.DefaultItems.targets" target="build" />
     <file src="Xamarin.Forms.DefaultItems.props" target="build" />
     <file src="..\Xamarin.Forms.Build.Tasks\bin\$Configuration$\netstandard2.0\Xamarin.Forms.Build.Tasks.dll" target="build\netstandard2.0" />
