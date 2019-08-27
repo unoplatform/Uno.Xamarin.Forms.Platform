@@ -6,7 +6,8 @@
 		<WasmHead>true</WasmHead>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 		<NoWarn>NU1701,Uno0001</NoWarn>
-	</PropertyGroup>
+    <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+  </PropertyGroup>
 
 	<ItemGroup>
 		<Content Include="..\Xamarin.Forms.ControlGallery.Uno.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
@@ -40,7 +41,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-		<PackageReference Include="Uno.UI" Version="1.46.0-dev.2264" />
+		<PackageReference Include="Uno.UI" Version="1.46.214-dev.2553" />
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.300" />
     <DotNetCliToolReference Include="Uno.Wasm.Bootstrap.CLI" Version="1.0.0-dev.300" />
   </ItemGroup>

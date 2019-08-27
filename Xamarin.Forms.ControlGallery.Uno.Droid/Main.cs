@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Xamarin.Forms.ControlGallery.WindowsUniversal;
 
 namespace Xamarin.Forms.ControlGallery.Uno.Droid
 {

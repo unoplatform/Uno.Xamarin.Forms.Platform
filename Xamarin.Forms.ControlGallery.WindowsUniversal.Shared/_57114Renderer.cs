@@ -8,7 +8,7 @@ using Xamarin.Forms.Platform.UWP;
 
 namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 {
-	public class _57114Renderer : VisualElementRenderer<Bugzilla57114._57114View, _57114NativeView>
+	public partial class _57114Renderer : VisualElementRenderer<Bugzilla57114._57114View, _57114NativeView>
 	{
 		protected override void OnElementChanged(ElementChangedEventArgs<Bugzilla57114._57114View> e)
 		{
@@ -33,7 +33,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 		}
 	}
 
-	public class _57114NativeView : Windows.UI.Xaml.Controls.Grid
+	public partial class _57114NativeView : Windows.UI.Xaml.Controls.Grid
 	{
 		public _57114NativeView()
 		{

@@ -18,7 +18,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 		}
 	}
 
-	public class _51173CustomImageRenderer : ImageRenderer
+	public partial class _51173CustomImageRenderer : ImageRenderer
 	{
 		protected override async Task TryUpdateSource()
 		{

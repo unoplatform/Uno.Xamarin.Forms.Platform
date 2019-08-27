@@ -57,7 +57,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
             }
 #endif
 
-            var rootFrame = Window.Current.Content as Windows.UI.Xaml.Controls.Frame;
+            var rootFrame = Windows.UI.Xaml.Window.Current.Content as Windows.UI.Xaml.Controls.Frame;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
@@ -77,7 +77,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 				//FormsMaps.Init (Controls.App.Config["UWPMapsAuthKey"]);
 
 				// Place the frame in the current Window
-				Window.Current.Content = rootFrame;
+				Windows.UI.Xaml.Window.Current.Content = rootFrame;
             }
 
             if (rootFrame.Content == null)
@@ -99,9 +99,9 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 			//		statusBar.ForegroundColor = Colors.White;
 			//	}
 			//}
-
+			 
 			// Ensure the current window is active
-			Window.Current.Activate();
+			Windows.UI.Xaml.Window.Current.Activate();
         }
 
         /// <summary>

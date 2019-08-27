@@ -14,7 +14,7 @@ using Xamarin.Forms.Platform.UWP;
 
 namespace Xamarin.Forms.Maps.UWP
 {
-	public class MapRenderer : ViewRenderer<Map, MapControl>
+	public partial class MapRenderer : ViewRenderer<Map, MapControl>
 	{
 		protected override async void OnElementChanged(ElementChangedEventArgs<Map> e)
 		{

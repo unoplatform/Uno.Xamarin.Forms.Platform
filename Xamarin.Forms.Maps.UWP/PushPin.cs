@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Input;
 
 namespace Xamarin.Forms.Maps.UWP
 {
-	internal class PushPin : ContentControl
+	internal partial class PushPin : ContentControl
 	{
 		readonly Pin _pin;
 

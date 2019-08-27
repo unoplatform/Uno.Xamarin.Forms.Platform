@@ -14,7 +14,7 @@ using Xamarin.Forms.Platform.UWP;
 [assembly: ExportRenderer(typeof(Issue3273.SortableListView), typeof(SortableListViewRenderer))]
 namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 {
-	public class EntryRendererKeyboardFlags : EntryRenderer
+	public partial class EntryRendererKeyboardFlags : EntryRenderer
 	{
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
@@ -25,7 +25,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 
 		}
 	}
-	public class EditorRendererKeyboardFlags : EditorRenderer
+	public partial class EditorRendererKeyboardFlags : EditorRenderer
 	{
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
@@ -37,7 +37,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 		}
 	}
 
-	public class SortableListViewRenderer : ListViewRenderer
+	public partial class SortableListViewRenderer : ListViewRenderer
 	{
 		protected override void OnElementChanged(ElementChangedEventArgs<ListView> e)
 		{
@@ -119,7 +119,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 	}
 
 
-	public class TextBoxViewRenderer : BoxViewRenderer
+	public partial class TextBoxViewRenderer : BoxViewRenderer
 	{
 		Canvas m_Canvas;
 

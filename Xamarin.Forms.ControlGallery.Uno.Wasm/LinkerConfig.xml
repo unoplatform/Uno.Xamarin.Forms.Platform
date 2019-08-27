@@ -1,19 +1,11 @@
 ﻿<linker>
-	<assembly fullname="Xamarin.Forms.ControlGallery.Uno.Wasm">
-	</assembly>
-	<assembly fullname="Xamarin.Forms.Core">
-	</assembly>
-	<assembly fullname="Xamarin.Forms.Platform">
-	</assembly>
-	<assembly fullname="Xamarin.Forms.Platform.UAP">
-	</assembly>
-	<assembly fullname="Xamarin.Forms.Xaml">
-	</assembly>
-	<assembly fullname="Uno.UI">
-	</assembly>
-	<assembly fullname="System.ComponentModel">
-	</assembly>
-	<assembly fullname="System.Core">
-	</assembly>
+	<assembly fullname="Xamarin.Forms.ControlGallery.Uno.Wasm"/>
+	<assembly fullname="Xamarin.Forms.Core"/>
+	<assembly fullname="Xamarin.Forms.Platform"/>
+	<assembly fullname="Xamarin.Forms.Platform.UAP"/>
+	<assembly fullname="Xamarin.Forms.Xaml"/>
+	<assembly fullname="Uno.UI"/>
+	<assembly fullname="System.ComponentModel"/>
+	<assembly fullname="System.Core"/>
 	<assembly fullname="Xamarin.Forms.Controls"/>
 </linker>

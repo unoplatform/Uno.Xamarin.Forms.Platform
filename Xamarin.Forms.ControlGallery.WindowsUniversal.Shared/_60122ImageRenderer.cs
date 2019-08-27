@@ -9,7 +9,7 @@ using Xamarin.Forms.Platform.UWP;
 
 namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 {
-	public class _60122ImageRenderer : ImageRenderer
+	public partial class _60122ImageRenderer : ImageRenderer
 	{
 		Bugzilla60122._60122Image _customControl;
 		readonly Windows.UI.Input.GestureRecognizer _gestureRecognizer = new Windows.UI.Input.GestureRecognizer();
