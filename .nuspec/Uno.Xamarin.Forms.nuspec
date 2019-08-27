@@ -134,6 +134,14 @@
     <!--<file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\StepperControl.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />-->
     <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\Items\ItemsViewStyles.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP\Items" />
     <file src="..\Xamarin.Forms.Platform.UAP\bin\$Configuration$\uap10.0.17763\Xamarin.Forms.Platform.UAP\FormsCheckBoxStyle.xbf" target="lib\uap10.0.17763\Xamarin.Forms.Platform.UAP" />
+
+    <file src="..\Xamarin.Forms.Core\bin\$Configuration$\netstandard2.0\Xamarin.Forms.Core.dll" target="lib\uap10.0.17763" />
+    <file src="..\Xamarin.Forms.Core\bin\$Configuration$\netstandard2.0\Xamarin.Forms.Core.*pdb" target="lib\uap10.0.17763" />
+    <file src="..\docs\Xamarin.Forms.Core.xml" target="lib\uap10.0.17763" />
+    <file src="..\Xamarin.Forms.Xaml\bin\$Configuration$\netstandard2.0\Xamarin.Forms.Xaml.dll" target="lib\uap10.0.17763" />
+    <file src="..\Xamarin.Forms.Xaml\bin\$Configuration$\netstandard2.0\Xamarin.Forms.Xaml.*pdb" target="lib\uap10.0.17763" />
+    <file src="..\docs\Xamarin.Forms.Xaml.xml" target="lib\uap10.0.17763" />
+    
 	</files>
 
 </package>
