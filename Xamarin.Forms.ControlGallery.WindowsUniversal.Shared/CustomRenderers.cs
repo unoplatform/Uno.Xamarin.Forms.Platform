@@ -8,12 +8,13 @@ using Xamarin.Forms.ControlGallery.WindowsUniversal;
 using Xamarin.Forms.Controls.Issues;
 using Xamarin.Forms.Platform.UWP;
 
-[assembly: ExportRenderer(typeof(Xamarin.Forms.Controls.Bugzilla42602.TextBoxView), typeof(Xamarin.Forms.ControlGallery.WindowsUniversal.TextBoxViewRenderer))]
+[assembly: ExportRenderer(typeof(Xamarin.Forms.Controls.Issues.Bugzilla42602.TextBoxView), typeof(Xamarin.Forms.ControlGallery.WindowsUniversal.TextBoxViewRenderer))]
 [assembly: ExportRenderer(typeof(Issue1683.EntryKeyboardFlags), typeof(EntryRendererKeyboardFlags))]
 [assembly: ExportRenderer(typeof(Issue1683.EditorKeyboardFlags), typeof(EditorRendererKeyboardFlags))]
+[assembly: ExportRenderer(typeof(Issue3273.SortableListView), typeof(SortableListViewRenderer))]
 namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 {
-	public class EntryRendererKeyboardFlags : EntryRenderer
+	public partial class EntryRendererKeyboardFlags : EntryRenderer
 	{
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
@@ -24,7 +25,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 
 		}
 	}
-	public class EditorRendererKeyboardFlags : EditorRenderer
+	public partial class EditorRendererKeyboardFlags : EditorRenderer
 	{
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
@@ -33,6 +34,24 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 			Control.TestKeyboardFlags(((Issue1683.EditorKeyboardFlags)Element).FlagsToSet);
 
 
+		}
+	}
+
+	public partial class SortableListViewRenderer : ListViewRenderer
+	{
+		protected override void OnElementChanged(ElementChangedEventArgs<ListView> e)
+		{
+			base.OnElementChanged(e);
+
+			if (e.NewElement != null)
+			{
+				var control = Control as Windows.UI.Xaml.Controls.ListView;
+
+				control.AllowDrop = true;
+				control.CanDragItems = true;
+				control.CanReorderItems = true;
+				control.ReorderMode = ListViewReorderMode.Enabled;
+			}
 		}
 	}
 
@@ -100,7 +119,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 	}
 
 
-	public class TextBoxViewRenderer : BoxViewRenderer
+	public partial class TextBoxViewRenderer : BoxViewRenderer
 	{
 		Canvas m_Canvas;
 

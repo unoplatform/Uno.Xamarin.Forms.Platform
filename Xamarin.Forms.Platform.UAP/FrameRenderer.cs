@@ -56,6 +56,18 @@ namespace Xamarin.Forms.Platform.UWP
 			}
 		}
 
+		protected override void UpdateBackgroundColor()
+		{
+			//background color change must be handled separately
+			//because the background would protrude through the border if the corners are rounded
+			//as the background would be applied to the renderer's FrameworkElement
+			Color backgroundColor = Element.BackgroundColor;
+			if (Control != null)
+			{
+				Control.Background = backgroundColor.IsDefault ? null : backgroundColor.ToBrush();
+			}
+		}
+
 		void PackChild()
 		{
 			if (Element.Content == null)
@@ -65,7 +77,11 @@ namespace Xamarin.Forms.Platform.UWP
 			Control.Child = renderer.ContainerElement;
 		}
 
+#if __ANDROID__ || __IOS__ || (WINDOWS_UWP && !NETSTANDARD2_0)
 		void UpdateBorder()
+#else
+		new void UpdateBorder()
+#endif
 		{
 			if (Element.BorderColor != Color.Default)
 			{

@@ -27,11 +27,11 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
     /// </summary>
     sealed partial class App
     {
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
-        public App()
+		/// <summary>
+		/// Initializes the singleton application object.  This is the first line of authored code
+		/// executed, and as such is the logical equivalent of main() or WinMain().
+		/// </summary>
+		public App()
         {
             InitializeComponent();
             Suspending += OnSuspending;
@@ -44,15 +44,20 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-
+			/* uncomment if you want to run tests without preloading
+			 * issues list or change other behavior based on if tests
+			 * are running in UI Harness
+			 * if (!String.IsNullOrWhiteSpace(e.Arguments) &&
+				e.Arguments.Contains("RunningAsUITests"))
+				Controls.App.PreloadTestCasesIssuesList = false;*/
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
+			if (System.Diagnostics.Debugger.IsAttached)
             {
              //   DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
 
-            var rootFrame = Window.Current.Content as Windows.UI.Xaml.Controls.Frame;
+            var rootFrame = Windows.UI.Xaml.Window.Current.Content as Windows.UI.Xaml.Controls.Frame;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
@@ -72,7 +77,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 				//FormsMaps.Init (Controls.App.Config["UWPMapsAuthKey"]);
 
 				// Place the frame in the current Window
-				Window.Current.Content = rootFrame;
+				Windows.UI.Xaml.Window.Current.Content = rootFrame;
             }
 
             if (rootFrame.Content == null)
@@ -94,9 +99,9 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 			//		statusBar.ForegroundColor = Colors.White;
 			//	}
 			//}
-
+			 
 			// Ensure the current window is active
-			Window.Current.Activate();
+			Windows.UI.Xaml.Window.Current.Activate();
         }
 
         /// <summary>

@@ -1,12 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<WasmHead>true</WasmHead>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
-		<NoWarn>NU1701</NoWarn>
-	</PropertyGroup>
+		<NoWarn>NU1701,Uno0001</NoWarn>
+    <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+  </PropertyGroup>
 
 	<ItemGroup>
 		<Content Include="..\Xamarin.Forms.ControlGallery.Uno.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
@@ -36,27 +37,18 @@
 	<ItemGroup>
 		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
-	
-	<ItemGroup>
-		<!-- 
-    This item group is required by the project templace because of the
-    new SDK-Style project, otherwise some files are not aded automatically.
-    
-    You can safely this ItemGroup completely.
-    -->
-		<Compile Remove="Program.cs" />
-		<Compile Include="Program.cs" />
-		<Content Include="LinkerConfig.xml" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-		<PackageReference Include="Uno.UI" Version="1.31.0-dev.161" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.32" />
-	</ItemGroup>
+		<PackageReference Include="Uno.UI" Version="1.46.214-dev.2572" />
+    <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.300" />
+    <DotNetCliToolReference Include="Uno.Wasm.Bootstrap.CLI" Version="1.0.0-dev.300" />
+  </ItemGroup>
+  
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 
-	<Import Project="..\Xamarin.Forms.ControlGallery.Uno.Shared\Xamarin.Forms.ControlGallery.Uno.Shared.projitems" Label="Shared" Condition="Exists('..\Xamarin.Forms.ControlGallery.Uno.Shared\Xamarin.Forms.ControlGallery.Uno.Shared.projitems')" />
+  <Import Project="..\Xamarin.Forms.ControlGallery.Uno.Shared\Xamarin.Forms.ControlGallery.Uno.Shared.projitems" Label="Shared" Condition="Exists('..\Xamarin.Forms.ControlGallery.Uno.Shared\Xamarin.Forms.ControlGallery.Uno.Shared.projitems')" />
 
 	<Import Project="..\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared.projitems" Label="Shared" />
 

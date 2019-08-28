@@ -24,6 +24,7 @@ namespace Xamarin.Forms.Platform.iOS
 		UIButton _moreButton;
 		UIScrollView _scroller;
 		UITableView _tableView;
+		bool _isDiposed;
 
 		static ContextActionsCell()
 		{
@@ -113,6 +114,14 @@ namespace Xamarin.Forms.Platform.iOS
 		public override SizeF SizeThatFits(SizeF size)
 		{
 			return ContentCell.SizeThatFits(size);
+		}
+		public override void RemoveFromSuperview()
+		{
+			base.RemoveFromSuperview();
+			//Some cells are removed  when using ScrollTo but Disposed is not called causing leaks
+			//ListviewRenderer disposes it's subviews but there's a chance these were removed already
+			//but the dispose logic wasn't called.
+			Dispose(true);
 		}
 
 		public void Update(UITableView tableView, Cell cell, UITableViewCell nativeCell)
@@ -261,10 +270,13 @@ namespace Xamarin.Forms.Platform.iOS
 
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing)
+			if (disposing && !_isDiposed)
 			{
+				_isDiposed = true;
+
 				if (_scroller != null)
 				{
+					_scroller.Delegate = null;
 					_scroller.Dispose();
 					_scroller = null;
 				}
@@ -331,9 +343,8 @@ namespace Xamarin.Forms.Platform.iOS
 					var action = UIAlertAction.Create(item.Text, UIAlertActionStyle.Default, a =>
 					{
 						_scroller.SetContentOffset(new PointF(0, 0), true);
-						MenuItem mi;
-						if (weakItem.TryGetTarget(out mi))
-							mi.Activate();
+						if (weakItem.TryGetTarget(out MenuItem mi))
+							((IMenuItemController)mi).Activate();
 					});
 					actionSheet.AddAction(action);
 				}
@@ -451,7 +462,7 @@ namespace Xamarin.Forms.Platform.iOS
 			else
 			{
 				_scroller.SetContentOffset(new PointF(0, 0), true);
-				_cell.ContextActions[(int)button.Tag].Activate();
+				((IMenuItemController)_cell.ContextActions[(int)button.Tag]).Activate();
 			}
 		}
 
@@ -630,8 +641,11 @@ namespace Xamarin.Forms.Platform.iOS
 			return null;
 		}
 
-		void SetupSelection(UITableView table)
+		static void SetupSelection(UITableView table)
 		{
+			if (table.GestureRecognizers == null)
+				return;
+
 			for (var i = 0; i < table.GestureRecognizers.Length; i++)
 			{
 				var r = table.GestureRecognizers[i] as SelectGestureRecognizer;
@@ -639,7 +653,7 @@ namespace Xamarin.Forms.Platform.iOS
 					return;
 			}
 
-			_tableView.AddGestureRecognizer(new SelectGestureRecognizer());
+			table.AddGestureRecognizer(new SelectGestureRecognizer());
 		}
 
 		class SelectGestureRecognizer : UITapGestureRecognizer
@@ -704,7 +718,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 				// do not activate a -1 index when dismissing by clicking outside the popover
 				if (buttonIndex >= 0)
-					Items[(int)buttonIndex].Activate();
+					((IMenuItemController)Items[(int)buttonIndex]).Activate();
 			}
 		}
 	}

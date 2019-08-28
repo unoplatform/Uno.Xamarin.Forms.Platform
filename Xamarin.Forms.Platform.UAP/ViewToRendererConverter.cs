@@ -65,18 +65,26 @@ namespace Xamarin.Forms.Platform.UWP
 			}
 		}
 
-		protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
-		{
-			_view.IsInNativeLayout = true;
-			Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(_view, new Rectangle(0, 0, finalSize.Width, finalSize.Height));
-			_view.IsInNativeLayout = false;
+			protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
+			{
+				_view.IsInNativeLayout = true;
+				Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(_view, new Rectangle(0, 0, finalSize.Width, finalSize.Height));
 
-			var finalRect = new Rect(_view.X, _view.Y, _view.Width, _view.Height);
-			FrameworkElement?.Arrange(finalRect);
+				if (_view.Width <= 0 || _view.Height <= 0)
+				{
+					// Hide Panel when size _view is empty.
+					// It is necessary that this element does not overlap other elements when it should be hidden.
+					Opacity = 0;
+				}
+				else
+				{
+					Opacity = 1;
+					FrameworkElement?.Arrange(new Rect(_view.X, _view.Y, _view.Width, _view.Height));
+				}
+				_view.IsInNativeLayout = false;
 
-			Console.WriteLine($"ArrangeOverride({finalSize}, {FrameworkElement}) = {finalRect}");
-			return finalSize;
-		}
+				return finalSize;
+			}
 
 		protected override Windows.Foundation.Size MeasureOverride(Windows.Foundation.Size availableSize)
 		{
@@ -97,7 +105,7 @@ namespace Xamarin.Forms.Platform.UWP
 				result = new Windows.Foundation.Size(request.Width, request.Height);
 			}
 
-			_view.Layout(new Rectangle(0, 0, result.Width, result.Height));
+			Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(_view, new Rectangle(0, 0, result.Width, result.Height));
 
 			FrameworkElement?.Measure(availableSize);
 

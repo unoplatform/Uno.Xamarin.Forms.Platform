@@ -7,7 +7,7 @@ using Xamarin.Forms.Platform.UWP;
 
 namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 {
-	public class DisposePageRenderer : PageRenderer
+	public partial class DisposePageRenderer : PageRenderer
 	{
 		bool _disposed;
 
@@ -30,7 +30,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 		}
 	}
 
-	public class DisposeLabelRenderer : LabelRenderer
+	public partial class DisposeLabelRenderer : LabelRenderer
 	{
 		protected override void Dispose(bool disposing)
 		{

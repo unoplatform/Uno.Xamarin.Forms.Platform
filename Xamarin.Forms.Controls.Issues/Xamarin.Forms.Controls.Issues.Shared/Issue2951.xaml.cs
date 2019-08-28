@@ -5,6 +5,7 @@ using Xamarin.Forms.CustomAttributes;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Xamarin.Forms.Internals;
+using System.Threading.Tasks;
 
 #if UITEST
 using Xamarin.UITest.Queries;
@@ -14,15 +15,29 @@ using NUnit.Framework;
 
 namespace Xamarin.Forms.Controls.Issues
 {
+#if UITEST
+	[NUnit.Framework.Category(Core.UITests.UITestCategories.UwpIgnore)]
+#endif
 	[Preserve (AllMembers = true)]
 	[Issue (IssueTracker.Github, 2951, "On Android, button background is not updated when color changes ")]
 	public partial class Issue2951 : TestContentPage
 	{
 		public Issue2951 ()
 		{
-			#if APP
+#if APP
 			InitializeComponent ();
-			#endif
+#endif
+		}
+
+		async void ListView_ItemAppearing(object sender, ItemVisibilityEventArgs e)
+		{
+			if(e.ItemIndex == 2)
+			{
+				await Task.Delay(10);
+#if APP
+				lblReady.Text = "Ready";
+#endif
+			}
 		}
 
 		protected override void Init ()
@@ -90,11 +105,12 @@ namespace Xamarin.Forms.Controls.Issues
 				}
 			}
 		}
-	
-		#if UITEST
+
+#if UITEST
 		[Test]
 		public void Issue2951Test ()
 		{
+			RunningApp.WaitForElement("Ready");
 			var bt = RunningApp.WaitForElement (c => c.Marked ("btnChangeStatus"));
 			var buttons = RunningApp.Query (c => c.Marked ("btnChangeStatus"));
 			Assert.That (buttons.Length, Is.EqualTo (3));
@@ -111,11 +127,11 @@ namespace Xamarin.Forms.Controls.Issues
 		}
 
 	
-		#endif
+#endif
 	}
 }
 
-namespace Xamarin.Forms.Controls
+namespace Xamarin.Forms.Controls.Issues
 {
 	[Preserve(AllMembers = true)]
 	public class ButtonExtensions

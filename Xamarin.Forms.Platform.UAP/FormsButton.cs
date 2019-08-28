@@ -15,7 +15,11 @@ namespace Xamarin.Forms.Platform.UWP
 
 		WContentPresenter _contentPresenter;
 
+#if __IOS__
+		public new Brush BackgroundColor
+#else
 		public Brush BackgroundColor
+#endif
 		{
 			get
 			{

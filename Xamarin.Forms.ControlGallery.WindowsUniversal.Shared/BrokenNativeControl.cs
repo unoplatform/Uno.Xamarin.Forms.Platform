@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 {
-	internal class BrokenNativeControl : Panel
+	internal partial class BrokenNativeControl : Panel
 	{
 		public BrokenNativeControl ()
 		{

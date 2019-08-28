@@ -10,7 +10,9 @@ namespace Xamarin.Forms.Platform.MacOS
 	{
 		Application _application;
 		bool _isSuspended;
+		static int _storyboardMainMenuCount;
 
+		public Func<MenuItem, NSMenuItem> NativeMenuItemCreator { get; set; }
 		public abstract NSWindow MainWindow { get; }
 
 		protected override void Dispose(bool disposing)
@@ -28,6 +30,9 @@ namespace Xamarin.Forms.Platform.MacOS
 
 			Application.SetCurrentApplication(application);
 			_application = application;
+
+			if(NSApplication.SharedApplication.MainMenu != null)
+				_storyboardMainMenuCount = (int)NSApplication.SharedApplication.MainMenu.Count;
 
 			application.PropertyChanged += ApplicationOnPropertyChanged;
 		}
@@ -112,15 +117,21 @@ namespace Xamarin.Forms.Platform.MacOS
 				Log.Warning("FormsApplicationDelegate", "Please provide a Main.storyboard to handle menus");
 				return;
 			}
-				
+
 			ClearNSMenu(nsMenu);
-			Element.GetMenu(_application).ToNSMenu(nsMenu);
+			SetupMainAppMenu(nsMenu);
+		}
+
+		protected virtual void SetupMainAppMenu(NSMenu nativeMenu)
+		{
+			var menu = Element.GetMenu(_application);
+			menu.ToNSMenu(nativeMenu, NativeMenuItemCreator);
 		}
 
 		static void ClearNSMenu(NSMenu menu)
 		{
-			//for now we can't remove the 1st menu item		
-			for (var i = menu.Count - 1; i > 0; i--)
+			// remove the menu that was created in the code
+			for (var i = menu.Count - _storyboardMainMenuCount; i > 0; i--)
 				menu.RemoveItemAt(i);
 		}
 	}

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Xamarin.Forms.Internals;
+using WSelectionChangedEventArgs = Windows.UI.Xaml.Controls.SelectionChangedEventArgs;
 
 namespace Xamarin.Forms.Platform.UWP
 {
@@ -25,10 +26,12 @@ namespace Xamarin.Forms.Platform.UWP
 
 		public CarouselPage Element { get; private set; }
 
+#if !HAS_UNO
 		public void Dispose()
 		{
 			Dispose(true);
 		}
+#endif
 
 		public FrameworkElement ContainerElement
 		{
@@ -113,7 +116,11 @@ namespace Xamarin.Forms.Platform.UWP
 				SetValue(Windows.UI.Xaml.Automation.AutomationProperties.AutomationIdProperty, Element.AutomationId);
 		}
 
+#if __ANDROID__ || __IOS__
+		protected new virtual void Dispose(bool disposing)
+#else
 		protected virtual void Dispose(bool disposing)
+#endif
 		{
 			if (!disposing || _disposed)
 				return;
@@ -154,7 +161,7 @@ namespace Xamarin.Forms.Platform.UWP
 			Page?.SendAppearing();
 		}
 
-		void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		void OnSelectionChanged(object sender, WSelectionChangedEventArgs e)
 		{
 			if (_fromUpdate)
 				return;

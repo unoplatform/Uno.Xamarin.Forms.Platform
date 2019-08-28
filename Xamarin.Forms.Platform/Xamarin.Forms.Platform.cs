@@ -27,6 +27,10 @@
 	{
 	}
 
+	internal class _ImageButtonRenderer
+	{
+	}
+
 	internal class _ButtonRenderer
 	{
 	}
@@ -36,6 +40,10 @@
 	}
 
 	internal class _ListViewRenderer
+	{
+	}
+
+	internal class _CollectionViewRenderer
 	{
 	}
 
@@ -91,7 +99,7 @@
 	{
 	}
 
-	internal class _NavigationMenuRenderer
+	internal class _CheckBoxRenderer
 	{
 	}
 

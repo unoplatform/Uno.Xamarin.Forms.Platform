@@ -7,7 +7,7 @@ using Xamarin.Forms.Platform.UWP;
 [assembly: ExportRenderer(typeof(Xamarin.Forms.Page), typeof(_2489CustomRenderer))]
 namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 {
-	public class _2489CustomRenderer : PageRenderer
+	public partial class _2489CustomRenderer : PageRenderer
 	{
 		protected override void OnElementChanged(ElementChangedEventArgs<Page> e)
 		{

@@ -1,0 +1,85 @@
+steps:
+  - checkout: self
+
+  - task: xamops.azdevex.provisionator-task.provisionator@1
+    displayName: Provisionate Xamarin
+    condition: eq(variables['provisioningOSX'], 'true')
+    inputs:
+      provisioning_script: $(provisionator.osxPath)
+      provisioning_extra_args: $(provisionator.extraArguments)
+
+  - bash: sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh $(MONO_VERSION)
+    displayName: Switch to the latest Xamarin SDK
+
+  - bash: echo '##vso[task.setvariable variable=MD_APPLE_SDK_ROOT;]'/Applications/Xcode_$(XCODE_VERSION).app;sudo xcode-select --switch /Applications/Xcode_$(XCODE_VERSION).app/Contents/Developer
+    displayName: Switch to the latest Xcode
+
+  - task: NuGetToolInstaller@0
+    displayName: 'Use NuGet'
+    inputs:
+      versionSpec: $(nugetVersion)
+
+  - task: NuGetCommand@2
+    displayName: 'NuGet restore'
+    inputs:
+      restoreSolution: $(slnPath)
+
+  - task: MSBuild@1
+    displayName: 'Build solution Xamarin.Forms.Build.Tasks/Xamarin.Forms.Build.Tasks.csproj'
+    inputs:
+      solution: Xamarin.Forms.Build.Tasks/Xamarin.Forms.Build.Tasks.csproj
+
+  - task: InstallAppleCertificate@2
+    displayName: 'Install an Apple certificate'
+    inputs:
+      certSecureFile: 'Xamarin Forms iOS Certificate.p12'
+      certPwd: $(P12password)
+
+  - task: InstallAppleProvisioningProfile@1
+    displayName: 'Install an Apple provisioning profile'
+    inputs:
+      provProfileSecureFile: 'Xamarin Forms iOS Provisioning.mobileprovision'
+
+  - task: XamariniOS@2
+    displayName: 'Build Xamarin.iOS solution $(slnPath)'
+    inputs:
+      solutionFile: $(slnPath)
+      configuration: $(buildConfiguration)
+
+
+  - task: CopyFiles@2
+    displayName: 'Copy test-cloud.exe'
+    inputs:
+      Contents: '**/Xamarin.UITest.*/tools/test-cloud.exe'
+      TargetFolder: '$(build.artifactstagingdirectory)/testcloud'
+      CleanTargetFolder: true
+      OverWrite: true
+      flattenFolders: true
+
+
+  - task: CopyFiles@2
+    displayName: 'Copy iOS Files for UITest'
+    inputs:
+      Contents: |
+       **/$(IpaName)
+       Xamarin.Forms.Core.iOS.UITests/bin/$(BuildConfiguration)/**
+
+      TargetFolder: '$(build.artifactstagingdirectory)/ios'
+      CleanTargetFolder: true
+      flattenFolders: true
+
+
+  - task: CopyFiles@2
+    displayName: 'Copy Android Files for UITest'
+    inputs:
+      Contents: 'Xamarin.Forms.Core.Android.UITests/bin/$(BuildConfiguration)/**'
+      TargetFolder: '$(build.artifactstagingdirectory)/android'
+      CleanTargetFolder: true
+      flattenFolders: true
+
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: iOS'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+      ArtifactName: OSXArtifacts

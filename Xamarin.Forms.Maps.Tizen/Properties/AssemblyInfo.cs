@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms.Maps;
+﻿using System.Reflection;
+using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.Tizen;
 using Xamarin.Forms.Platform.Tizen;
 

@@ -27,6 +27,10 @@ namespace Xamarin.Forms.Maps.MacOS
 		object _lastTouchedView;
 		bool _disposed;
 
+#if __MOBILE__
+		UITapGestureRecognizer _mapClickedGestureRecognizer;
+#endif
+
 		const string MoveMessageName = "MapMoveToRegion";
 
 		public override SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
@@ -59,6 +63,11 @@ namespace Xamarin.Forms.Maps.MacOS
 					var mapModel = (Map)Element;
 					MessagingCenter.Unsubscribe<Map, MapSpan>(this, MoveMessageName);
 					((ObservableCollection<Pin>)mapModel.Pins).CollectionChanged -= OnCollectionChanged;
+
+					foreach (Pin pin in mapModel.Pins)
+					{
+						pin.PropertyChanged -= PinOnPropertyChanged;
+					}
 				}
 
 				var mkMapView = (MKMapView)Control;
@@ -71,6 +80,10 @@ namespace Xamarin.Forms.Maps.MacOS
 				}
 				mkMapView.RemoveFromSuperview();
 #if __MOBILE__
+				mkMapView.RemoveGestureRecognizer(_mapClickedGestureRecognizer);
+				_mapClickedGestureRecognizer.Dispose();
+				_mapClickedGestureRecognizer = null;
+
 				if (FormsMaps.IsiOs9OrNewer)
 				{
 					// This renderer is done with the MKMapView; we can put it in the pool
@@ -101,6 +114,11 @@ namespace Xamarin.Forms.Maps.MacOS
 				var mapModel = (Map)e.OldElement;
 				MessagingCenter.Unsubscribe<Map, MapSpan>(this, MoveMessageName);
 				((ObservableCollection<Pin>)mapModel.Pins).CollectionChanged -= OnCollectionChanged;
+
+				foreach (Pin pin in mapModel.Pins)
+				{
+					pin.PropertyChanged -= PinOnPropertyChanged;
+				}
 			}
 
 			if (e.NewElement != null)
@@ -128,6 +146,9 @@ namespace Xamarin.Forms.Maps.MacOS
 
 					mapView.GetViewForAnnotation = GetViewForAnnotation;
 					mapView.RegionChanged += MkMapViewOnRegionChanged;
+#if __MOBILE__
+					mapView.AddGestureRecognizer(_mapClickedGestureRecognizer = new UITapGestureRecognizer(OnMapClicked));
+#endif
 				}
 
 				MessagingCenter.Subscribe<Map, MapSpan>(this, MoveMessageName, (s, a) => MoveToRegion(a), mapModel);
@@ -250,7 +271,7 @@ namespace Xamarin.Forms.Maps.MacOS
 			Pin targetPin = null;
 			foreach (Pin pin in ((Map)Element).Pins)
 			{
-				object target = pin.Id;
+				object target = pin.MarkerId;
 				if (target != annotation)
 					continue;
 
@@ -270,6 +291,20 @@ namespace Xamarin.Forms.Maps.MacOS
 			targetPin.SendTap();
 		}
 
+#if __MOBILE__
+		void OnMapClicked(UITapGestureRecognizer recognizer)
+		{
+			if (Element == null)
+			{
+				return;
+			}
+
+			var tapPoint = recognizer.LocationInView(Control);
+			var tapGPS = ((MKMapView)Control).ConvertPoint(tapPoint, Control);
+			((Map)Element).SendMapClicked(new Position(tapGPS.Latitude, tapGPS.Longitude));
+		}
+#endif
+
 		void UpdateRegion()
 		{
 			if (_shouldUpdateRegion)
@@ -283,10 +318,37 @@ namespace Xamarin.Forms.Maps.MacOS
 		{
 			foreach (Pin pin in pins)
 			{
+				pin.PropertyChanged += PinOnPropertyChanged;
+
 				var annotation = CreateAnnotation(pin);
-				pin.Id = annotation;
+				pin.MarkerId = annotation;
 				((MKMapView)Control).AddAnnotation(annotation);
 			}
+		}
+
+		void PinOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			Pin pin = (Pin)sender;
+			var annotation = pin.MarkerId as MKPointAnnotation;
+
+			if (annotation == null)
+			{
+				return;
+			}
+
+			if (e.PropertyName == Pin.LabelProperty.PropertyName)
+			{
+				annotation.Title = pin.Label;
+			}
+			else if (e.PropertyName == Pin.AddressProperty.PropertyName)
+			{
+				annotation.Subtitle = pin.Address;
+			}
+			else if (e.PropertyName == Pin.PositionProperty.PropertyName)
+			{
+				annotation.Coordinate = new CLLocationCoordinate2D(pin.Position.Latitude, pin.Position.Longitude);
+			}
+
 		}
 
 		void MkMapViewOnRegionChanged(object sender, MKMapViewChangeEventArgs e)
@@ -335,8 +397,11 @@ namespace Xamarin.Forms.Maps.MacOS
 
 		void RemovePins(IList pins)
 		{
-			foreach (object pin in pins)
-				((MKMapView)Control).RemoveAnnotation((IMKAnnotation)((Pin)pin).Id);
+			foreach (Pin pin in pins)
+			{
+				pin.PropertyChanged -= PinOnPropertyChanged;
+				((MKMapView)Control).RemoveAnnotation((IMKAnnotation)pin.MarkerId);
+			}
 		}
 
 		void UpdateHasScrollEnabled()

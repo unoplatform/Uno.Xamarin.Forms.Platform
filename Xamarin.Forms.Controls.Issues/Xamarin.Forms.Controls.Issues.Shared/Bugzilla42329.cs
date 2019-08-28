@@ -11,7 +11,7 @@ using Xamarin.UITest;
 using NUnit.Framework;
 #endif
 
-namespace Xamarin.Forms.Controls
+namespace Xamarin.Forms.Controls.Issues
 {
 #if UITEST
 	[Category(UITestCategories.ListView)]
@@ -145,9 +145,7 @@ namespace Xamarin.Forms.Controls
 			protected override void OnAppearing()
 			{
 				base.OnAppearing();
-				GC.Collect();
-				GC.Collect();
-				GC.Collect();
+				GarbageCollectionHelper.Collect();
 			}
 		}
 	}

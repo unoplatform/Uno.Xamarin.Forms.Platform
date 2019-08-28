@@ -60,6 +60,14 @@ namespace Xamarin.Forms.Controls
 			);
 			clickedContainer.View.Clicked += (sender, args) => clickedContainer.EventFired ();
 
+			var pressedContainer = new EventViewContainer<Button>(Test.Button.Pressed,
+				new Button
+				{
+					Text = "Pressed"
+				}
+			);
+			pressedContainer.View.Pressed += (sender, args) => pressedContainer.EventFired();
+
 			var commandContainer = new ViewContainer<Button> (Test.Button.Command, 
 				new Button {
 					Text = "Command", 
@@ -76,8 +84,8 @@ namespace Xamarin.Forms.Controls
 
 			var imageContainer = new ViewContainer<Button> (Test.Button.Image, 
 				new Button {
-					Text = "Image", 
-					Image = new FileImageSource { File = "bank.png" }
+					Text = "Image",
+					ImageSource = new FileImageSource { File = "bank.png" }
 				}
 			)
 			;
@@ -93,15 +101,23 @@ namespace Xamarin.Forms.Controls
 				}
 			);
 
+			var paddingContainer = new ViewContainer<Button> (Test.Button.Padding,
+				new Button {
+					Text = "Padding", BackgroundColor = Color.Red, Padding = new Thickness (20, 30, 60, 15)
+				}
+			);
+
 			Add (borderButtonContainer);
 			Add (borderRadiusContainer);
 			Add (borderWidthContainer);
 			Add (clickedContainer);
+			Add(pressedContainer);
 			Add (commandContainer);
 			Add (fontContainer);
 			Add (imageContainer);
 			Add (textContainer);
 			Add (textColorContainer);
+			Add (paddingContainer);
 			//stackLayout.Children.Add (textColorContainer);
 		}
 	}
