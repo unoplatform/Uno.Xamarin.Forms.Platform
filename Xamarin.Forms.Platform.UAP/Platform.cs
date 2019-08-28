@@ -82,7 +82,13 @@ namespace Xamarin.Forms.Platform.UWP
 
 			_page.Content = _container;
 
+#if HAS_UNO
+			// This is required as the Canvas measure method is not 
+			// behaving the same as on Windows, and the content cannot shrink.
+			_page.SizeChanged += OnRendererSizeChanged;
+#else
 			_container.SizeChanged += OnRendererSizeChanged;
+#endif
 
 			MessagingCenter.Subscribe(this, Page.BusySetSignalName, (Page sender, bool enabled) =>
 			{
@@ -93,6 +99,12 @@ namespace Xamarin.Forms.Platform.UWP
 			_toolbarTracker.CollectionChanged += OnToolbarItemsChanged;
 
 			UpdateBounds();
+
+#if HAS_UNO
+			// The ActualWith/ActualHeight of _container are not yet known. We wait for a layout pass
+			// then we update the bounds.
+			var unused =_page.Dispatcher.RunAsync(CoreDispatcherPriority.High, () => UpdateBounds());
+#endif
 
 			InitializeStatusBar();
 
@@ -228,8 +240,8 @@ namespace Xamarin.Forms.Platform.UWP
 				IVisualElementRenderer renderer = GetRenderer(root);
 				if (renderer != null)
 				{
-					renderer.ContainerElement.Width = _container.ActualWidth;
-					renderer.ContainerElement.Height = _container.ActualHeight;
+					renderer.ContainerElement.Width = bounds.Width;
+					renderer.ContainerElement.Height = bounds.Height;
 				}
 			}
 		}
@@ -284,7 +296,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void OnRendererSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
 		{
-			UpdateBounds();
+			UpdateBounds(sizeChangedEventArgs.NewSize);
 			UpdatePageSizes();
 		}
 
@@ -343,11 +355,20 @@ namespace Xamarin.Forms.Platform.UWP
 				_toolbarTracker.Target = last;
 		}
 
-		void UpdateBounds()
+		void UpdateBounds(Windows.Foundation.Size? newSize = null)
 		{
-			_bounds = new Rectangle(0, 0, _page.ActualWidth, _page.ActualHeight);
+			if (newSize != null)
+			{
+				// Use the provided size as the ActualWith/Height may not be available 
+				// as the time of the invocation of the current method.
+				_bounds = new Rectangle(0, 0, newSize.Value.Width, newSize.Value.Height);
+			}
+			else
+			{
+				_bounds = new Rectangle(0, 0, _page.ActualWidth, _page.ActualHeight);
+			}
 
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+			if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
 				StatusBar statusBar = MobileStatusBar;
 				if (statusBar != null)
