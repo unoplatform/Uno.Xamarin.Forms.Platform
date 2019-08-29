@@ -2,7 +2,7 @@
 	<assembly fullname="Xamarin.Forms.ControlGallery.Uno.Wasm"/>
 	<assembly fullname="Xamarin.Forms.Core"/>
 	<assembly fullname="Xamarin.Forms.Platform"/>
-	<assembly fullname="Xamarin.Forms.Platform.UAP"/>
+	<assembly fullname="Xamarin.Forms.Platform.Uno"/>
 	<assembly fullname="Xamarin.Forms.Xaml"/>
 	<assembly fullname="Uno.UI"/>
 	<assembly fullname="System.ComponentModel"/>
