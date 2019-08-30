@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.31" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;xamarinios10;uap10.0.17763;MonoAndroid90</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;xamarinios10;MonoAndroid90</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0.17763' ">
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.6" />
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.12" />
     <PackageReference Include="Win2D.uwp">
       <Version>1.20.0</Version>
     </PackageReference>
@@ -35,18 +35,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xamarin.Forms.Core\Xamarin.Forms.Core.csproj">
-      <Project>{57b8b73d-c3b5-4c42-869e-7b2f17d354ac}</Project>
-      <Name>Xamarin.Forms.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Xamarin.Forms.Maps\Xamarin.Forms.Maps.csproj">
-      <Project>{7d13bac2-c6a4-416a-b07e-c169b199e52b}</Project>
-      <Name>Xamarin.Forms.Maps</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Xamarin.Forms.Platform.UAP\Xamarin.Forms.Platform.UAP.csproj">
-      <Project>{00d8d049-ffaa-4759-8fc9-1eca30777f72}</Project>
-      <Name>Xamarin.Forms.Platform.UAP</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Xamarin.Forms.Platform.UAP\Xamarin.Forms.Platform.Uno.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="4.1.0.709244" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="4.1.0.709244" ExcludeAssets="build" />
+  </ItemGroup>
+
+  <Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">
+    <Message Text="RemoveOriginalUAPRenderer" Importance="high" />
+    <ItemGroup>
+      <_OriginalRefs Include="@(ReferencePathWithRefAssemblies)"
+                     Condition="'%(FileName)'=='Xamarin.Forms.Platform.UAP' or '%(FileName)'=='Xamarin.Forms.Platform.iOS' or '%(FileName)'=='Xamarin.Forms.Platform.Android' " />
+      <_OriginalRefs Include="@(ReferencePathWithRefAssemblies)"
+                     Condition="'%(FileName)'=='Xamarin.Forms.Maps.iOS' or '%(FileName)'=='Xamarin.Forms.Maps.Android'" />
+      <ReferencePathWithRefAssemblies Remove="@(_OriginalRefs)" />
+    </ItemGroup>
+  </Target>
 
 </Project>
