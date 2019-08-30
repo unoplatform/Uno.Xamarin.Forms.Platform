@@ -7,7 +7,7 @@
 		<owners>nventive</owners>
 		<tags>xamarin forms xamarinforms xamarin.forms uno wasm webassembly</tags>
 		<iconUrl>http://xamarin.com/content/images/nuget/xamarin.png</iconUrl>
-		<projectUrl>http://xamarin.com/forms</projectUrl>
+		<projectUrl>https://github.com/unoplatform/Uno.Xamarin.Forms</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>WebAssembly support for Xamarin.Forms using Uno Platform</description>
 		<copyright>nventive</copyright>
