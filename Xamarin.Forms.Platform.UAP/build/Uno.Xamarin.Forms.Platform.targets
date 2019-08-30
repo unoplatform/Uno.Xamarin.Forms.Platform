@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">
+  <ItemGroup>
+    <!--
+    Remove the UWP set of renderers coming from the Xamarin.Forms package, as it conflicts with out set of renderers.
+    This should not be needed if a Xamarin.Forms.Core package ends up being created.
+    -->
+    <_OriginalRefs Include="@(ReferencePathWithRefAssemblies)"
+                   Condition="'%(FileName)'=='Xamarin.Forms.Platform.UAP'" />
+    <ReferencePathWithRefAssemblies Remove="@(_OriginalRefs)" />
+  </ItemGroup>
+</Target>
