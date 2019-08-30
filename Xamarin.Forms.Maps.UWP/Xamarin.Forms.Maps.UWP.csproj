@@ -1,6 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.31" ToolsVersion="15.0">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <PackageId>Uno.Xamarin.Forms.Maps</PackageId>
   </PropertyGroup>
 
   <PropertyGroup>
