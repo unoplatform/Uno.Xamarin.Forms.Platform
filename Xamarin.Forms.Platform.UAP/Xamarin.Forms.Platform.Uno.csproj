@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.31" ToolsVersion="15.0">
 	<PropertyGroup>
-    <TargetFrameworks>netstandard2.0;xamarinios10;MonoAndroid90</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
 	<PropertyGroup>
@@ -13,6 +13,7 @@
     <AssemblyName>Xamarin.Forms.Platform.Uno</AssemblyName>
     <PackageId>Uno.Xamarin.Forms.Platform</PackageId>
     <RootNamespace>Xamarin.Forms.Platform</RootNamespace>
+    <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0.17763' ">
@@ -44,8 +45,15 @@
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 	</PropertyGroup>
-  
-	<ItemGroup>
+
+  <ItemGroup>
+    <Content Include="build/Uno.Xamarin.Forms.Platform.targets">
+      <Pack>true</Pack>
+      <PackagePath>build/netstandard1.0</PackagePath>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="4.1.0.709244" ExcludeAssets="build" />
 	</ItemGroup>
 
@@ -56,47 +64,5 @@
       <ReferencePathWithRefAssemblies Remove="@(_OriginalRefs)" />
     </ItemGroup>
   </Target>
-  
-	<ItemGroup>
-	  <None Update="AutoSuggestStyle.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="FormsCheckBoxStyle.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="FormsCommandBarStyle.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="FormsEmbeddedPageWrapper.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="FormsFlyout.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="FormsProgressBarStyle.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="FormsTextBoxStyle.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="Items\ItemsViewStyles.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="MasterDetailControlStyle.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="PageControlStyle.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="Resources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="SliderStyle.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="TabbedPageStyle.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	</ItemGroup>
 
 </Project>
