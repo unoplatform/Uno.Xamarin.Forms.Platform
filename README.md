@@ -13,6 +13,8 @@ You can read about the Uno Platform https://platform.uno, and about Xamarin.Form
 
 ## Getting Started ##
 
+- Require VS 2019 with asp.net web development and .Net Core cross-platform Workloads.
+
 **TBD**
 
 ## Coding Style ##
