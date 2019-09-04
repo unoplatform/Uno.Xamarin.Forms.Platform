@@ -34,7 +34,7 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
-		<PackageReference Include="Uno.UI" Version="1.46.214-dev.2572" PrivateAssets="All" />
+		<PackageReference Include="Uno.UI" Version="1.46.218-dev.2614" PrivateAssets="All" />
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
   
