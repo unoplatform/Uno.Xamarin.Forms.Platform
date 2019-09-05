@@ -11,37 +11,29 @@
 		<DefineConstants>NETFX_CORE;WINDOWS_UWP</DefineConstants>
 
     <AssemblyName>Xamarin.Forms.Platform.Uno</AssemblyName>
-    <PackageId>Uno.Xamarin.Forms.Platform</PackageId>
     <RootNamespace>Xamarin.Forms.Platform</RootNamespace>
     <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-	</PropertyGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0.17763' ">
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" />
-    <PackageReference Include="Win2D.uwp">
-      <Version>1.20.0</Version>
-    </PackageReference>
     
-		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-  </ItemGroup>
-  
-	<PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.17763' ">
-		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
-		<GenerateLibraryLayout>true</GenerateLibraryLayout>
-    
-    <!-- Disable support for embedded XBF so the files are present for nuget to get -->
-    <DisableEmbeddedXbf>true</DisableEmbeddedXbf>
+    <PackageId>Uno.Xamarin.Forms.Platform</PackageId>
+    <Authors>nventive</Authors>
+    <PackageProjectUrl>https://github.com/unoplatform/Uno.Xamarin.Forms.Platform</PackageProjectUrl>
+    <PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/unoplatform/Uno.Xamarin.Forms.Platform</RepositoryUrl>
+    <Description>Uno Platform WebAssembly Renderers for Xamarin.Forms</Description>
+    <Copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</Copyright>
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
-		<PackageReference Include="Uno.UI" Version="1.46.214-dev.2572" PrivateAssets="All" />
+		<PackageReference Include="Uno.UI" Version="1.46.214-dev.2572" />
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
   
-	<ItemGroup Condition="  '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
-		<Reference Include="System.Runtime.Serialization" />
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<EmbeddedResource Include="LinkerConfig.wasm.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
 	</ItemGroup>
-  
+
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 	</PropertyGroup>
