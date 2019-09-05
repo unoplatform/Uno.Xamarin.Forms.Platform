@@ -33,7 +33,10 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 		/// </summary>
 		public App()
         {
-            InitializeComponent();
+#if HAS_UNO
+			ApiInformation.IsFailWhenNotImplemented = false;
+#endif
+			InitializeComponent();
             Suspending += OnSuspending;
         }
 

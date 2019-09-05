@@ -217,9 +217,10 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void OnClick(object sender, PointerRoutedEventArgs e)
 		{
-			PointerPoint point = e.GetCurrentPoint(CellContent);
-			if (point.Properties.PointerUpdateKind != PointerUpdateKind.RightButtonReleased)
-				return;
+			//TODO : Implement PointerUpdateKind in Uno
+			//PointerPoint point = e.GetCurrentPoint(CellContent);
+			//if (point.Properties.PointerUpdateKind != PointerUpdateKind.RightButtonReleased)
+			//	return;
 
 			OpenContextMenu();
 		}
