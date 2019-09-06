@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Data;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class NavigationPageRenderer : IVisualElementRenderer, ITitleProvider, ITitleIconProvider, 
+	public class NavigationPageRenderer : IVisualElementRenderer, ITitleProvider, ITitleIconProvider,
 		ITitleViewProvider, IToolbarProvider, IToolBarForegroundBinder
 	{
 		PageControl _container;
@@ -419,7 +419,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void OnPopRequested(object sender, NavigationRequestedEventArgs e)
 		{
-			var newCurrent = Element.Peek(1);
+			var newCurrent = Element.Peek(0);
 			SetPage(newCurrent, e.Animated, true);
 		}
 
@@ -518,7 +518,6 @@ namespace Xamarin.Forms.Platform.UWP
 			bool newValue = GetIsNavBarPossible() && NavigationPage.GetHasNavigationBar(_currentPage);
 			if (showing == newValue)
 				return;
-
 			_container.TitleVisibility = newValue ? Visibility.Visible : Visibility.Collapsed;
 
 			// Force ContentHeight/Width to update, doesn't work from inside PageControl for some reason
@@ -610,7 +609,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			_container.ToolbarDynamicOverflowEnabled = Element.OnThisPlatform().GetToolbarDynamicOverflowEnabled();
 		}
-		
+
 
 		void UpdateShowTitle()
 		{
@@ -644,7 +643,9 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				render = Platform.GetRenderer(_parentTabbedPage) as ITitleProvider;
 				if (render != null)
+				{
 					render.ShowTitle = (_parentTabbedPage.CurrentPage == Element) && NavigationPage.GetHasNavigationBar(_currentPage);
+				}
 			}
 
 			if (_parentMasterDetailPage != null)
