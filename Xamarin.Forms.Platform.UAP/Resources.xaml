@@ -438,4 +438,10 @@
     <DataTemplate x:Key="ComboBoxHeader">
         <TextBlock Text="{Binding Title}" Foreground="{Binding TitleColor,Converter={StaticResource ColorConverter},ConverterParameter=DefaultTextForegroundThemeBrush}" />
     </DataTemplate>
+
+    <Style TargetType="FormsButton" BasedOn="{StaticResource XamlDefaultButton}" />
+    <Style TargetType="FormsCancelButton" BasedOn="{StaticResource XamlDefaultButton}" />
+    <Style TargetType="FormsComboBox" BasedOn="{StaticResource DefaultComboBoxStyle}" />
+    <Style TargetType="FormsPivot" BasedOn="{StaticResource XamlDefaultPivot}" />
+
 </ResourceDictionary>
