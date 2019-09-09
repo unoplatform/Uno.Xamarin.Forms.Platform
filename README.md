@@ -15,7 +15,13 @@ You can read about the Uno Platform https://platform.uno, and about Xamarin.Form
 
 - Require VS 2019 with asp.net web development and .Net Core cross-platform Workloads.
 
-**TBD**
+
+## Building the renderers ##
+
+- Using Visual Studio 2019 (16.2 or later)
+- Open the `Uno.Xamarin.Forms.Platform.sln` solution
+- Build the `Xamarin.Forms.ControlGallery.Uno.Wasm` project
+- Run it without the debugger (usually with `Ctrl+F5`)
 
 ## Coding Style ##
 
