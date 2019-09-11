@@ -268,7 +268,7 @@ namespace Xamarin.Forms.Platform.UWP
 		}
 #elif __WASM__
 
-		// Unp note: This method needs to be called for the renderers to 
+		// Uno note: This method needs to be called for the renderers to 
 		// unhook from their associated VisualElement. Otherwise, a VisualElement
 		// may end up being associated with two or more renderers.
 		public new void Dispose()
