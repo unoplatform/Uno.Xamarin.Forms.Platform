@@ -419,7 +419,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void OnPopRequested(object sender, NavigationRequestedEventArgs e)
 		{
-			var newCurrent = Element.Peek(0);
+			var newCurrent = Element.Peek(1);
 			SetPage(newCurrent, e.Animated, true);
 		}
 

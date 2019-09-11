@@ -30,7 +30,7 @@
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
-    <PackageReference Include="Uno.UI" Version="1.46.226-dev.2654" PrivateAssets="All" />
+    <PackageReference Include="Uno.UI" Version="1.46.228-dev.2683" PrivateAssets="All" />
     <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
@@ -42,8 +42,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.1.0.709244" ExcludeAssets="build" />
-    <PackageReference Include="Xamarin.Forms.Maps" Version="4.1.0.709244" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms" Version="4.2.0.709249" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="4.2.0.709249" ExcludeAssets="build" />
   </ItemGroup>
 
   <Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">
