@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !HAS_UNO
+using System;
 using System.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
@@ -193,3 +194,4 @@ namespace Xamarin.Forms.Platform.UWP
 		}
 	}
 }
+#endif

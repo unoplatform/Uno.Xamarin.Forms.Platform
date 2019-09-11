@@ -38,7 +38,7 @@ namespace Xamarin.Forms
 
 			try
 			{
-				Windows.UI.Xaml.Application.Current.Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
+				// Windows.UI.Xaml.Application.Current.Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
 			}
 			catch
 			{

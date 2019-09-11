@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.2.0.709249" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.778476-pre1" ExcludeAssets="build" />
 	</ItemGroup>
 
   <Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">
