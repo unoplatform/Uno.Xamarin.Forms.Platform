@@ -43,6 +43,7 @@ namespace Xamarin.Forms.Platform.WPF
 
 		public static void RecalculateSpanPositions(this TextBlock control, Label element, IList<double> inlineHeights)
 		{
+#if !HAS_UNO // https://github.com/unoplatform/uno/issues/1530
 			if (element?.FormattedText?.Spans == null
 				|| element.FormattedText.Spans.Count == 0)
 				return;
@@ -87,8 +88,8 @@ namespace Xamarin.Forms.Platform.WPF
 				}
 
 				((ISpatialElement)span).Region = Region.FromLines(lineHeights.ToArray(), labelWidth, rect.X, endRect.X + endRect.Width, rect.Top).Inflate(10);
-
 			}
+#endif
 		}
 
 	}
