@@ -5,21 +5,24 @@ using Xamarin.UITest;
 using Xamarin.UITest.Queries;
 using System.Text.RegularExpressions;
 using System.Threading;
+#if __IOS__
+using Xamarin.UITest.iOS;
+#endif
 
-namespace Xamarin.Forms.Core.UITests
+namespace Xamarin.UITest
 {
 	internal static class AppExtensions
 	{
-		public static AppResult[] RetryUntilPresent(
+		public static T[] QueryUntilPresent<T>(
 			this IApp app,
-			Func<AppResult[]> func,
+			Func<T[]> func,
 			int retryCount = 10,
 			int delayInMs = 2000)
 		{
 			var results = func();
 
 			int counter = 0;
-			while (results.Length == 0 && counter < retryCount)
+			while ((results == null || results.Length == 0) && counter < retryCount)
 			{
 				Thread.Sleep(delayInMs);
 				results = func();
@@ -27,9 +30,25 @@ namespace Xamarin.Forms.Core.UITests
 			}
 
 			return results;
-
 		}
 
+#if __IOS__
+		public static void SendAppToBackground(this IApp app, TimeSpan timeSpan)
+		{
+			if(app is Xamarin.Forms.Controls.ScreenshotConditionalApp sca)
+			{
+				sca.SendAppToBackground(timeSpan);
+				Thread.Sleep(timeSpan.Add(TimeSpan.FromSeconds(2)));
+			}
+		}
+#endif
+	}
+}
+
+namespace Xamarin.Forms.Core.UITests
+{
+	internal static class AppExtensions
+	{
 		public static AppRect ScreenBounds(this IApp app)
 		{
 			return app.Query(Queries.Root()).First().Rect;

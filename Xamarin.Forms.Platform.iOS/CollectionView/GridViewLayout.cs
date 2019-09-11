@@ -10,7 +10,7 @@ namespace Xamarin.Forms.Platform.iOS
 	{
 		readonly GridItemsLayout _itemsLayout;
 
-		public GridViewLayout(GridItemsLayout itemsLayout) : base(itemsLayout)
+		public GridViewLayout(GridItemsLayout itemsLayout, ItemSizingStrategy itemSizingStrategy) : base(itemsLayout, itemSizingStrategy)
 		{
 			_itemsLayout = itemsLayout;
 		}
@@ -136,6 +136,12 @@ namespace Xamarin.Forms.Platform.iOS
 			{
 				// The bug only occurs with Horizontal scrolling
 				return false; 
+			}
+
+			if (CollectionView.NumberOfSections() == 0)
+			{
+				// And it only happens if there are items
+				return false;
 			}
 
 			if (EstimatedItemSize.IsEmpty)

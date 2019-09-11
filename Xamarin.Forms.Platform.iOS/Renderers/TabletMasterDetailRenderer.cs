@@ -174,19 +174,43 @@ namespace Xamarin.Forms.Platform.iOS
 		{
 			base.ViewDidLayoutSubviews();
 
-			if (View.Subviews.Length < 2)
+			bool layoutMaster = false;
+			bool layoutDetails = false;
+
+			if (Forms.IsiOS13OrNewer)
+			{
+				layoutMaster = _masterController?.View?.Superview != null;
+				layoutDetails = _detailController?.View?.Superview != null;
+			}
+			else if (View.Subviews.Length < 2)
+			{
 				return;
+			}
+			else
+			{
+				layoutMaster = true;
+				layoutDetails = true;
+			}
 
-			var detailsBounds = _detailController.View.Frame;
-			var masterBounds = _masterController.View.Frame;
+			if (layoutMaster)
+			{
+				var masterBounds = _masterController.View.Frame;
 
-			_masterWidth = (nfloat)Math.Max(_masterWidth, masterBounds.Width);
+				if (Forms.IsiOS13OrNewer)
+					_masterWidth = masterBounds.Width;
+				else
+					_masterWidth = (nfloat)Math.Max(_masterWidth, masterBounds.Width);
 
-			if (!masterBounds.IsEmpty)
-				MasterDetailPage.MasterBounds = new Rectangle(0, 0, _masterWidth, masterBounds.Height);
+				if (!masterBounds.IsEmpty)
+					MasterDetailPage.MasterBounds = new Rectangle(0, 0, _masterWidth, masterBounds.Height);
+			}
 
-			if (!detailsBounds.IsEmpty)
-				MasterDetailPage.DetailBounds = new Rectangle(0, 0, detailsBounds.Width, detailsBounds.Height);
+			if (layoutDetails)
+			{
+				var detailsBounds = _detailController.View.Frame;
+				if (!detailsBounds.IsEmpty)
+					MasterDetailPage.DetailBounds = new Rectangle(0, 0, detailsBounds.Width, detailsBounds.Height);
+			}
 		}
 
 		public override void ViewDidLoad()
@@ -365,7 +389,12 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void UpdateFlowDirection()
 		{
-			NativeView.UpdateFlowDirection(Element);
+			if(NativeView.UpdateFlowDirection(Element) && Forms.IsiOS13OrNewer && NativeView.Superview != null)
+			{
+				var view = NativeView.Superview;
+				NativeView.RemoveFromSuperview();
+				view.AddSubview(NativeView);
+			}
 		}
 
 		class InnerDelegate : UISplitViewControllerDelegate
