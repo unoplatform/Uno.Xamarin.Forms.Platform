@@ -260,9 +260,21 @@ namespace Xamarin.Forms.Platform.UWP
 			return finalSize;
 		}
 
-#if !HAS_UNO
-		public void Dispose()
+#if __ANDROID__ || __IOS__
+		public override void Dispose()
 		{
+			base.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+#elif __WASM__
+
+		// Uno note: This method needs to be called for the renderers to 
+		// unhook from their associated VisualElement. Otherwise, a VisualElement
+		// may end up being associated with two or more renderers.
+		public new void Dispose()
+		{
+			base.Dispose();
+
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}

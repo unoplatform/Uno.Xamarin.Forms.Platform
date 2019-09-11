@@ -24,7 +24,7 @@ phases:
 
   - task: MSBuild@1
     inputs:
-      solution: Xamarin.Forms.Uno.sln
+      solution: Uno.Xamarin.Forms.Platform.sln
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
