@@ -38,7 +38,7 @@ namespace Xamarin.Forms.Platform.UWP
             var size = ImageControl.Source.GetImageSourceSize();
             var result = new Size { Width = size.Width, Height = size.Height };
 
-            return new SizeRequest();
+            return new SizeRequest(result);
 		}
 
 		private Windows.UI.Xaml.Controls.Image ImageControl =>
