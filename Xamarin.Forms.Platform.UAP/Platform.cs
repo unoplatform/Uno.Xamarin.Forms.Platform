@@ -103,7 +103,11 @@ namespace Xamarin.Forms.Platform.UWP
 #if HAS_UNO
 			// The ActualWith/ActualHeight of _container are not yet known. We wait for a layout pass
 			// then we update the bounds.
-			var unused =_page.Dispatcher.RunAsync(CoreDispatcherPriority.High, () => UpdateBounds());
+			var unused = _page.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+			{
+				UpdateBounds();
+				UpdatePageSizes();
+			});
 #endif
 
 			InitializeStatusBar();
