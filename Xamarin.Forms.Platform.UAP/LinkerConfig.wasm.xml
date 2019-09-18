@@ -1,3 +1,4 @@
 ﻿<linker>
   <assembly fullname="Xamarin.Forms.Platform.Uno" />
+  <assembly fullname="Uno.Foundation"/>
 </linker>
