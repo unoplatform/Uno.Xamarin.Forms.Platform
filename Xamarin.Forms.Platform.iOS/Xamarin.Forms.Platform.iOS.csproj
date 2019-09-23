@@ -128,6 +128,8 @@
     <Compile Include="CollectionView\TemplateHelpers.cs" />
     <Compile Include="CollectionView\UICollectionViewDelegator.cs" />
     <Compile Include="CollectionView\VerticalCell.cs" />
+    <Compile Include="CollectionView\StructuredItemsViewController.cs" />
+    <Compile Include="CollectionView\StructuredItemsViewRenderer.cs" />
     <Compile Include="CollectionView\VerticalDefaultCell.cs" />
     <Compile Include="CollectionView\GridViewLayout.cs" />
     <Compile Include="CollectionView\ItemsViewLayout.cs" />
@@ -148,6 +150,7 @@
     <Compile Include="ExportRendererAttribute.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Extensions\FlowDirectionExtensions.cs" />
+    <Compile Include="Extensions\NSObjectExtensions.cs" />
     <Compile Include="Extensions\PlatformConfigurationExtensions.cs" />
     <Compile Include="Extensions\LabelExtensions.cs" />
     <Compile Include="Extensions\VisualElementExtensions.cs" />

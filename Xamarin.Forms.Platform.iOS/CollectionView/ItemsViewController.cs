@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Drawing;
+using System.Threading.Tasks;
+using CoreGraphics;
 using Foundation;
 using UIKit;
 using Xamarin.Forms.Internals;
@@ -6,7 +9,7 @@ using Xamarin.Forms.Internals;
 namespace Xamarin.Forms.Platform.iOS
 {
 	// TODO hartez 2018/06/01 14:21:24 Add a method for updating the layout	
-	public class ItemsViewController : UICollectionViewController
+	public abstract class ItemsViewController : UICollectionViewController
 	{
 		public IItemsViewSource ItemsSource { get; protected set; }
 		public ItemsView ItemsView { get; }
@@ -19,12 +22,6 @@ namespace Xamarin.Forms.Platform.iOS
 		UIView _backgroundUIView;
 		UIView _emptyUIView;
 		VisualElement _emptyViewFormsElement;
-
-		UIView _headerUIView;
-		VisualElement _headerViewFormsElement;
-
-		UIView _footerUIView;
-		VisualElement _footerViewFormsElement;
 
 		protected UICollectionViewDelegator Delegator { get; set; }
 
@@ -68,21 +65,8 @@ namespace Xamarin.Forms.Platform.iOS
 
 			if (disposing)
 			{
-				if (_headerViewFormsElement != null)
-					_headerViewFormsElement.MeasureInvalidated -= OnFormsElementMeasureInvalidated;
-
-				if (_footerViewFormsElement != null)
-					_footerViewFormsElement.MeasureInvalidated -= OnFormsElementMeasureInvalidated;
-
 				ItemsSource?.Dispose();
 				_emptyUIView?.Dispose();
-				_headerUIView?.Dispose();
-				_footerUIView?.Dispose();
-
-				_headerUIView = null;
-				_headerViewFormsElement = null;
-				_footerUIView = null;
-				_footerViewFormsElement = null;
 				_emptyUIView = null;
 				_emptyViewFormsElement = null;
 			}
@@ -128,6 +112,14 @@ namespace Xamarin.Forms.Platform.iOS
 			{
 				UpdateEmptyViewVisibility(_isEmpty);
 			}
+
+			if (wasEmpty && !_isEmpty)
+			{
+				// If we're going from empty to having stuff, it's possible that we've never actually measured
+				// a prototype cell and our itemSize or estimatedItemSize are wrong/unset
+				// So trigger a constraint update; if we need a measurement, that will make it happen
+				ItemsViewLayout.ConstrainTo(CollectionView.Bounds.Size);
+			}
 		}
 
 		public override void ViewDidLoad()
@@ -149,22 +141,6 @@ namespace Xamarin.Forms.Platform.iOS
 			{
 				ItemsViewLayout.ConstrainTo(CollectionView.Bounds.Size);
 				_initialConstraintsSet = true;
-			}
-
-			// This update is only relevant if you have a footer view because it's used to place the footer view
-			// based on the ContentSize so we just update the positions if the ContentSize has changed
-			if (_footerUIView != null)
-			{
-				if (IsHorizontal)
-				{
-					if (_footerUIView.Frame.X != ItemsViewLayout.CollectionViewContentSize.Width)
-						UpdateHeaderFooterPosition();
-				}
-				else
-				{
-					if (_footerUIView.Frame.Y != ItemsViewLayout.CollectionViewContentSize.Height)
-						UpdateHeaderFooterPosition();
-				}
 			}
 		}
 
@@ -276,55 +252,7 @@ namespace Xamarin.Forms.Platform.iOS
 			CollectionView.RegisterClassForCell(typeof(VerticalCell), VerticalCell.ReuseId);
 		}
 
-		bool IsHorizontal => (ItemsView?.ItemsLayout as ItemsLayout)?.Orientation == ItemsLayoutOrientation.Horizontal;
-
-		void UpdateHeaderFooterPosition()
-		{
-			if (IsHorizontal)
-			{
-				var currentInset = CollectionView.ContentInset;
-
-				nfloat headerWidth = _headerUIView?.Frame.Width ?? 0f;
-				nfloat footerWidth = _footerUIView?.Frame.Width ?? 0f;
-
-				if (_headerUIView != null && _headerUIView.Frame.X != headerWidth)
-					_headerUIView.Frame = new CoreGraphics.CGRect(-headerWidth, 0, headerWidth, CollectionView.Frame.Height);
-
-				if (_footerUIView != null && (_footerUIView.Frame.X != ItemsViewLayout.CollectionViewContentSize.Width))
-					_footerUIView.Frame = new CoreGraphics.CGRect(ItemsViewLayout.CollectionViewContentSize.Width, 0, footerWidth, CollectionView.Frame.Height);
-
-				if (CollectionView.ContentInset.Left != headerWidth || CollectionView.ContentInset.Right != footerWidth)
-				{
-					CollectionView.ContentInset = new UIEdgeInsets(0, headerWidth, 0, footerWidth);
-
-					// if the header grows it will scroll off the screen because if you change the content inset iOS adjusts the content offset so the list doesn't move
-					// this changes the offset of the list by however much the header size has changed
-					CollectionView.ContentOffset = new CoreGraphics.CGPoint(CollectionView.ContentOffset.X + (currentInset.Left - CollectionView.ContentInset.Left), CollectionView.ContentOffset.Y);
-				}
-			}
-			else
-			{
-				var currentInset = CollectionView.ContentInset;
-
-				nfloat headerHeight = _headerUIView?.Frame.Height ?? 0f;
-				nfloat footerHeight = _footerUIView?.Frame.Height ?? 0f;
-
-				if (_headerUIView != null && _headerUIView.Frame.Y != headerHeight)
-					_headerUIView.Frame = new CoreGraphics.CGRect(0, -headerHeight, CollectionView.Frame.Width, headerHeight);
-
-				if (_footerUIView != null && (_footerUIView.Frame.Y != ItemsViewLayout.CollectionViewContentSize.Height))
-					_footerUIView.Frame = new CoreGraphics.CGRect(0, ItemsViewLayout.CollectionViewContentSize.Height, CollectionView.Frame.Width, footerHeight);
-
-				if (CollectionView.ContentInset.Top != headerHeight || CollectionView.ContentInset.Bottom != footerHeight)
-				{
-					CollectionView.ContentInset = new UIEdgeInsets(headerHeight, 0, footerHeight, 0);
-
-					// if the header grows it will scroll off the screen because if you change the content inset iOS adjusts the content offset so the list doesn't move
-					// this changes the offset of the list by however much the header size has changed
-					CollectionView.ContentOffset = new CoreGraphics.CGPoint(CollectionView.ContentOffset.X, CollectionView.ContentOffset.Y + (currentInset.Top - CollectionView.ContentInset.Top));
-				}
-			}
-		}
+		protected abstract bool IsHorizontal { get; }
 
 		internal void UpdateEmptyView()
 		{
@@ -334,20 +262,9 @@ namespace Xamarin.Forms.Platform.iOS
 			UpdateEmptyViewVisibility(ItemsSource?.ItemCount == 0);
 		}
 
-		internal void UpdateFooterView()
+		protected void UpdateSubview(object view, DataTemplate viewTemplate, ref UIView uiView, ref VisualElement formsElement)
 		{
-			UpdateSubview(ItemsView?.Footer, ItemsView?.FooterTemplate, ref _footerUIView, ref _footerViewFormsElement);
-		}
-
-		internal void UpdateHeaderView()
-		{
-			UpdateSubview(ItemsView?.Header, ItemsView?.HeaderTemplate, ref _headerUIView, ref _headerViewFormsElement);
-		}
-
-		internal void UpdateSubview(object view, DataTemplate viewTemplate, ref UIView uiView, ref VisualElement formsElement)
-		{
-			if (uiView != null)
-				CollectionView.Subviews.Remove(uiView);
+			uiView?.RemoveFromSuperview();
 
 			if (formsElement != null)
 			{
@@ -358,7 +275,9 @@ namespace Xamarin.Forms.Platform.iOS
 			UpdateView(view, viewTemplate, ref uiView, ref formsElement);
 
 			if (uiView != null)
+			{
 				CollectionView.AddSubview(uiView);
+			}
 
 			if (formsElement != null)
 				ItemsView.AddLogicalChild(formsElement);
@@ -379,12 +298,12 @@ namespace Xamarin.Forms.Platform.iOS
 			if (IsHorizontal)
 			{
 				var request = formsElement.Measure(double.PositiveInfinity, CollectionView.Frame.Height, MeasureFlags.IncludeMargins);
-				Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(formsElement, new Rectangle(-request.Request.Width, 0, request.Request.Width, CollectionView.Frame.Height));
+				Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(formsElement, new Rectangle(0, 0, request.Request.Width, CollectionView.Frame.Height));
 			}
 			else
 			{
 				var request = formsElement.Measure(CollectionView.Frame.Width, double.PositiveInfinity, MeasureFlags.IncludeMargins);
-				Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(formsElement, new Rectangle(0, -request.Request.Height, CollectionView.Frame.Width, request.Request.Height));
+				Xamarin.Forms.Layout.LayoutChildIntoBoundingRegion(formsElement, new Rectangle(0, 0, CollectionView.Frame.Width, request.Request.Height));
 			}
 		}
 
@@ -392,17 +311,23 @@ namespace Xamarin.Forms.Platform.iOS
 		{
 			if (sender is VisualElement formsElement)
 			{
-				RemeasureLayout(formsElement);
-				UpdateHeaderFooterPosition();
+				HandleFormsElementMeasureInvalidated(formsElement);
 			}
 		}
+
+		protected virtual void HandleFormsElementMeasureInvalidated(VisualElement formsElement)
+		{
+			RemeasureLayout(formsElement);
+        }
 
 		internal void UpdateView(object view, DataTemplate viewTemplate, ref UIView uiView, ref VisualElement formsElement)
 		{
 			// Is view set on the ItemsView?
 			if (view == null)
 			{
-				// Clear the cached Forms and native views
+				if (formsElement != null)
+					Platform.GetRenderer(formsElement)?.DisposeRendererAndChildren();
+
 				uiView = null;
 				formsElement = null;
 			}
