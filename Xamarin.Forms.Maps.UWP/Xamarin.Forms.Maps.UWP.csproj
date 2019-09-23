@@ -30,7 +30,7 @@
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
-    <PackageReference Include="Uno.UI" Version="1.46.228-dev.2683" PrivateAssets="All" />
+    <PackageReference Include="Uno.UI" Version="2.0.234-dev.2754" PrivateAssets="All" />
     <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
@@ -42,16 +42,14 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.2.0.709249" ExcludeAssets="build" />
-    <PackageReference Include="Xamarin.Forms.Maps" Version="4.2.0.709249" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.819712-pre2" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="4.3.0.819712-pre2" ExcludeAssets="build" />
   </ItemGroup>
 
   <Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">
     <ItemGroup>
-      <_OriginalRefs Include="@(ReferencePathWithRefAssemblies)"
-                     Condition="'%(FileName)'=='Xamarin.Forms.Platform.UAP' or '%(FileName)'=='Xamarin.Forms.Platform.iOS' or '%(FileName)'=='Xamarin.Forms.Platform.Android' " />
-      <_OriginalRefs Include="@(ReferencePathWithRefAssemblies)"
-                     Condition="'%(FileName)'=='Xamarin.Forms.Maps.iOS' or '%(FileName)'=='Xamarin.Forms.Maps.Android'" />
+      <_OriginalRefs Include="@(ReferencePathWithRefAssemblies)" Condition="'%(FileName)'=='Xamarin.Forms.Platform.UAP' or '%(FileName)'=='Xamarin.Forms.Platform.iOS' or '%(FileName)'=='Xamarin.Forms.Platform.Android' " />
+      <_OriginalRefs Include="@(ReferencePathWithRefAssemblies)" Condition="'%(FileName)'=='Xamarin.Forms.Maps.iOS' or '%(FileName)'=='Xamarin.Forms.Maps.Android'" />
       <ReferencePathWithRefAssemblies Remove="@(_OriginalRefs)" />
     </ItemGroup>
   </Target>

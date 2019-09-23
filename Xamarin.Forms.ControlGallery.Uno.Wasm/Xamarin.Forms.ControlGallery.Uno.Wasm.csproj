@@ -32,11 +32,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.778476-pre1" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.819712-pre2" ExcludeAssets="build" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-		<PackageReference Include="Uno.UI" Version="1.46.228-dev.2683" />
-    <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.300" />
+		<PackageReference Include="Uno.UI" Version="2.0.234-dev.2754" />
+    <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.302" />
     <DotNetCliToolReference Include="Uno.Wasm.Bootstrap.CLI" Version="1.0.0-dev.300" />
   </ItemGroup>
   

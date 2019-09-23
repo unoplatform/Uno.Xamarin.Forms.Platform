@@ -24,7 +24,7 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
-		<PackageReference Include="Uno.UI" Version="1.46.228-dev.2683" PrivateAssets="none" />
+		<PackageReference Include="Uno.UI" Version="2.0.234-dev.2754" PrivateAssets="none" />
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
   
@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.778476-pre1" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.819712-pre2" ExcludeAssets="build" />
 	</ItemGroup>
 
   <Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">
