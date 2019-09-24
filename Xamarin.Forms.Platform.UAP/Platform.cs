@@ -61,7 +61,10 @@ namespace Xamarin.Forms.Platform.UWP
 		}
 
 		internal Platform(Windows.UI.Xaml.Controls.Page page)
-		{
+		{ 
+			// Disable template pooling for unknown ContentPresenter issue
+			FrameworkTemplatePool.IsPoolingEnabled = false;
+
 			if (page == null)
 				throw new ArgumentNullException(nameof(page));
 
