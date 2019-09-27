@@ -48,9 +48,10 @@
 								</Grid.RowDefinitions>
 
 								<Border x:Name="TopCommandBarArea" HorizontalAlignment="Stretch" Background="{TemplateBinding ToolbarBackground}">
-									<uwp:FormsCommandBar x:Name="CommandBar" Background="{TemplateBinding ToolbarBackground}" MinHeight="{ThemeResource TitleBarHeight}" HorizontalAlignment="Stretch">
+                                    <!-- Tag and TemplatedParent are to workaround for https://github.com/unoplatform/uno/issues/1621 -->
+                                    <uwp:FormsCommandBar x:Name="CommandBar" Tag="{TemplateBinding}"  Background="{TemplateBinding ToolbarBackground}" MinHeight="{ThemeResource TitleBarHeight}" HorizontalAlignment="Stretch">
 										<uwp:FormsCommandBar.Content>
-											<Border x:Name="TitleArea" Height="{ThemeResource TitleBarHeight}" Visibility="{TemplateBinding DetailTitleVisibility}" HorizontalAlignment="Stretch">
+											<Border x:Name="TitleArea" TemplatedParent="{TemplateBinding Tag}" Height="{ThemeResource TitleBarHeight}" Visibility="{TemplateBinding DetailTitleVisibility}" HorizontalAlignment="Stretch">
 												<Grid x:Name="TitleViewPresenter" VerticalAlignment="Center" Background="{TemplateBinding ToolbarBackground}" HorizontalAlignment="Stretch">
 
 													<Grid.ColumnDefinitions>
