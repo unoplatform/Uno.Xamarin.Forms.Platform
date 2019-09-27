@@ -70,9 +70,10 @@
 		</Border>
 	</ControlTemplate>
 
-	
-	
-	<Style x:Key="TabbedPageStyle" TargetType="uwp:FormsPivot">
+    <!-- UNO TODO : https://github.com/unoplatform/uno/issues/119 -->
+    <Style TargetType="uwp:FormsCommandBar" BasedOn="{StaticResource XamlCommandBar}" />
+
+    <Style x:Key="TabbedPageStyle" TargetType="uwp:FormsPivot">
 		<Setter Property="HeaderTemplate">
 			<Setter.Value>
 				<DataTemplate>
