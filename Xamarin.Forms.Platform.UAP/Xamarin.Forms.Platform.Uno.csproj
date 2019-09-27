@@ -57,8 +57,4 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /e/s/y &quot;$(OutDir)*.*&quot; C:\Users\jerome.laban\.nuget\packages\uno.xamarin.forms.platform\4.1.0-uno.110\lib\netstandard2.0" />
-  </Target>
-
 </Project>
