@@ -12,7 +12,7 @@
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="Tizen.NET.MaterialComponents" Version="0.9.7-preview" />
-    <PackageReference Include="Tizen.NET.Sdk" Version="1.0.1" />
+    <PackageReference Include="Tizen.NET.Sdk" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>
