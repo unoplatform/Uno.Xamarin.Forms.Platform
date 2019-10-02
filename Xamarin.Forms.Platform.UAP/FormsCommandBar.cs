@@ -19,6 +19,8 @@ namespace Xamarin.Forms.Platform.UWP
 			SecondaryCommands.VectorChanged += OnCommandsChanged;
 			UpdateVisibility();
 			WatchForContentChanges();
+
+			Loaded += (s, e) => SynchronizeTemplatedParent();
 		}
 
 		// Set by the container if the container is a valid place to show a toolbar.
@@ -41,6 +43,8 @@ namespace Xamarin.Forms.Platform.UWP
 
 			_moreButton = GetTemplateChild("MoreButton") as Windows.UI.Xaml.Controls.Button;
 			_primaryItemsControl = GetTemplateChild("PrimaryItemsControl") as Windows.UI.Xaml.Controls.ItemsControl;
+
+			SynchronizeTemplatedParent();
 		}
 
 		void OnCommandsChanged(IObservableVector<ICommandBarElement> sender, IVectorChangedEventArgs args)
