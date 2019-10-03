@@ -797,4 +797,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+
+    <!-- UNO TODO : https://github.com/unoplatform/uno/issues/119 -->
+    <Style TargetType="uwp:FormsCommandBar" BasedOn="{StaticResource XamlCommandBar}" />
+
 </ResourceDictionary>

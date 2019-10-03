@@ -70,9 +70,6 @@
 		</Border>
 	</ControlTemplate>
 
-    <!-- UNO TODO : https://github.com/unoplatform/uno/issues/119 -->
-    <Style TargetType="uwp:FormsCommandBar" BasedOn="{StaticResource XamlCommandBar}" />
-
     <Style x:Key="TabbedPageStyle" TargetType="uwp:FormsPivot">
 		<Setter Property="HeaderTemplate">
 			<Setter.Value>
@@ -139,9 +136,10 @@
 						</VisualStateManager.VisualStateGroups>
 
                         <Border x:Name="TopCommandBarArea" HorizontalAlignment="Stretch" Background="{TemplateBinding ToolbarBackground}">
-                            <uwp:FormsCommandBar x:Name="CommandBar" Background="{TemplateBinding ToolbarBackground}" MinHeight="{ThemeResource TitleBarHeight}">
+                            <!-- Tag and TemplatedParent are to workaround for https://github.com/unoplatform/uno/issues/1621 -->
+                            <uwp:FormsCommandBar x:Name="CommandBar" Tag="{TemplateBinding}"  Background="{TemplateBinding ToolbarBackground}" MinHeight="{ThemeResource TitleBarHeight}">
                                 <uwp:FormsCommandBar.Content>
-                                    <Border x:Name="TitleArea" Visibility="{TemplateBinding TitleVisibility}" Height="{ThemeResource TitleBarHeight}">
+                                    <Border x:Name="TitleArea" TemplatedParent="{TemplateBinding Tag}" Visibility="{TemplateBinding TitleVisibility}" Height="{ThemeResource TitleBarHeight}">
                                         <TextBlock Text="{TemplateBinding Title}" TextWrapping="NoWrap" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="{TemplateBinding ToolbarForeground}" Style="{ThemeResource TitleTextBlockStyle}" />
                                     </Border>
                                 </uwp:FormsCommandBar.Content>
