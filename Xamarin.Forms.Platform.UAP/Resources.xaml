@@ -218,14 +218,14 @@
     </DataTemplate>
 
 	<DataTemplate x:Key="ContainedPageTemplate">
-		<ContentPresenter win:Content="{Binding Converter={StaticResource PageToRenderer}}">
-			<ContentPresenter.Resources>
-				<win:Style TargetType="uwp:PageControl">
-					<Setter Property="Background" Value="Transparent" />
-				</win:Style>
-			</ContentPresenter.Resources>
-		</ContentPresenter>
-	</DataTemplate>
+        <ContentControl Content="{Binding Converter={StaticResource PageToRenderer}}">
+            <ContentPresenter.Resources>
+                <win:Style TargetType="uwp:PageControl">
+                    <Setter Property="Background" Value="Transparent" />
+                </win:Style>
+            </ContentPresenter.Resources>
+        </ContentControl>
+    </DataTemplate>
 
 	<DataTemplate x:Key="View">
 		<ContentControl Content="{Binding Converter={StaticResource ViewToRenderer}}" />

@@ -4,17 +4,34 @@ This repository is the home of the Uno.Xamarin.Forms.Platform package, which pro
 
 You can read about the Uno Platform https://platform.uno, and about Xamarin.Forms at https://www.xamarin.com/forms.
 
+![X.F for WebAssembly Samle](docs/20190917-xf-demo.gif)
+
 <img src="banner.png" alt="Xamarin.Forms banner" height="145" >
 
 ## Build Status ##
 
 [![Build Status](https://uno-platform.visualstudio.com/Uno%20Platform/_apis/build/status/Uno%20Platform/Uno.Xamarin.Forms%20-%20CI?branchName=uno)](https://uno-platform.visualstudio.com/Uno%20Platform/_build/latest?definitionId=12&branchName=uno)
 
-
 ## Getting Started ##
 
-- Require VS 2019 with asp.net web development and .Net Core cross-platform Workloads.
+- Require VS 2019 for Windows with ASP.NET Web Development and .NET Core cross-platform Workloads.
 
+1. Create a Xamarin.Forms project 
+    1. Check **Place project and solution in the same directory**
+    1. Check **Windows (UWP)**
+1. Using a **VS Developer Command Prompt**, navigate to the folder containing the solution
+1. Type the following to install the latest templates:
+    ```
+    dotnet new -i Uno.ProjectTemplates.Dotnet::1.46.230-dev.2723
+    ```
+1. Then type the following to create the new WebAssembly project:
+    ```
+    dotnet new wasmxfhead
+    ```
+1. Open or Reload the solution in Visual Studio 
+1. Set the Wasm project as the startup project 
+1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest experimental package 
+1. Run the app using **Ctrl+F5** (without the Visual Studio debugger), and you’re good to go!
 
 ## Building the renderers ##
 

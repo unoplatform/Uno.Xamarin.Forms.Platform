@@ -59,7 +59,10 @@ namespace Xamarin.Forms.Platform.UWP
 		}
 
 		internal Platform(Windows.UI.Xaml.Controls.Page page)
-		{
+		{ 
+			// Disable template pooling for unknown ContentPresenter issue
+			FrameworkTemplatePool.IsPoolingEnabled = false;
+
 			if (page == null)
 				throw new ArgumentNullException(nameof(page));
 
@@ -101,7 +104,11 @@ namespace Xamarin.Forms.Platform.UWP
 #if HAS_UNO
 			// The ActualWith/ActualHeight of _container are not yet known. We wait for a layout pass
 			// then we update the bounds.
-			var unused =_page.Dispatcher.RunAsync(CoreDispatcherPriority.High, () => UpdateBounds());
+			var unused = _page.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+			{
+				UpdateBounds();
+				UpdatePageSizes();
+			});
 #endif
 
 			InitializeStatusBar();

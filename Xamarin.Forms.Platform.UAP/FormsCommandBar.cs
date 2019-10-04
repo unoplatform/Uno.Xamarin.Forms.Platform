@@ -135,6 +135,15 @@ namespace Xamarin.Forms.Platform.UWP
 			BindingOperations.SetBinding(this, s_contentChangeWatcher, binding);
 		}
 
+		private void SynchronizeTemplatedParent()
+		{
+			// Workaround for https://github.com/unoplatform/uno/issues/1621
+			if (Content is FrameworkElement fe)
+			{
+				fe.TemplatedParent = TemplatedParent;
+			}
+		}
+
 		static readonly DependencyProperty s_contentChangeWatcher =
 			DependencyProperty.Register(
 				"ContentChangeWatcher",
@@ -146,5 +155,6 @@ namespace Xamarin.Forms.Platform.UWP
 		{
 			(d as FormsCommandBar)?.UpdateVisibility();
 		}
+
 	}
 }
