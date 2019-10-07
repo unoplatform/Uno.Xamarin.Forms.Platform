@@ -19,7 +19,7 @@
     <ProjectReference Include="..\Xamarin.Forms.Build.Tasks\Xamarin.Forms.Build.Tasks.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="2.6.4" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.0.31" />
   </ItemGroup>
   <ItemGroup>

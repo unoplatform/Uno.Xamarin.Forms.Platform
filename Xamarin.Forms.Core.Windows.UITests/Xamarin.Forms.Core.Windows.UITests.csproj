@@ -49,7 +49,7 @@
     <PackageReference Include="Castle.Core" Version="4.3.1" />
     <PackageReference Include="DotNetSeleniumExtras.PageObjects" Version="3.11.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NUnit" Version="2.6.4" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnitTestAdapter">
       <Version>2.1.1</Version>
     </PackageReference>
