@@ -4,11 +4,23 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 
+#if HAS_UNO
+using NavigationView = Windows.UI.Xaml.Controls.NavigationView;
+using NavigationViewBackButtonVisible = Windows.UI.Xaml.Controls.NavigationViewBackButtonVisible;
+using NavigationViewPaneDisplayMode = Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+using NavigationViewItemInvokedEventArgs = Windows.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
+#else
+using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
+using NavigationViewBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible;
+using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+using NavigationViewItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
+#endif
+
 namespace Xamarin.Forms.Platform.UWP
 {
 	// Renders the actual page area where the contents gets rendered, as well as set of optional top-bar menu items and search box.
 	[Windows.UI.Xaml.Data.Bindable]
-	public class ShellSectionRenderer : Microsoft.UI.Xaml.Controls.NavigationView, IAppearanceObserver
+	public class ShellSectionRenderer : NavigationView, IAppearanceObserver
 	{
 		Windows.UI.Xaml.Controls.Frame Frame { get; }
 		Page Page;
@@ -19,10 +31,10 @@ namespace Xamarin.Forms.Platform.UWP
 		{
 			Xamarin.Forms.Shell.VerifyShellUWPFlagEnabled(nameof(ShellSectionRenderer));
 			MenuItemTemplate = (Windows.UI.Xaml.DataTemplate)Windows.UI.Xaml.Application.Current.Resources["ShellSectionMenuItemTemplate"];
-			IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed;
+			IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed;
 			IsSettingsVisible = false;
 			AlwaysShowHeader = false;
-			PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Top;
+			PaneDisplayMode = NavigationViewPaneDisplayMode.Top;
 			ItemInvoked += MenuItemInvoked;
 
 			AutoSuggestBox = new Windows.UI.Xaml.Controls.AutoSuggestBox() { Width = 300 };
@@ -44,7 +56,7 @@ namespace Xamarin.Forms.Platform.UWP
 			Page.ContainerArea = new Rectangle(0, 0, e.NewSize.Width, e.NewSize.Height);
 		}
 
-		void MenuItemInvoked(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs args)
+		void MenuItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
 		{
 			var shellContent = args.InvokedItemContainer?.DataContext as ShellContent;
 			var shellItem = ShellSection.RealParent as ShellItem;
@@ -138,7 +150,7 @@ namespace Xamarin.Forms.Platform.UWP
 			}
 		}
 
-		#region Search
+#region Search
 
 		SearchHandler _currentSearchHandler;
 
@@ -243,9 +255,9 @@ namespace Xamarin.Forms.Platform.UWP
 			((ISearchHandlerController)_currentSearchHandler).QueryConfirmed();
 		}
 
-		#endregion Search
+#endregion Search
 
-		#region IAppearanceObserver
+#region IAppearanceObserver
 
 		void IAppearanceObserver.OnAppearanceChanged(ShellAppearance appearance) => UpdateAppearance(appearance);
 
@@ -272,6 +284,6 @@ namespace Xamarin.Forms.Platform.UWP
 				sb.Color = color;
 		}
 
-		#endregion
+#endregion
 	}
 }

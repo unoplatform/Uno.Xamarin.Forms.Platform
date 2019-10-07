@@ -7,12 +7,14 @@
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 		<NoWarn>NU1701,Uno0001</NoWarn>
     <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+    <WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
   </PropertyGroup>
 
 	<ItemGroup>
 		<Content Include="..\Xamarin.Forms.ControlGallery.Uno.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
 		<Content Include="Fonts\winjs-symbols.woff2" />
-	</ItemGroup>
+    <Content Include="..\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared\scale-200\*.png" Link="%(FileName)%(Extension)" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="WasmCSS\Fonts.css" />
@@ -32,10 +34,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.819712-pre2" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.851321-pre3" ExcludeAssets="build" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-		<PackageReference Include="Uno.UI" Version="2.0.258-dev.2887" />
+		<PackageReference Include="Uno.UI" Version="2.0.269-dev.2966" />
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.300" />
     <DotNetCliToolReference Include="Uno.Wasm.Bootstrap.CLI" Version="1.0.0-dev.300" />
   </ItemGroup>

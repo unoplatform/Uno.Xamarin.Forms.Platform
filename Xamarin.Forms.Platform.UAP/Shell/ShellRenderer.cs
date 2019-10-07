@@ -6,10 +6,22 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
+#if HAS_UNO
+using NavigationView = Windows.UI.Xaml.Controls.NavigationView;
+using NavigationViewBackButtonVisible = Windows.UI.Xaml.Controls.NavigationViewBackButtonVisible;
+using NavigationViewPaneDisplayMode = Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+using NavigationViewItemInvokedEventArgs = Windows.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
+#else
+using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
+using NavigationViewBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible;
+using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+using NavigationViewItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
+#endif
+
 namespace Xamarin.Forms.Platform.UWP
 {
 	[Windows.UI.Xaml.Data.Bindable]
-	public class ShellRenderer : Microsoft.UI.Xaml.Controls.NavigationView, IVisualElementRenderer, IAppearanceObserver, IFlyoutBehaviorObserver
+	public class ShellRenderer : NavigationView, IVisualElementRenderer, IAppearanceObserver, IFlyoutBehaviorObserver
 	{
 		internal static readonly Windows.UI.Color DefaultBackgroundColor = Windows.UI.Color.FromArgb(255, 3, 169, 244);
 		internal static readonly Windows.UI.Color DefaultForegroundColor = Windows.UI.Colors.White;
@@ -24,9 +36,9 @@ namespace Xamarin.Forms.Platform.UWP
 		{
 			Xamarin.Forms.Shell.VerifyShellUWPFlagEnabled(nameof(ShellRenderer));
 			IsBackEnabled = false;
-			IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed;
+			IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed;
 			IsSettingsVisible = false;
-			PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal;
+			PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
 			IsPaneOpen = false;
 			Content = ItemRenderer = CreateShellItemRenderer();
 			MenuItemTemplateSelector = CreateShellFlyoutTemplateSelector();
@@ -60,7 +72,7 @@ namespace Xamarin.Forms.Platform.UWP
 			UpdatePaneButtonColor(NavigationViewBackButton, true);
 		}
 
-		void OnMenuItemInvoked(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs args)
+		void OnMenuItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
 		{
 			var item = args.InvokedItemContainer?.DataContext as Element;
 			if (item != null)
@@ -102,7 +114,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 		public UIElement GetNativeElement() => null;
 
-		public void Dispose()
+		public new void Dispose()
 		{
 			SetElement(null);
 		}
@@ -190,7 +202,7 @@ namespace Xamarin.Forms.Platform.UWP
 			if (toggleButton != null)
 			{
 				var titleBar = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().TitleBar;
-				if (overrideColor)
+				if (overrideColor && titleBar.ButtonForegroundColor != null)
 					toggleButton.Foreground = new SolidColorBrush(titleBar.ButtonForegroundColor.Value);
 				else
 					toggleButton.ClearValue(Control.ForegroundProperty);
@@ -227,7 +239,7 @@ namespace Xamarin.Forms.Platform.UWP
 				case FlyoutBehavior.Disabled:
 					IsPaneToggleButtonVisible = false;
 					IsPaneVisible = false;
-					PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal;
+					PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
 					IsPaneOpen = false;
 					break;
 
@@ -235,14 +247,14 @@ namespace Xamarin.Forms.Platform.UWP
 					IsPaneVisible = true;
 					IsPaneToggleButtonVisible = true;
 					bool shouldOpen = Shell.FlyoutIsPresented;
-					PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal; //This will trigger opening the flyout
+					PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal; //This will trigger opening the flyout
 					IsPaneOpen = shouldOpen;
 					break;
 
 				case FlyoutBehavior.Locked:
 					IsPaneVisible = true;
 					IsPaneToggleButtonVisible = false;
-					PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Left;
+					PaneDisplayMode = NavigationViewPaneDisplayMode.Left;
 					break;
 			}
 		}

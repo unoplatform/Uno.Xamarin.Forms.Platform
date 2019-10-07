@@ -18,7 +18,7 @@ using System.Collections.Specialized;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public partial abstract class ItemsViewRenderer : ViewRenderer<ItemsView, ListViewBase>
+	public abstract partial class ItemsViewRenderer : ViewRenderer<ItemsView, ListViewBase>
 	{
 		protected CollectionViewSource CollectionViewSource;
 

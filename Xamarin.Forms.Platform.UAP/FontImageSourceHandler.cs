@@ -53,9 +53,10 @@ namespace Xamarin.Forms.Platform.UWP
 			}
 #else
             return null;
-#endif		}
+#endif		
+		}
 
-            public Task<IconElement> LoadIconElementAsync(ImageSource imagesource, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IconElement> LoadIconElementAsync(ImageSource imagesource, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			IconElement image = null;
 

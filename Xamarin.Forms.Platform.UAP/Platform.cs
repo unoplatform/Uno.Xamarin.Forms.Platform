@@ -357,7 +357,7 @@ namespace Xamarin.Forms.Platform.UWP
 				if (error.HResult == -2147417842)
 					throw new InvalidOperationException("Changing the current page is only allowed if it's being called from the same UI thread." +
 						"Please ensure that the new page is in the same UI thread as the current page.");
-				throw error;
+				throw;
 			}
 		}
 

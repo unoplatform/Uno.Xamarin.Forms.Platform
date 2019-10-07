@@ -106,7 +106,7 @@ namespace Xamarin.Forms.Platform.UWP
 				inset += 45;
 			if (Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent("Controls.NavigationView", "IsBackButtonVisible"))
 			{
-				if (ShellContext.IsBackButtonVisible != Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed)
+				if (ShellContext.IsBackButtonVisible != NavigationViewBackButtonVisible.Collapsed)
 					inset += 45;
 			}
 			_HeaderArea.Padding = new UwpThickness(inset, 0, 0, 0);
