@@ -33,7 +33,7 @@ namespace Xamarin.Forms.Controls.Issues
 			};
 		}
 
-#if UITEST
+#if UITEST && !__WASM__
 		[Test]
 #if __MACOS__
 		[Ignore("EnterText problems in UITest Desktop")]

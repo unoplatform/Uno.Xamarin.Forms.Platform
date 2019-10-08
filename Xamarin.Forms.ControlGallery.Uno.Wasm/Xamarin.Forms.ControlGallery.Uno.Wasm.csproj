@@ -8,6 +8,7 @@
 		<NoWarn>NU1701,Uno0001</NoWarn>
     <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
     <WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+    <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -37,8 +38,8 @@
     <PackageReference Include="Xamarin.Forms" Version="4.3.0.851321-pre3" ExcludeAssets="build" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-		<PackageReference Include="Uno.UI" Version="2.0.269-dev.2966" />
-    <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.300" />
+		<PackageReference Include="Uno.UI" Version="2.0.512-dev.3409" />
+    <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.302" />
     <DotNetCliToolReference Include="Uno.Wasm.Bootstrap.CLI" Version="1.0.0-dev.300" />
   </ItemGroup>
   

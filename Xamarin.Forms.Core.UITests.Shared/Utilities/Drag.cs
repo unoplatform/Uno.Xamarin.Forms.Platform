@@ -1,5 +1,10 @@
 using Xamarin.UITest.Queries;
 
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+using AppQuery = Uno.UITest.IAppQuery;
+#endif
+
 namespace Xamarin.Forms.Core.UITests
 {
 	internal class Drag

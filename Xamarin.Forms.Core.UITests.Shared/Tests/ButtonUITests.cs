@@ -123,6 +123,9 @@ namespace Xamarin.Forms.Core.UITests
 			Assert.True (isBold);
 #elif __MACOS__
 			Assert.Inconclusive("needs testing");
+#elif __WASM__
+			var isBold = remote.GetProperty<string>(Button.FontProperty);
+			Assert.AreEqual("Bold", isBold);
 #else
 			var font = remote.GetProperty<Font>(Button.FontProperty);
 			Assert.True(font.FontAttributes.HasFlag(FontAttributes.Bold));

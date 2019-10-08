@@ -32,7 +32,7 @@ namespace Xamarin.Forms.Controls.Issues
 			};
 		}
 
-#if UITEST
+#if UITEST && !__WASM__
 		[Test]
 		public void Issue2499Test()
 		{

@@ -1,4 +1,4 @@
-#if UITEST
+#if UITEST && !__WASM__
 using System;
 using System.IO;
 using Xamarin.UITest;

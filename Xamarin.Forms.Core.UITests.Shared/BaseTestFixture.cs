@@ -5,6 +5,10 @@ using Xamarin.Forms.Controls;
 using Xamarin.UITest;
 using Xamarin.UITest.Queries;
 
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+#endif
+
 namespace Xamarin.Forms.Core.UITests
 {
 	internal abstract class BaseTestFixture
@@ -51,6 +55,7 @@ namespace Xamarin.Forms.Core.UITests
 		[TearDown]
 		protected virtual void TestTearDown()
 		{
+			App.Screenshot($"{TestContext.CurrentContext.Test.Name} - Final");
 		}
 
 		protected abstract void NavigateToGallery();

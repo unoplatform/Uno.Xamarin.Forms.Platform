@@ -7,6 +7,12 @@ using Xamarin.UITest.Queries;
 using Xamarin.Forms.Core.UITests;
 #endif
 
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+using AppQuery = Uno.UITest.IAppQuery;
+using AppResult = Uno.UITest.IAppResult;
+#endif
+
 namespace Xamarin.Forms.Controls.Issues
 {
 #if UITEST

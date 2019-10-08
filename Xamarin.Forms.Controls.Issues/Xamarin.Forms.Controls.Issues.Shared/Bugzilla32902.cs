@@ -9,6 +9,10 @@ using Xamarin.UITest;
 using NUnit.Framework;
 #endif
 
+#if __WASM__
+using ScrollStrategy = Uno.UITest.ScrollStrategy;
+#endif
+
 namespace Xamarin.Forms.Controls.Issues
 {
 	[Preserve (AllMembers = true)]
@@ -111,7 +115,7 @@ namespace Xamarin.Forms.Controls.Issues
 
 		}
 
-#if UITEST
+#if UITEST && !__WASM__
 		[Test]
 		public void Bugzilla32902Test ()
 		{

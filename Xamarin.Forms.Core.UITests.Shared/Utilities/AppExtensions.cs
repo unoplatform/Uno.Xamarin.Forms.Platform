@@ -10,6 +10,12 @@ using Xamarin.Forms.Controls.Issues;
 using Xamarin.UITest.iOS;
 #endif
 
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+using AppQuery = Uno.UITest.IAppQuery;
+using AppResult = Uno.UITest.IAppResult;
+#endif
+
 namespace Xamarin.UITest
 {
 	internal static class AppExtensions
