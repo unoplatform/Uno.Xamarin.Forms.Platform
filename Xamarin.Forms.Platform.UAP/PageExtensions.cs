@@ -68,11 +68,15 @@ namespace Xamarin.Forms.Platform.UWP
 
 			var frameworkElement = renderer.ContainerElement;
 
-			frameworkElement.Loaded += (sender, args) =>
-			{
-				visualElement.Layout(new Rectangle(0, 0, frameworkElement.ActualWidth, frameworkElement.ActualHeight));
-			};
+			void UpdateLayout() 
+				=> visualElement.Layout(new Rectangle(0, 0, frameworkElement.ActualWidth, frameworkElement.ActualHeight));
 
+			frameworkElement.Loaded += (sender, args) => UpdateLayout();
+			
+			// Workaround for Uno's Loaded event being raised before
+			// ActualWidth and ActualHeight are being set.
+			frameworkElement.SizeChanged += (s, e) => UpdateLayout();
+			
 			return frameworkElement;
 		}
 
