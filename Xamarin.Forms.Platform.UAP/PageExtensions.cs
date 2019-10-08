@@ -72,9 +72,12 @@ namespace Xamarin.Forms.Platform.UWP
 				=> visualElement.Layout(new Rectangle(0, 0, frameworkElement.ActualWidth, frameworkElement.ActualHeight));
 
 			frameworkElement.Loaded += (sender, args) => UpdateLayout();
-			
+
 			// Workaround for Uno's Loaded event being raised before
 			// ActualWidth and ActualHeight are being set.
+			// This is required to get the X.F Shell to work properly.
+			//
+			// See https://github.com/unoplatform/uno/issues/1763 for more details.
 			frameworkElement.SizeChanged += (s, e) => UpdateLayout();
 			
 			return frameworkElement;
