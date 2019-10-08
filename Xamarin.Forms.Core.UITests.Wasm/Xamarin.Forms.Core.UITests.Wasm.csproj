@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net47</TargetFramework>
+    <DefineConstants>UITEST;__WASM__</DefineConstants>
+    <AssemblyName>Xamarin.Forms.Core.iOS.UITests</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="Uno.UITest" Version="1.0.0-dev.80" />
+    <PackageReference Include="Uno.UITest.Selenium" Version="1.0.0-dev.80" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.851321-pre3" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="4.3.0.851321-pre3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xamarin.Forms.CustomAttributes\Xamarin.Forms.CustomAttributes.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\Xamarin.Forms.Core.UITests.Shared\Xamarin.Forms.Core.UITests.projitems" Label="Shared" />
+
+  <Import Project="..\Xamarin.Forms.Controls.Issues\Xamarin.Forms.Controls.Issues.Shared\Xamarin.Forms.Controls.Issues.Shared.projitems" Label="Shared" />
+
+</Project>

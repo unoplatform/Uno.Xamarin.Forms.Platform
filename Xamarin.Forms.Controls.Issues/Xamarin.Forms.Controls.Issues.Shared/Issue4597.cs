@@ -9,8 +9,14 @@ using System.Threading;
 
 #if UITEST
 using Xamarin.UITest;
+using Xamarin.UITest.Queries;
 using NUnit.Framework;
 using Xamarin.Forms.Core.UITests;
+#endif
+
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+using AppResult = Uno.UITest.IAppResult;
 #endif
 
 namespace Xamarin.Forms.Controls.Issues
@@ -171,7 +177,7 @@ namespace Xamarin.Forms.Controls.Issues
 		}
 #if UITEST
 
-#if !__WINDOWS__
+#if !__WINDOWS__ && !__WASM__
 		[Test]
 		public void ImageFromFileSourceAppearsAndDisappearsCorrectly()
 		{
@@ -259,7 +265,7 @@ namespace Xamarin.Forms.Controls.Issues
 			RunningApp.WaitForElement(_appearText);
 		}
 
-		UITest.Queries.AppResult TestForImageVisible()
+		AppResult TestForImageVisible()
 		{
 			var images = RunningApp.QueryUntilPresent(() =>
 			{
@@ -279,7 +285,7 @@ namespace Xamarin.Forms.Controls.Issues
 			return imageVisible;
 		}
 
-		void TestForImageNotVisible(UITest.Queries.AppResult previousFinding)
+		void TestForImageNotVisible(AppResult previousFinding)
 		{
 			var imageVisible = RunningApp.Query(_fileNameAutomationId);
 

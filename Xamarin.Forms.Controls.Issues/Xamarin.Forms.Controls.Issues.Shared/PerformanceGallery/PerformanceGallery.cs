@@ -48,6 +48,7 @@ namespace Xamarin.Forms.Controls.Issues
 		{
 			_BuildInfo = GetBuildNumber();
 
+#if !__WASM__
 			_DeviceIdentifier = CrossDeviceInfo.Current.Id;
 			_DeviceIdiom = CrossDeviceInfo.Current.Idiom.ToString();
 			_DeviceModel = CrossDeviceInfo.Current.Model;
@@ -57,6 +58,13 @@ namespace Xamarin.Forms.Controls.Issues
 			_DevicePlatform = CrossDeviceInfo.Current.Platform.ToString();
 #endif
 			_DeviceVersionNumber = CrossDeviceInfo.Current.VersionNumber.ToString();
+#else
+			_DeviceIdentifier = "";
+			_DeviceIdiom = "";
+			_DeviceModel = "";
+			_DevicePlatform = _DeviceModel;
+			_DeviceVersionNumber = "";
+#endif
 
 			MessagingCenter.Subscribe<PerformanceTracker>(this, PerformanceTracker.RenderCompleteMessage, HandleRenderComplete);
 

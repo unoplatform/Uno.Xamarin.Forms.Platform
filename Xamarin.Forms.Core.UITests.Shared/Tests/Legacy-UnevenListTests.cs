@@ -31,8 +31,12 @@ namespace Xamarin.Forms.Core.UITests
 
 		public static bool ShouldRunTest(IApp app)
 		{
+#if __WASM__
+			return false;
+#else
 			var appAs = app as iOSApp;
 			return (appAs != null && appAs.Device.IsPhone);
+#endif
 		}
 	}
 }

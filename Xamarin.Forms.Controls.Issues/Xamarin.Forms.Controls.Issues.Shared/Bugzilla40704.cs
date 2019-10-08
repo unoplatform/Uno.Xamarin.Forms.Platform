@@ -222,7 +222,7 @@ namespace Xamarin.Forms.Controls.Issues
 		}
 
 
-#if UITEST
+#if UITEST && ! __WASM__
 		[Test]
 		public void Bugzilla40704HeaderPresentTest()
 		{

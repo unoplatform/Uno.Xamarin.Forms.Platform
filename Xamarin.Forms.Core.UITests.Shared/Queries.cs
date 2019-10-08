@@ -9,6 +9,11 @@ using System.Threading.Tasks;
 using Xamarin.UITest;
 using Xamarin.UITest.Queries;
 
+#if __WASM__
+using AppQuery = Uno.UITest.IAppQuery;
+using AppRect = Uno.UITest.IAppRect;
+#endif
+
 namespace Xamarin.Forms.Core.UITests
 {
 	internal static class GalleryQueries

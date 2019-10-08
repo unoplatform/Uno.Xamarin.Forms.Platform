@@ -1,4 +1,9 @@
 ﻿using NUnit.Framework;
+using Xamarin.UITest.Queries;
+
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+#endif
 
 namespace Xamarin.Forms.Core.UITests
 {
@@ -185,7 +190,7 @@ namespace Xamarin.Forms.Core.UITests
 			//let's test the update
 			if (testItemSource)
 			{
-				UITest.Queries.AppRect collectionViewFrame = TestItemsExist(scrollDown, lastItem);
+				AppRect collectionViewFrame = TestItemsExist(scrollDown, lastItem);
 				TestUpdateItemsWorks(scrollDown, firstPageItem, updateItemsCount.ToString(), collectionViewFrame);
 			}
 
@@ -216,7 +221,7 @@ namespace Xamarin.Forms.Core.UITests
 			App.WaitForElement(_replaced);
 		}
 
-		void TestUpdateItemsWorks(bool scrollDown, string itemMarked, string updateItemsCount, UITest.Queries.AppRect collectionViewFrame)
+		void TestUpdateItemsWorks(bool scrollDown, string itemMarked, string updateItemsCount, AppRect collectionViewFrame)
 		{
 			App.WaitForElement(t => t.Marked(_entryUpdate));
 			App.ScrollForElement($"* marked:'{itemMarked}'", new Drag(collectionViewFrame, scrollDown ? Drag.Direction.TopToBottom : Drag.Direction.LeftToRight, Drag.DragLength.Long), 50);
@@ -228,7 +233,7 @@ namespace Xamarin.Forms.Core.UITests
 			App.WaitForNoElement(t => t.Marked(itemMarked));
 		}
 
-		UITest.Queries.AppRect TestItemsExist(bool scrollDown, string itemMarked)
+		AppRect TestItemsExist(bool scrollDown, string itemMarked)
 		{
 			App.WaitForElement(t => t.Marked(_btnUpdate));
 

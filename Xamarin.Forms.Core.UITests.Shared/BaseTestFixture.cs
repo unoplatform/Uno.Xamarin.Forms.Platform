@@ -5,6 +5,10 @@ using Xamarin.Forms.Controls;
 using Xamarin.UITest;
 using Xamarin.UITest.Queries;
 
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+#endif
+
 namespace Xamarin.Forms.Core.UITests
 {
 	internal abstract class BaseTestFixture

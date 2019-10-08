@@ -7,6 +7,10 @@ using NUnit.Framework;
 using Xamarin.Forms.Core.UITests;
 #endif
 
+#if __WASM__
+using ScrollStrategy = Uno.UITest.ScrollStrategy;
+#endif
+
 namespace Xamarin.Forms.Controls.Issues
 {
 #if UITEST

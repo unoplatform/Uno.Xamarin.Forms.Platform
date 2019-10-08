@@ -92,7 +92,7 @@ namespace Xamarin.Forms.Controls.Issues
 			};
 		}
 
-#if UITEST
+#if UITEST && !__WASM__
 		[Test]
 #if __MACOS__
 		[Ignore("Webview query is not implemented yet on UITEst desktop")]

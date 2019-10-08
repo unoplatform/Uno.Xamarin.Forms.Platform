@@ -54,8 +54,12 @@ namespace Xamarin.Forms.Controls
 			if (app == null)
 				throw new NullReferenceException("App was not initialized.");
 
+#if __WASM__
+			return new AppWrapper(Uno.UITests.Helpers.AppInitializer.AttachToApp());
+#else
 			// Wrap the app in ScreenshotConditional so it only takes screenshots if the SCREENSHOTS symbol is specified
 			return new ScreenshotConditionalApp(app);
+#endif
 		}
 
 #if __ANDROID__
@@ -246,6 +250,7 @@ namespace Xamarin.Forms.Controls
 		{
 			if (RunningApp != null)
 			{
+#if !__WASM__
 				try
 				{
 					RunningApp.TestServer.Get("version");
@@ -254,6 +259,7 @@ namespace Xamarin.Forms.Controls
 				catch
 				{
 				}
+#endif
 
 				RunningApp = InitializeApp();
 			}

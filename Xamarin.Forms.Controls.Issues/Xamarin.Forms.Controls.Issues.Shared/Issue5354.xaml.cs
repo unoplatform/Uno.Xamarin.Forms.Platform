@@ -5,6 +5,12 @@ using System;
 using Xamarin.Forms.Xaml;
 using System.Collections.Generic;
 
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+using AppQuery = Uno.UITest.IAppQuery;
+using AppResult = Uno.UITest.IAppResult;
+#endif
+
 #if UITEST
 using Xamarin.UITest;
 using Xamarin.UITest.Queries;

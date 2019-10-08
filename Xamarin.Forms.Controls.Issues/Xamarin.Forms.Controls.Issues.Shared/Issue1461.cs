@@ -15,7 +15,7 @@ using Xamarin.UITest.iOS;
 namespace Xamarin.Forms.Controls.Issues
 {
 
-#if UITEST
+#if UITEST && !__WASM__
 	public static class Issue1461Helpers
 	{
 		public static bool ShouldRunTest (IApp app)
