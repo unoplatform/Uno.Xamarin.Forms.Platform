@@ -275,7 +275,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Android.Support.Animated.Vector.Drawable" Version="28.0.0.1" />
-    <PackageReference Include="Xamarin.Android.Support.Annotations" Version="28.0.0.1" />
+    <PackageReference Include="Xamarin.Android.Support.Annotations" Version="28.0.0.3" />
     <PackageReference Include="Xamarin.Android.Support.Compat" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Android.Support.Core.UI" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Android.Support.Core.Utils" Version="28.0.0.1" />
