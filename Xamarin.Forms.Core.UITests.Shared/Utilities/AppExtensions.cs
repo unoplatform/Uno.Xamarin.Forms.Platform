@@ -85,7 +85,12 @@ namespace Xamarin.Forms.Core.UITests
 		{
 			const string goToTestButtonQuery = "* marked:'GoToTestButton'";
 
-			app.WaitForElement(q => q.Raw(goToTestButtonQuery), "Timed out waiting for Go To Test button to appear", TimeSpan.FromMinutes(2));
+#if __WASM__
+			var baseTimeout = TimeSpan.FromSeconds(30);
+#else
+			var baseTimeout = TimeSpan.FromMinutes(2);
+#endif
+			app.WaitForElement(q => q.Raw(goToTestButtonQuery), "Timed out waiting for Go To Test button to appear", baseTimeout);
 
 			var text = Regex.Match(page, "'(?<text>[^']*)'").Groups["text"].Value;
 
@@ -104,7 +109,7 @@ namespace Xamarin.Forms.Core.UITests
 				app.Tap(q => q.Raw(goToTestButtonQuery));
 			}
 
-			app.WaitForNoElement(o => o.Raw(goToTestButtonQuery), "Timed out waiting for Go To Test button to disappear", TimeSpan.FromMinutes(2));
+			app.WaitForNoElement(o => o.Raw(goToTestButtonQuery), "Timed out waiting for Go To Test button to disappear", baseTimeout);
 		}
 
 
