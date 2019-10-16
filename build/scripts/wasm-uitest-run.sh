@@ -9,7 +9,7 @@ cd $BUILD_SOURCESDIRECTORY/build
 
 npm i chromedriver@74.0.0
 npm i puppeteer@1.13.0
-mono nuget.exe install NUnit.ConsoleRunner -Version 3.10.0
+mono NuGet.exe install NUnit.ConsoleRunner -Version 3.10.0
 
 export UNO_UITEST_TARGETURI=http://localhost:8000
 export UNO_UITEST_DRIVERPATH_CHROME=$BUILD_SOURCESDIRECTORY/build/node_modules/chromedriver/lib/chromedriver
