@@ -119,7 +119,11 @@ namespace Uno.UITests.Helpers
 				else
 				{
 					configurator = configurator
-						.Headless(true);
+						.Headless(true)
+						// Workaround for :
+						//   ERROR:browser_process_sub_thread.cc(210)] Waited 5 ms for network service
+						//
+						.SeleniumArgument("--disable-features=NetworkService");
 				}
 
 				_currentApp = configurator.ScreenShotsPath(TestContext.CurrentContext.TestDirectory)
