@@ -182,11 +182,26 @@ namespace Xamarin.Forms.Core.UITests
 						MaybeGetProperty<float>(App, query, propertyPath, out prop) ||
 						MaybeGetProperty<bool>(App, query, propertyPath, out prop) ||
 						MaybeGetProperty<object>(App, query, propertyPath, out prop);
-			
+
 #if __MACOS__
 			if (!found)
 			{
 				found = CheckOtherProperties(App, formProperty, query, out prop);
+			}
+#endif
+#if __WASM__
+			if (!found)
+			{
+				var queryResult = App.Query(q => q
+					.Raw(query)
+					.Invoke("Uno.UI.WindowManager.current.GetDependencyPropertyValue", propertyPath.First())
+					.Value<object>());
+
+				if (queryResult.Any())
+				{
+					found = true;
+					prop = queryResult.First();
+				}
 			}
 #endif
 

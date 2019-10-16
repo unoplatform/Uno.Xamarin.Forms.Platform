@@ -116,6 +116,9 @@ namespace Xamarin.Forms.Core.UITests
 		{
 #if __WINDOWS__
 			return app.Query(WinDriverApp.AppName)[0].Rect;
+#elif __WASM__
+			app.WaitForElement("ScrollContentPresenter");
+			return app.Query(q => q.Marked("ScrollContentPresenter"))[0].Rect;
 #else
 			return app.Query(q => q.Raw("* index:0"))[0].Rect;
 #endif

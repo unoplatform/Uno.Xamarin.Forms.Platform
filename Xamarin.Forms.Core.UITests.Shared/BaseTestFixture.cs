@@ -55,6 +55,7 @@ namespace Xamarin.Forms.Core.UITests
 		[TearDown]
 		protected virtual void TestTearDown()
 		{
+			App.Screenshot($"{TestContext.CurrentContext.Test.Name} - Final");
 		}
 
 		protected abstract void NavigateToGallery();

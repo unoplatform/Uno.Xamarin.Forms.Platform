@@ -49,7 +49,15 @@ namespace Xamarin.Forms.Controls
 		public IAppWebResult[] Query(Func<IAppQuery, IAppWebQuery> query) => app.Query(query);
 		public T[] Query<T>(Func<IAppQuery, IAppTypedSelector<T>> query) => app.Query<T>(query);
 		public void Repl() => app.Repl();
-		public FileInfo Screenshot(string title) => app.Screenshot(title);
+		public FileInfo Screenshot(string title)
+		{
+			var file = app.Screenshot(title);
+
+			NUnit.Framework.TestContext.AddTestAttachment(file.FullName, title);
+
+			return file;
+		}
+
 		public void ScrollDown(string withinMarked, ScrollStrategy strategy = ScrollStrategy.Auto, double swipePercentage = 0.67, int swipeSpeed = 500, bool withInertia = true)
 			=> app.ScrollDown(withinMarked, strategy, swipeSpeed, swipeSpeed, withInertia);
 		public void ScrollDown(Func<IAppQuery, IAppQuery> withinQuery = null, ScrollStrategy strategy = ScrollStrategy.Auto, double swipePercentage = 0.67, int swipeSpeed = 500, bool withInertia = true)

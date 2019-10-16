@@ -32,7 +32,7 @@ namespace Xamarin.Forms.Core.UITests
 			{ View.ScaleProperty, Tuple.Create (new[] { "layer", "transform" }, true) },
 		};
 
-#elif __ANDROID__ || __WINDOWS__ || __WASM__
+#elif __ANDROID__ || __WINDOWS__
 		public static readonly Dictionary<BindableProperty, Tuple<string[], bool>> PropertyPlatformMethodDictionary = new Dictionary
 			<BindableProperty, Tuple<string[], bool>>
 			{
@@ -53,6 +53,32 @@ namespace Xamarin.Forms.Core.UITests
 				{ View.BackgroundColorProperty, Tuple.Create(new[] { "getBackground", "getColor" }, true) },
 				{ View.IsEnabledProperty, Tuple.Create(new[] { "isEnabled" }, false) },
 				{ View.OpacityProperty, Tuple.Create(new[] { "getAlpha" }, true) },
+				{ View.RotationProperty, Tuple.Create(new[] { "getRotation" }, true) },
+				{ View.RotationXProperty, Tuple.Create(new[] { "getRotationX" }, true) },
+				{ View.RotationYProperty, Tuple.Create(new[] { "getRotationY" }, true) },
+				{ View.ScaleProperty, Tuple.Create(new[] { "getScaleX", "getScaleY" }, true) },
+			};
+#elif __WASM__
+		public static readonly Dictionary<BindableProperty, Tuple<string[], bool>> PropertyPlatformMethodDictionary = new Dictionary
+			<BindableProperty, Tuple<string[], bool>>
+			{
+				{ ActivityIndicator.ColorProperty, Tuple.Create(new[] { "getProgressDrawable", "getColor" }, false) },
+				{ ActivityIndicator.IsRunningProperty, Tuple.Create(new[] { "isIndeterminate" }, false) },
+				{ BorderElement.BorderColorProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ Button.CornerRadiusProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ Button.BorderWidthProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ Button.ImageSourceProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ Button.FontProperty, Tuple.Create(new[] { "FontWeight" }, false) },
+				{ Button.TextProperty, Tuple.Create(new[] { "Content" }, false) },
+				{ Button.TextColorProperty, Tuple.Create(new[] { "Foreground" }, false) },
+				{ ImageButton.CornerRadiusProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ ImageButton.BorderWidthProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ ImageButton.SourceProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ View.AnchorXProperty, Tuple.Create(new[] { "getPivotX" }, true) },
+				{ View.AnchorYProperty, Tuple.Create(new[] { "getPivotY" }, true) },
+				{ View.BackgroundColorProperty, Tuple.Create(new[] { "getBackground", "getColor" }, true) },
+				{ View.IsEnabledProperty, Tuple.Create(new[] { "IsEnabled" }, false) },
+				{ View.OpacityProperty, Tuple.Create(new[] { "Opacity" }, true) },
 				{ View.RotationProperty, Tuple.Create(new[] { "getRotation" }, true) },
 				{ View.RotationXProperty, Tuple.Create(new[] { "getRotationX" }, true) },
 				{ View.RotationYProperty, Tuple.Create(new[] { "getRotationY" }, true) },
