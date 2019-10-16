@@ -92,7 +92,7 @@ jobs:
     inputs:
       testRunTitle: 'WebAssembly Test Run'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/scripts/TestResult.xml'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
 
   - task: PublishBuildArtifacts@1
     condition: always()
