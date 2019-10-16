@@ -5,7 +5,7 @@ cd $BUILD_SOURCESDIRECTORY
 msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/Xamarin.Forms.ControlGallery.Uno.Wasm/Xamarin.Forms.ControlGallery.Uno.Wasm.csproj
 msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/Xamarin.Forms.Core.UITests.Wasm/Xamarin.Forms.Core.UITests.Wasm.csproj
 
-cd $BUILD_SOURCESDIRECTORY/build/scripts
+cd $BUILD_SOURCESDIRECTORY/build
 
 npm i chromedriver@74.0.0
 npm i puppeteer@1.13.0
@@ -23,4 +23,5 @@ mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 ## The python server serves the current working directory, and may be changed by the nunit runner
 bash -c "cd $BUILD_SOURCESDIRECTORY/Xamarin.Forms.ControlGallery.Uno.Wasm/bin/Release/netstandard2.0/dist/; python server.py &"
 
-mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --trace=Verbose --inprocess --agents=1 --workers=1 $BUILD_SOURCESDIRECTORY/Xamarin.Forms.Core.UITests.Wasm/obj/Release/net47/Xamarin.Forms.Core.iOS.UITests.dll
+cd $BUILD_SOURCESDIRECTORY/Xamarin.Forms.Core.UITests.Wasm/obj/Release/net47/
+mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --trace=Verbose --inprocess --agents=1 --workers=1 Xamarin.Forms.Core.iOS.UITests.dll
