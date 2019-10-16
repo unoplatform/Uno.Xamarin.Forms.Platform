@@ -9,7 +9,7 @@ cd $BUILD_SOURCESDIRECTORY/build
 
 npm i chromedriver@74.0.0
 npm i puppeteer@1.13.0
-mono NuGet.exe install NUnit.ConsoleRunner -Version 3.10.0
+mono $BUILD_SOURCESDIRECTORY/build/NuGet.exe install NUnit.ConsoleRunner -Version 3.10.0
 
 export UNO_UITEST_TARGETURI=http://localhost:8000
 export UNO_UITEST_DRIVERPATH_CHROME=$BUILD_SOURCESDIRECTORY/build/node_modules/chromedriver/lib/chromedriver
@@ -23,5 +23,5 @@ mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 ## The python server serves the current working directory, and may be changed by the nunit runner
 bash -c "cd $BUILD_SOURCESDIRECTORY/Xamarin.Forms.ControlGallery.Uno.Wasm/bin/Release/netstandard2.0/dist/; python server.py &"
 
-cd $BUILD_SOURCESDIRECTORY/Xamarin.Forms.Core.UITests.Wasm/obj/Release/net47/
+cd $BUILD_SOURCESDIRECTORY/Xamarin.Forms.Core.UITests.Wasm/obj/Release/net47
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --trace=Verbose --inprocess --agents=1 --workers=1 Xamarin.Forms.Core.iOS.UITests.dll
