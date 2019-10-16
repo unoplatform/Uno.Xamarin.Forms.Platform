@@ -43,7 +43,7 @@ namespace Uno.UITests.Helpers
 
 		public static string WebAssemblyDefaultUri { get; set; }
 		public static string ChromeDriverPath { get; set; }
-		public static bool WebAssemblyHeadless { get; set; }
+		public static bool WebAssemblyHeadless { get; set; } = true;
 
 		/// <summary>
 		/// Cold starts the registered app.
