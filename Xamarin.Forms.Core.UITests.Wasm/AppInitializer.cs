@@ -123,7 +123,9 @@ namespace Uno.UITests.Helpers
 						// Workaround for :
 						//   ERROR:browser_process_sub_thread.cc(210)] Waited 5 ms for network service
 						//
-						.SeleniumArgument("--disable-features=NetworkService");
+						.SeleniumArgument("--disable-features=NetworkService")
+						.SeleniumArgument("--disable-gpu")
+						;
 				}
 
 				_currentApp = configurator.ScreenShotsPath(TestContext.CurrentContext.TestDirectory)
