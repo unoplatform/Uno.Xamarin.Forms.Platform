@@ -23,4 +23,4 @@ mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 ## The python server serves the current working directory, and may be changed by the nunit runner
 bash -c "cd $BUILD_SOURCESDIRECTORY/Xamarin.Forms.ControlGallery.Uno.Wasm/bin/Release/netstandard2.0/dist/; python server.py &"
 
-mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --trace=Verbose --inprocess --agents=1 --workers=1 $BUILD_SOURCESDIRECTORY/Xamarin.Forms.Core.UITests.Wasm/bin/Release/net47/Xamarin.Forms.Core.UITests.Wasm.dll
+mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --trace=Verbose --inprocess --agents=1 --workers=1 $BUILD_SOURCESDIRECTORY/Xamarin.Forms.Core.UITests.Wasm/obj/Release/net47/Xamarin.Forms.Core.iOS.UITests.dll
