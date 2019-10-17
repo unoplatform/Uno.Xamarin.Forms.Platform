@@ -18,8 +18,8 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="WasmCSS\Fonts.css" />
-		<EmbeddedResource Include="WasmScripts\AppManifest.js" />
+		<EmbeddedResource Include="WasmCSS\*.css" />
+		<EmbeddedResource Include="WasmScripts\*.js" />
 	</ItemGroup>
 	
 	<ItemGroup>
