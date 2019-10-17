@@ -177,6 +177,9 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 			page.NativeControlsAdded = true;
 		}
 
+		internal void Reset() 
+			=> _app.Reset();
+
 		class ColorToBrushNativeBindingConverter : IValueConverter
 		{
 			public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

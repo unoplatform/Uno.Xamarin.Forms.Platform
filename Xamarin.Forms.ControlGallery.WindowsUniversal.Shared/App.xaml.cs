@@ -132,5 +132,10 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
             //TODO: Save application state and stop any background activity
             deferral.Complete();
         }
+
+		public static void Reset()
+		{
+			((Window.Current.Content as Windows.UI.Xaml.Controls.Frame)?.Content as MainPage)?.Reset();
+		}
     }
 }
