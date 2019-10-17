@@ -11,8 +11,8 @@
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="Uno.UITest" Version="1.0.0-dev.92" />
     <PackageReference Include="Uno.UITest.Selenium" Version="1.0.0-dev.92" />
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.851321-pre3" />
-    <PackageReference Include="Xamarin.Forms.Maps" Version="4.3.0.851321-pre3" />
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.1233-nightly" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="4.4.0.1233-nightly" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
   </ItemGroup>
 

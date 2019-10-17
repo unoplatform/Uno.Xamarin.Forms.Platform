@@ -27,8 +27,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.851321-pre3" />
-    <PackageReference Include="Xamarin.Forms.Maps" Version="4.3.0.851321-pre3" />
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.1233-nightly" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="4.4.0.1233-nightly" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Xam.Plugin.DeviceInfo" Version="3.0.2" />
     <Compile Update="GalleryPages\BindableLayoutGalleryPage.xaml.cs">

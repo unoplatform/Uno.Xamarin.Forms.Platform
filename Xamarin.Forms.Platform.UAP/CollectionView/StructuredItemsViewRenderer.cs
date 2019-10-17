@@ -183,7 +183,7 @@ namespace Xamarin.Forms.Platform.UWP
 					(ItemsPanelTemplate)UWPApp.Current.Resources["HorizontalListItemsPanel"]
 			};
 
-			ScrollViewer.SetHorizontalScrollMode(horizontalListView, ScrollMode.Auto);
+			ScrollViewer.SetHorizontalScrollMode(horizontalListView, Windows.UI.Xaml.Controls.ScrollMode.Auto);
 			ScrollViewer.SetHorizontalScrollBarVisibility(horizontalListView,
 				Windows.UI.Xaml.Controls.ScrollBarVisibility.Auto);
 

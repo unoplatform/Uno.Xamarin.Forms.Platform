@@ -166,11 +166,11 @@ namespace Xamarin.Forms.Platform.UWP
 			switch (CarouselItemsLayout.Orientation)
 			{
 				case ItemsLayoutOrientation.Horizontal:
-					ScrollViewer.SetHorizontalScrollMode(ListViewBase, CarouselView.IsSwipeEnabled ? ScrollMode.Auto : ScrollMode.Disabled);
+					ScrollViewer.SetHorizontalScrollMode(ListViewBase, CarouselView.IsSwipeEnabled ? Windows.UI.Xaml.Controls.ScrollMode.Auto : Windows.UI.Xaml.Controls.ScrollMode.Disabled);
 					ScrollViewer.SetHorizontalScrollBarVisibility(ListViewBase, CarouselView.IsSwipeEnabled ? WScrollBarVisibility.Auto : WScrollBarVisibility.Disabled);
 					break;
 				case ItemsLayoutOrientation.Vertical:
-					ScrollViewer.SetVerticalScrollMode(ListViewBase, CarouselView.IsSwipeEnabled ? ScrollMode.Auto : ScrollMode.Disabled);
+					ScrollViewer.SetVerticalScrollMode(ListViewBase, CarouselView.IsSwipeEnabled ? Windows.UI.Xaml.Controls.ScrollMode.Auto : Windows.UI.Xaml.Controls.ScrollMode.Disabled);
 					ScrollViewer.SetVerticalScrollBarVisibility(ListViewBase, CarouselView.IsSwipeEnabled ? WScrollBarVisibility.Auto : WScrollBarVisibility.Disabled);
 					break;
 			}

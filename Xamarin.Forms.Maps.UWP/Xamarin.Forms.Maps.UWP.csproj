@@ -42,8 +42,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.851321-pre3" ExcludeAssets="build" />
-    <PackageReference Include="Xamarin.Forms.Maps" Version="4.3.0.851321-pre3" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.1233-nightly" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="4.4.0.1233-nightly" ExcludeAssets="build" />
   </ItemGroup>
 
   <Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">
