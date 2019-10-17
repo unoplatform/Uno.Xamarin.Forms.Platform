@@ -25,4 +25,5 @@ bash -c "cd $BUILD_SOURCESDIRECTORY/Xamarin.Forms.ControlGallery.Uno.Wasm/bin/Re
 
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
     --trace=Verbose --inprocess --agents=1 --workers=1 \
+    --where "class = 'Xamarin.Forms.Core.UITests.ButtonUITests'" \ 
     $BUILD_SOURCESDIRECTORY/Xamarin.Forms.Core.UITests.Wasm/bin/Release/net47/Xamarin.Forms.Core.iOS.UITests.dll
