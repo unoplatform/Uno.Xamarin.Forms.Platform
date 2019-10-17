@@ -36,8 +36,6 @@ namespace Xamarin.Forms.Controls.Issues
 #if APP
 		public Issue5354()
 		{
-			Device.SetFlags(new List<string> { CollectionView.CollectionViewExperimental });
-
 			InitializeComponent();
 
 			BindingContext = new ViewModel5354();

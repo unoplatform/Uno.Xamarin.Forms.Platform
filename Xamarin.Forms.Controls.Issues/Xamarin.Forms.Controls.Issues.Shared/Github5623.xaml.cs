@@ -40,8 +40,6 @@ namespace Xamarin.Forms.Controls.Issues
 
 		public Github5623()
 		{
-			Device.SetFlags(new List<string> { CollectionView.CollectionViewExperimental });
-
 			InitializeComponent();
 
 			BindingContext = new ViewModel5623();

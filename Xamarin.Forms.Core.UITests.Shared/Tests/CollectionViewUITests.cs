@@ -11,7 +11,6 @@ namespace Xamarin.Forms.Core.UITests
 	internal class CollectionViewUITests : BaseTestFixture
 	{
 		string _collectionViewId = "collectionview";
-		string _enableCollectionView = "Enable CollectionView";
 		string _btnUpdate = "Update";
 		string _entryUpdate = "entryUpdate";
 		string _entryInsert = "entryInsert";
@@ -175,8 +174,6 @@ namespace Xamarin.Forms.Core.UITests
 		void VisitInitialGallery(string collectionTestName)
 		{
 			var galeryName = $"{collectionTestName} Galleries";
-			App.WaitForElement(t => t.Marked(_enableCollectionView));
-			App.Tap(t => t.Marked(_enableCollectionView));
 
 			App.WaitForElement(t => t.Marked(galeryName));
 			App.Tap(t => t.Marked(galeryName));
