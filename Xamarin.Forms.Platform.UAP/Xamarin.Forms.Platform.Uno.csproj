@@ -46,11 +46,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.4.0.1233-nightly" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" ExcludeAssets="build" />
 	</ItemGroup>
 
   <Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">
-    <Message Text="RemoveOriginalUAPRenderer" Importance="high" />
     <ItemGroup>
       <_OriginalRefs Include="@(ReferencePathWithRefAssemblies)" Condition="'%(FileName)'=='Xamarin.Forms.Platform.UAP' or '%(FileName)'=='Xamarin.Forms.Platform.iOS' or '%(FileName)'=='Xamarin.Forms.Platform.Android' " />
       <ReferencePathWithRefAssemblies Remove="@(_OriginalRefs)" />

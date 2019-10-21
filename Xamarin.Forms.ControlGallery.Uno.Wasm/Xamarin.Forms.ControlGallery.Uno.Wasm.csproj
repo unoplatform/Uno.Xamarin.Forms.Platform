@@ -35,7 +35,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.4.0.1233-nightly" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" ExcludeAssets="build" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Uno.UI" Version="2.0.512-dev.3409" />
