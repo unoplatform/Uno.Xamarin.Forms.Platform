@@ -1,8 +1,12 @@
-#if UITEST
+#if UITEST && !__WASM__
 using System;
 using System.IO;
 using Xamarin.UITest;
 using Xamarin.UITest.Queries;
+
+#if __IOS__
+using Xamarin.UITest.iOS;
+#endif
 
 namespace Xamarin.Forms.Controls
 {
@@ -236,9 +240,7 @@ namespace Xamarin.Forms.Controls
 
 		public void SwipeRight()
 		{
-#pragma warning disable 618
-			_app.SwipeRight();
-#pragma warning restore 618
+			SwipeLeftToRight();
 		}
 
 		public void SwipeLeftToRight(double swipePercentage = 0.67, int swipeSpeed = 500, bool withInertia = true)
@@ -253,9 +255,7 @@ namespace Xamarin.Forms.Controls
 
 		public void SwipeLeft()
 		{
-#pragma warning disable 618
-			_app.SwipeLeft();
-#pragma warning restore 618
+			SwipeRightToLeft();
 		}
 
 		public void SwipeRightToLeft(double swipePercentage = 0.67, int swipeSpeed = 500, bool withInertia = true)
@@ -445,6 +445,16 @@ namespace Xamarin.Forms.Controls
 		{
 			get { return _app.TestServer; }
 		}
+
+#if __IOS__
+		public void SendAppToBackground(TimeSpan timeSpan)
+		{
+			if (_app is iOSApp app)
+			{
+				app.SendAppToBackground(timeSpan);
+			}
+		}
+#endif
 	}
 }
 #endif

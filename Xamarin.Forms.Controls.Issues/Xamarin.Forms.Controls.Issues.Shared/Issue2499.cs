@@ -32,12 +32,14 @@ namespace Xamarin.Forms.Controls.Issues
 			};
 		}
 
-#if UITEST
+#if UITEST && !__WASM__
 		[Test]
 		public void Issue2499Test()
 		{
 			RunningApp.WaitForElement("picker");
 			RunningApp.Tap("picker");
+			RunningApp.WaitForElement("cat");
+
 			AppResult[] items = RunningApp.Query("cat");
 			Assert.AreNotEqual(items.Length, 0);
 			RunningApp.WaitForElement(q => q.Marked("mouse"));

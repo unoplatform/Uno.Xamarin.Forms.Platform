@@ -154,7 +154,8 @@ namespace Xamarin.Forms.Platform.UWP
 
 		protected async Task UpdateSource()
 		{
-			await ImageElementManager.UpdateSource(this).ConfigureAwait(false);		}
+			await ImageElementManager.UpdateSource(this).ConfigureAwait(false);
+		}
 
 		void IImageVisualElementRenderer.SetImage(Windows.UI.Xaml.Media.ImageSource image)
 		{

@@ -5,6 +5,10 @@ using Xamarin.Forms.Controls;
 using Xamarin.UITest;
 using Xamarin.UITest.Queries;
 
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+#endif
+
 namespace Xamarin.Forms.Core.UITests
 {
 	internal abstract class BaseTestFixture
@@ -17,7 +21,7 @@ namespace Xamarin.Forms.Core.UITests
 
 		public static AppRect ScreenBounds { get; set; }
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		protected virtual void FixtureTeardown()
 		{
 		}
@@ -45,19 +49,18 @@ namespace Xamarin.Forms.Core.UITests
 		[SetUp]
 		protected virtual void TestSetup()
 		{
-			EnsureMemory();
+			//EnsureMemory();
 		}
 
 		[TearDown]
 		protected virtual void TestTearDown()
 		{
+			App.Screenshot($"{TestContext.CurrentContext.Test.Name} - Final");
 		}
 
 		protected abstract void NavigateToGallery();
 
-#pragma warning disable 618
-		[TestFixtureSetUp]
-#pragma warning restore 618
+		[OneTimeSetUp]
 		protected virtual void FixtureSetup()
 		{
 			ResetApp();
@@ -105,13 +108,15 @@ namespace Xamarin.Forms.Core.UITests
 #if __ANDROID__
 			App.Invoke("Reset");
 #endif
+#if __WASM__
+			App.Invoke("UITestBackdoor.Reset");
+#endif
 #if __WINDOWS__
 			WindowsTestBase.Reset();
 #endif
 		}
 	}
 }
-
 #if UITEST
 
 namespace Xamarin.Forms.Core.UITests
@@ -121,7 +126,7 @@ namespace Xamarin.Forms.Core.UITests
 	[SetUpFixture]
 	public class CoreUITestsSetup
 	{
-		[SetUp]
+		[OneTimeSetUp]
 		public void RunBeforeAnyTests()
 		{
 			LaunchApp();

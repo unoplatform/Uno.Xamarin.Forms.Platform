@@ -38,12 +38,18 @@ namespace Xamarin.Forms.Platform.UWP
 
 		FrameworkElement FrameworkElement { get; }
 
-		internal void CleanUp() => _view?.Cleanup();
+			internal void CleanUp()
+			{
+				_view?.Cleanup();
 
-		public WrapperControl(View view)
-		{
-			_view = view;
-			_view.MeasureInvalidated += (sender, args) => { InvalidateMeasure(); };
+				if(_view != null)
+					_view.MeasureInvalidated -= OnMeasureInvalidated;
+			}
+
+			public WrapperControl(View view)
+			{
+				_view = view;
+				_view.MeasureInvalidated += OnMeasureInvalidated;
 
 			IVisualElementRenderer renderer = Platform.CreateRenderer(view);
 			Platform.SetRenderer(view, renderer);
@@ -64,6 +70,11 @@ namespace Xamarin.Forms.Platform.UWP
 				};
 			}
 		}
+
+			void OnMeasureInvalidated(object sender, EventArgs e)
+			{
+				InvalidateMeasure();
+			}
 
 			protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
 			{

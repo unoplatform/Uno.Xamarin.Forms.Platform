@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using Xamarin.UITest.Queries;
 
+#if __WASM__
+using AppQuery = Uno.UITest.IAppQuery;
+#endif
+
 namespace Xamarin.Forms.Core.UITests
 {
 	internal static class PlatformMethodQueries
@@ -54,6 +58,32 @@ namespace Xamarin.Forms.Core.UITests
 				{ View.RotationYProperty, Tuple.Create(new[] { "getRotationY" }, true) },
 				{ View.ScaleProperty, Tuple.Create(new[] { "getScaleX", "getScaleY" }, true) },
 			};
+#elif __WASM__
+		public static readonly Dictionary<BindableProperty, Tuple<string[], bool>> PropertyPlatformMethodDictionary = new Dictionary
+			<BindableProperty, Tuple<string[], bool>>
+			{
+				{ ActivityIndicator.ColorProperty, Tuple.Create(new[] { "getProgressDrawable", "getColor" }, false) },
+				{ ActivityIndicator.IsRunningProperty, Tuple.Create(new[] { "isIndeterminate" }, false) },
+				{ BorderElement.BorderColorProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ Button.CornerRadiusProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ Button.BorderWidthProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ Button.ImageSourceProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ Button.FontProperty, Tuple.Create(new[] { "FontWeight" }, false) },
+				{ Button.TextProperty, Tuple.Create(new[] { "Content" }, false) },
+				{ Button.TextColorProperty, Tuple.Create(new[] { "Foreground" }, false) },
+				{ ImageButton.CornerRadiusProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ ImageButton.BorderWidthProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ ImageButton.SourceProperty, Tuple.Create(new[] { "getBackground" }, false) },
+				{ View.AnchorXProperty, Tuple.Create(new[] { "getPivotX" }, true) },
+				{ View.AnchorYProperty, Tuple.Create(new[] { "getPivotY" }, true) },
+				{ View.BackgroundColorProperty, Tuple.Create(new[] { "getBackground", "getColor" }, true) },
+				{ View.IsEnabledProperty, Tuple.Create(new[] { "IsEnabled" }, false) },
+				{ View.OpacityProperty, Tuple.Create(new[] { "Opacity" }, true) },
+				{ View.RotationProperty, Tuple.Create(new[] { "getRotation" }, true) },
+				{ View.RotationXProperty, Tuple.Create(new[] { "getRotationX" }, true) },
+				{ View.RotationYProperty, Tuple.Create(new[] { "getRotationY" }, true) },
+				{ View.ScaleProperty, Tuple.Create(new[] { "getScaleX", "getScaleY" }, true) },
+			};
 #endif
 	}
 
@@ -84,7 +114,7 @@ namespace Xamarin.Forms.Core.UITests
 		public static readonly string TableView = "UITableView";
 		public static readonly string TimePicker = "UITextField";
 		public static readonly string WebView = "UIWebView";
-#elif __ANDROID__ || __WINDOWS__
+#elif __ANDROID__ || __WINDOWS__ || __WASM__
 		public static readonly string ActivityIndicator = "android.widget.ProgressBar";
 		public static readonly string BoxView = "xamarin.forms.platform.android.BoxRenderer";
 		public static readonly string Button = "android.widget.Button";
@@ -121,7 +151,7 @@ namespace Xamarin.Forms.Core.UITests
 		public static readonly Func<AppQuery, AppQuery> PageWithoutNavigationBar = q => q.Raw("*").Index(7);
 		public static readonly Func<AppQuery, AppQuery> NavigationBarBackButton = q => q.Class("UINavigationItemButtonView");
 
-#elif __ANDROID__ || __WINDOWS__
+#elif __ANDROID__ || __WINDOWS__ || __WASM__
 		public static readonly Func<AppQuery, AppQuery> Root = q => q.Id("content");
 		public static readonly Func<AppQuery, AppQuery> RootPageListView = q => q.Raw("ListViewRenderer index:0");
 		public static readonly Func<AppQuery, AppQuery> GalleryListView = q => q.Raw("ListViewRenderer index:1");

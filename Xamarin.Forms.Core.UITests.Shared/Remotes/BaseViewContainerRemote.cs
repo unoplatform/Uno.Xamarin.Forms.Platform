@@ -5,6 +5,12 @@ using System.Threading;
 using Xamarin.UITest;
 using Xamarin.UITest.Queries;
 
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+using AppQuery = Uno.UITest.IAppQuery;
+using AppResult = Uno.UITest.IAppResult;
+#endif
+
 namespace Xamarin.Forms.Core.UITests
 {
 	internal abstract partial class BaseViewContainerRemote
@@ -64,6 +70,7 @@ namespace Xamarin.Forms.Core.UITests
 			{
 				var scrollBounds = App.Query(Queries.PageWithoutNavigationBar()).First().Rect;
 
+#if !__WASM__
 				scrollBounds = new AppRect
 				{
 					X = scrollBounds.Width - 20,
@@ -73,6 +80,7 @@ namespace Xamarin.Forms.Core.UITests
 					Width = 20,
 					Height = scrollBounds.Height,
 				};
+#endif
 			}
 			
 			App.WaitForElement("TargetViewContainer");
@@ -174,11 +182,26 @@ namespace Xamarin.Forms.Core.UITests
 						MaybeGetProperty<float>(App, query, propertyPath, out prop) ||
 						MaybeGetProperty<bool>(App, query, propertyPath, out prop) ||
 						MaybeGetProperty<object>(App, query, propertyPath, out prop);
-			
+
 #if __MACOS__
 			if (!found)
 			{
 				found = CheckOtherProperties(App, formProperty, query, out prop);
+			}
+#endif
+#if __WASM__
+			if (!found)
+			{
+				var queryResult = App.Query(q => q
+					.Raw(query)
+					.Invoke("Uno.UI.WindowManager.current.GetDependencyPropertyValue", propertyPath.First())
+					.Value<object>());
+
+				if (queryResult.Any())
+				{
+					found = true;
+					prop = queryResult.First();
+				}
 			}
 #endif
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Xamarin.Forms.CustomAttributes;
+using System.IO;
 
 #if UITEST
 using Xamarin.Forms.Core.UITests;
@@ -50,17 +51,29 @@ namespace Xamarin.Forms.Controls
 #elif __WINDOWS__
 			app = InitializeUWPApp();
 #endif
+
+#if __WASM__
+			Uno.UITests.Helpers.AppInitializer.WebAssemblyDefaultUri = "http://localhost:54882/";
+
+#if DEBUG
+			Uno.UITests.Helpers.AppInitializer.WebAssemblyHeadless = false;
+#endif
+
+			return app = new AppWrapper(Uno.UITests.Helpers.AppInitializer.AttachToApp());
+#else
 			if (app == null)
 				throw new NullReferenceException("App was not initialized.");
 
 			// Wrap the app in ScreenshotConditional so it only takes screenshots if the SCREENSHOTS symbol is specified
 			return new ScreenshotConditionalApp(app);
+#endif
 		}
 
 #if __ANDROID__
 		static IApp InitializeAndroidApp()
 		{
-			var app = ConfigureApp.Android.ApkFile(AppPaths.ApkPath).Debug().StartApp();
+			var fullApkPath = Path.Combine(TestContext.CurrentContext.TestDirectory, AppPaths.ApkPath);
+			var app = ConfigureApp.Android.ApkFile(fullApkPath).Debug().StartApp(UITest.Configuration.AppDataMode.DoNotClear);
 
 			if (bool.Parse((string)app.Invoke("IsPreAppCompat")))
 			{
@@ -131,7 +144,8 @@ namespace Xamarin.Forms.Controls
 			{
 				cellName = typeIssueAttribute.DisplayName;
 			}
-			else {
+			else
+			{
 				cellName = typeIssueAttribute.Description;
 			}
 
@@ -217,6 +231,13 @@ namespace Xamarin.Forms.Controls
 			IApp runningApp = null;
 			try
 			{
+				// Issue 7207 - if current culture of the current thread is not set to the invariant culture
+				// then initializing the app causes a "NUnit.Framework.InconclusiveException" with the exception-
+				// message "App did not start for some reason. System.Argument.Exception: 1 is not supported code page.
+				// Parameter name: codepage."
+				if(System.Threading.Thread.CurrentThread.CurrentCulture != System.Globalization.CultureInfo.InvariantCulture)
+					System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
 				runningApp = InitializeApp();
 			}
 			catch (Exception e)
@@ -236,14 +257,16 @@ namespace Xamarin.Forms.Controls
 		{
 			if (RunningApp != null)
 			{
+#if !__WASM__
 				try
 				{
 					RunningApp.TestServer.Get("version");
 					return;
 				}
-				catch 
+				catch
 				{
 				}
+#endif
 
 				RunningApp = InitializeApp();
 			}
@@ -386,6 +409,9 @@ namespace Xamarin.Forms.Controls
 		public IApp RunningApp => AppSetup.RunningApp;
 
 		protected virtual bool Isolate => false;
+
+		IDispatcher _dispatcher = new FallbackDispatcher();
+		public override IDispatcher Dispatcher { get => _dispatcher; }
 #endif
 
 		protected TestCarouselPage()
@@ -527,6 +553,9 @@ namespace Xamarin.Forms.Controls
 		public IApp RunningApp => AppSetup.RunningApp;
 
 		protected virtual bool Isolate => false;
+
+		IDispatcher _dispatcher = new FallbackDispatcher();
+		public override IDispatcher Dispatcher { get => _dispatcher; }
 #endif
 
 		protected TestTabbedPage()
@@ -568,12 +597,14 @@ namespace Xamarin.Forms.Controls
 
 
 
-
+#if UITEST
+	[NUnit.Framework.Category(UITestCategories.Shell)]
+#endif
 	public abstract class TestShell : Shell
 	{
+		protected const string FlyoutIconAutomationId = "OK";
 #if UITEST
 		public IApp RunningApp => AppSetup.RunningApp;
-
 		protected virtual bool Isolate => true;
 #endif
 
@@ -584,11 +615,55 @@ namespace Xamarin.Forms.Controls
 #endif
 		}
 
-		public ContentPage CreateContentPage()
+		public ContentPage AddTopTab(string title)
 		{
-			ContentPage page = new ContentPage();
-			ShellItem item = new ShellItem()
+			var page = new ContentPage();
+			AddTopTab(page, title);
+			return page;
+		}
+
+
+		public void AddTopTab(ContentPage page, string title = null)
+		{
+			if(Items.Count == 0)
 			{
+				var item = AddContentPage(page);
+				item.Items[0].Items[0].Title = title ?? page.Title;
+				return;
+			}
+
+			Items[0].Items[0].Items.Add(new ShellContent()
+			{
+				Title = title ?? page.Title,
+				Content = page
+			});
+		}
+
+		public ContentPage AddBottomTab(string title)
+		{
+
+			ContentPage page = new ContentPage();
+			Items[0].Items.Add(new ShellSection()
+			{
+				Items =
+				{
+					new ShellContent()
+					{
+						Content = page,
+						Title = title
+					}
+				}
+			});
+			return page;
+		}
+
+		public TabBar CreateTabBar(string shellItemTitle)
+		{
+			shellItemTitle = shellItemTitle ?? $"Item: {Items.Count}";
+			ContentPage page = new ContentPage();
+			TabBar item = new TabBar()
+			{
+				Title = shellItemTitle,
 				Items =
 				{
 					new ShellSection()
@@ -605,9 +680,57 @@ namespace Xamarin.Forms.Controls
 			};
 
 			Items.Add(item);
-			return page;
-
+			return item;
 		}
+
+		public ContentPage CreateContentPage(string shellItemTitle = null) 
+			=> CreateContentPage<ShellItem, ShellSection>(shellItemTitle);
+
+		public ContentPage CreateContentPage<TShellItem, TShellSection>(string shellItemTitle = null)
+			where TShellItem : ShellItem
+			where TShellSection : ShellSection
+		{
+			shellItemTitle = shellItemTitle ?? $"Item: {Items.Count}";
+			ContentPage page = new ContentPage();
+
+			TShellItem item = Activator.CreateInstance<TShellItem>();
+			item.Title = shellItemTitle;
+
+			TShellSection shellSection = Activator.CreateInstance<TShellSection>();
+
+			shellSection.Items.Add(new ShellContent()
+			{
+				Content = page
+			});
+
+			item.Items.Add(shellSection);
+
+			Items.Add(item);
+			return page;
+		}
+
+		public ShellItem AddContentPage(ContentPage contentPage = null)
+			=> AddContentPage<ShellItem, ShellSection>(contentPage);
+
+		public TShellItem AddContentPage<TShellItem, TShellSection>(ContentPage contentPage = null)
+			where TShellItem : ShellItem
+			where TShellSection : ShellSection
+		{
+			contentPage = contentPage ?? new ContentPage();
+			TShellItem item = Activator.CreateInstance<TShellItem>();
+			item.Title = contentPage.Title;
+			TShellSection shellSection = Activator.CreateInstance<TShellSection>();
+			Items.Add(item);
+			item.Items.Add(shellSection);
+
+			shellSection.Items.Add(new ShellContent()
+			{
+				Content = contentPage
+			});
+
+			return item;
+		}
+
 #if UITEST
 		[SetUp]
 		public void Setup()
@@ -633,21 +756,30 @@ namespace Xamarin.Forms.Controls
 				AppSetup.EndIsolate();
 			}
 		}
+		public void ShowFlyout(string flyoutIcon = FlyoutIconAutomationId, bool usingSwipe = false, bool testForFlyoutIcon = true, string timeoutMessage = null)
+		{			
+			if(testForFlyoutIcon)
+				RunningApp.WaitForElement(flyoutIcon, timeoutMessage);
 
-		public void ShowFlyout(string flyoutIcon = "OK")
-		{
-			RunningApp.WaitForElement(flyoutIcon);
-			RunningApp.Tap(flyoutIcon);
+			if (usingSwipe)
+			{
+				var rect = RunningApp.ScreenBounds();
+				RunningApp.DragCoordinates(10, rect.CenterY, rect.CenterX, rect.CenterY);
+			}
+			else
+			{
+				RunningApp.Tap(flyoutIcon);
+			}
 		}
 
 
-		public void TapInFlyout(string text, string flyoutIcon = "OK")
+		public void TapInFlyout(string text, string flyoutIcon = FlyoutIconAutomationId, bool usingSwipe = false, string timeoutMessage = null)
 		{
-			ShowFlyout(flyoutIcon);
-			RunningApp.WaitForElement(text);
+			timeoutMessage = timeoutMessage ?? text;
+			ShowFlyout(flyoutIcon, usingSwipe, timeoutMessage: timeoutMessage);
+			RunningApp.WaitForElement(text, timeoutMessage);
 			RunningApp.Tap(text);
 		}
-
 
 #endif
 
@@ -667,7 +799,7 @@ namespace Xamarin.Forms.Controls.Issues
 	[SetUpFixture]
 	public class IssuesSetup
 	{
-		[SetUp]
+		[OneTimeSetUp]
 		public void RunBeforeAnyTests()
 		{
 			AppSetup.RunningApp = AppSetup.Setup(null);

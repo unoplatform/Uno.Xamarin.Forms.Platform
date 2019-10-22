@@ -1,5 +1,5 @@
-phases:
-- phase: VS_Latest
+jobs:
+- job: VS_Latest
   variables:
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
     NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache
@@ -60,3 +60,43 @@ phases:
       ArtifactName: XamarinForms
       publishLocation: Container
       versioningScheme: byBuildNumber
+
+
+- job: Wasm_UITests
+
+  container: nventive/wasm-build:1.1-bionic
+
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  variables:
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - bash: |
+      chmod +x build/scripts/wasm-uitest-run.sh
+      build/scripts/wasm-uitest-run.sh
+
+    env:
+      GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"
+      GIT_SOURCEBRANCH: "$(Build.SourceBranch)"
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+
+    displayName: 'Running build'
+
+  - task: PublishTestResults@2
+    inputs:
+      testRunTitle: 'WebAssembly Test Run'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uno-uitest-tests
+      ArtifactType: Container

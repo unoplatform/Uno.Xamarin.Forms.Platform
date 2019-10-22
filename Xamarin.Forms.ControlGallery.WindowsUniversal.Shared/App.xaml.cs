@@ -34,6 +34,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 		public App()
         {
 #if HAS_UNO
+			global::Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlName = true;
 			ApiInformation.IsFailWhenNotImplemented = false;
 #endif
 			InitializeComponent();
@@ -76,6 +77,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
+				Forms.SetFlags("Shell_UWP_Experimental");
 				Forms.Init (e);
 				//FormsMaps.Init (Controls.App.Config["UWPMapsAuthKey"]);
 
@@ -130,5 +132,10 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
             //TODO: Save application state and stop any background activity
             deferral.Complete();
         }
+
+		public static void Reset()
+		{
+			((Window.Current.Content as Windows.UI.Xaml.Controls.Frame)?.Content as MainPage)?.Reset();
+		}
     }
 }

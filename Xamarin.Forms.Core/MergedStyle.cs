@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
 {
@@ -34,7 +35,14 @@ namespace Xamarin.Forms
 		public IStyle Style
 		{
 			get { return _style; }
-			set { SetStyle(ImplicitStyle, ClassStyles, value); }
+			set
+			{
+				if (_style == value)
+					return;
+				if (value != null && !value.TargetType.IsAssignableFrom(TargetType))
+					Log.Warning("Styles", $"Style TargetType {value.TargetType.FullName} is not compatible with element target type {TargetType}");
+				SetStyle(ImplicitStyle, ClassStyles, value);
+			}
 		}
 
 		public IList<string> StyleClass

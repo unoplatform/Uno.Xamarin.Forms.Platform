@@ -9,8 +9,14 @@ using System.Threading;
 
 #if UITEST
 using Xamarin.UITest;
+using Xamarin.UITest.Queries;
 using NUnit.Framework;
 using Xamarin.Forms.Core.UITests;
+#endif
+
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+using AppResult = Uno.UITest.IAppResult;
 #endif
 
 namespace Xamarin.Forms.Controls.Issues
@@ -119,7 +125,7 @@ namespace Xamarin.Forms.Controls.Issues
 			};
 
 
-			foreach(var view in imageControls)
+			foreach (var view in imageControls)
 			{
 				view.BackgroundColor = Color.Red;
 			}
@@ -129,7 +135,7 @@ namespace Xamarin.Forms.Controls.Issues
 			{
 				AutomationId = "layoutContainer",
 				Children =
-				{					
+				{
 					new StackLayout()
 					{
 						Orientation = StackOrientation.Horizontal,
@@ -137,7 +143,7 @@ namespace Xamarin.Forms.Controls.Issues
 						{
 							labelActiveTest,
 							switchToUri,
-							sourceLabel						
+							sourceLabel
 						}
 					},
 					button,
@@ -171,7 +177,7 @@ namespace Xamarin.Forms.Controls.Issues
 		}
 #if UITEST
 
-#if !__WINDOWS__
+#if !__WINDOWS__ && !__WASM__
 		[Test]
 		public void ImageFromFileSourceAppearsAndDisappearsCorrectly()
 		{
@@ -228,7 +234,7 @@ namespace Xamarin.Forms.Controls.Issues
 			SetupTest(nameof(ListView), fileSource);
 
 			var imageVisible =
-				RunningApp.RetryUntilPresent(GetImage, 10, 2000);
+				RunningApp.QueryUntilPresent(GetImage, 10, 2000);
 
 			Assert.AreEqual(1, imageVisible.Length);
 			SetImageSourceToNull();
@@ -259,9 +265,9 @@ namespace Xamarin.Forms.Controls.Issues
 			RunningApp.WaitForElement(_appearText);
 		}
 
-		UITest.Queries.AppResult TestForImageVisible()
+		AppResult TestForImageVisible()
 		{
-			var images = RunningApp.RetryUntilPresent(() =>
+			var images = RunningApp.QueryUntilPresent(() =>
 			{
 				var result = RunningApp.WaitForElement(_fileNameAutomationId);
 
@@ -273,13 +279,13 @@ namespace Xamarin.Forms.Controls.Issues
 
 			Assert.AreEqual(1, images.Length);
 			var imageVisible = images[0];
-						
+
 			Assert.Greater(imageVisible.Rect.Height, 1);
 			Assert.Greater(imageVisible.Rect.Width, 1);
 			return imageVisible;
 		}
 
-		void TestForImageNotVisible(UITest.Queries.AppResult previousFinding)
+		void TestForImageNotVisible(AppResult previousFinding)
 		{
 			var imageVisible = RunningApp.Query(_fileNameAutomationId);
 

@@ -5,21 +5,31 @@ using Xamarin.UITest;
 using Xamarin.UITest.Queries;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Xamarin.Forms.Controls.Issues;
+#if __IOS__
+using Xamarin.UITest.iOS;
+#endif
 
-namespace Xamarin.Forms.Core.UITests
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+using AppQuery = Uno.UITest.IAppQuery;
+using AppResult = Uno.UITest.IAppResult;
+#endif
+
+namespace Xamarin.UITest
 {
 	internal static class AppExtensions
 	{
-		public static AppResult[] RetryUntilPresent(
+		public static T[] QueryUntilPresent<T>(
 			this IApp app,
-			Func<AppResult[]> func,
+			Func<T[]> func,
 			int retryCount = 10,
 			int delayInMs = 2000)
 		{
 			var results = func();
 
 			int counter = 0;
-			while (results.Length == 0 && counter < retryCount)
+			while ((results == null || results.Length == 0) && counter < retryCount)
 			{
 				Thread.Sleep(delayInMs);
 				results = func();
@@ -27,9 +37,35 @@ namespace Xamarin.Forms.Core.UITests
 			}
 
 			return results;
-
 		}
 
+		public static bool IsApiHigherThan(this IApp app, int apiLevel, string apiLabelId = "ApiLevel")
+		{
+			var api = Convert.ToInt32(app.WaitForElement("ApiLabel")[0].ReadText());
+
+			if (api < apiLevel)
+				return false;
+
+			return true;
+		}
+
+#if __IOS__
+		public static void SendAppToBackground(this IApp app, TimeSpan timeSpan)
+		{
+			if(app is Xamarin.Forms.Controls.ScreenshotConditionalApp sca)
+			{
+				sca.SendAppToBackground(timeSpan);
+				Thread.Sleep(timeSpan.Add(TimeSpan.FromSeconds(2)));
+			}
+		}
+#endif
+	}
+}
+
+namespace Xamarin.Forms.Core.UITests
+{
+	internal static class AppExtensions
+	{
 		public static AppRect ScreenBounds(this IApp app)
 		{
 			return app.Query(Queries.Root()).First().Rect;
@@ -49,7 +85,12 @@ namespace Xamarin.Forms.Core.UITests
 		{
 			const string goToTestButtonQuery = "* marked:'GoToTestButton'";
 
-			app.WaitForElement(q => q.Raw(goToTestButtonQuery), "Timed out waiting for Go To Test button to appear", TimeSpan.FromMinutes(2));
+#if __WASM__
+			var baseTimeout = TimeSpan.FromSeconds(30);
+#else
+			var baseTimeout = TimeSpan.FromMinutes(2);
+#endif
+			app.WaitForElement(q => q.Raw(goToTestButtonQuery), "Timed out waiting for Go To Test button to appear", baseTimeout);
 
 			var text = Regex.Match(page, "'(?<text>[^']*)'").Groups["text"].Value;
 
@@ -68,7 +109,7 @@ namespace Xamarin.Forms.Core.UITests
 				app.Tap(q => q.Raw(goToTestButtonQuery));
 			}
 
-			app.WaitForNoElement(o => o.Raw(goToTestButtonQuery), "Timed out waiting for Go To Test button to disappear", TimeSpan.FromMinutes(2));
+			app.WaitForNoElement(o => o.Raw(goToTestButtonQuery), "Timed out waiting for Go To Test button to disappear", baseTimeout);
 		}
 
 
