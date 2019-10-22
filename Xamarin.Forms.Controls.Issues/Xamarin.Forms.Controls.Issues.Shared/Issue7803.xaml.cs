@@ -15,6 +15,12 @@ using Xamarin.Forms.Core.UITests;
 using System.Linq;
 #endif
 
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+using AppResult = Uno.UITest.IAppResult;
+using AppQuery = Uno.UITest.IAppQuery;
+#endif
+
 namespace Xamarin.Forms.Controls.Issues
 {
 #if UITEST
