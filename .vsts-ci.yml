@@ -8,9 +8,6 @@ jobs:
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
     NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache
 
-  pool:
-    vmImage: 'windows-2019'
-
   steps:
 
   - task: UseDotNet@2
@@ -26,7 +23,7 @@ jobs:
       useNuGetOrg: true
       mergeBranch: true
       branchToMerge: 'uno'
-      nugetUpdaterVersion: '2.0.4'
+      nugetUpdaterVersion: '2.0.6'
       allowDowngrade: true
       packageAuthor: 'nventive'
       summaryFile: '$(Build.ArtifactStagingDirectory)/Canary.md'
@@ -118,7 +115,7 @@ jobs:
       useNuGetOrg: true
       mergeBranch: true
       branchToMerge: 'uno'
-      nugetUpdaterVersion: '2.0.4'
+      nugetUpdaterVersion: '2.0.6'
       allowDowngrade: true
       packageAuthor: 'nventive'
       summaryFile: '$(Build.ArtifactStagingDirectory)/Canary.md'
