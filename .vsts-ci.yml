@@ -5,9 +5,10 @@ jobs:
     NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache
 
   steps:
-  - task: GitVersion@3
+  - task: GitVersion@5
     inputs:
-      updateAssemblyInfo: false   
+      useConfigFile: true
+      configFilePath: gitversion.yml
       
   - task: NuGetToolInstaller@0
     inputs:
@@ -75,6 +76,11 @@ jobs:
   steps:
   - checkout: self
     clean: true
+
+  - task: GitVersion@5
+    inputs:
+      useConfigFile: true
+      configFilePath: gitversion.yml
 
   - bash: |
       chmod +x build/scripts/wasm-uitest-run.sh

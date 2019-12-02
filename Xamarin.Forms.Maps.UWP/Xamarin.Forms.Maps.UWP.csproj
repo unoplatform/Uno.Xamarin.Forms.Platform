@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.31" ToolsVersion="15.0">
+<Project Sdk="MSBuild.Sdk.Extras/2.0.31" ToolsVersion="15.0">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackageId>Uno.Xamarin.Forms.Maps</PackageId>
@@ -30,7 +30,7 @@
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
-    <PackageReference Include="Uno.UI" Version="2.0.512-dev.3409" PrivateAssets="All" />
+    <PackageReference Include="Uno.UI" Version="2.0.512-beta.18" PrivateAssets="All" />
     <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
