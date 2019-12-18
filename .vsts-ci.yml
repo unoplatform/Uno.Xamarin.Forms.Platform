@@ -19,9 +19,10 @@ jobs:
     inputs:
       command: restore
       solution: Xamarin.Forms.sln
-      selectOrConfig: select
+      selectOrConfig: config
       includeNuGetOrg: true
       verbosityRestore: Normal
+      nugetConfigPath: NuGet.config
 
   - task: MSBuild@1
     inputs:
