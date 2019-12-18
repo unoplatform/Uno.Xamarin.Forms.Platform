@@ -22,7 +22,7 @@ You can read about the Uno Platform https://platform.uno, and about Xamarin.Form
 1. Using a **VS Developer Command Prompt**, navigate to the folder containing the solution
 1. Type the following to install the latest templates:
     ```
-    dotnet new -i Uno.ProjectTemplates.Dotnet::1.46.230-dev.2723
+    dotnet new -i Uno.ProjectTemplates.Dotnet::2.0
     ```
 1. Then type the following to create the new WebAssembly project:
     ```
