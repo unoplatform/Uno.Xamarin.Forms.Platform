@@ -30,7 +30,7 @@ You can read about the Uno Platform https://platform.uno, and about Xamarin.Form
     ```
 1. Open or Reload the solution in Visual Studio 
 1. Set the Wasm project as the startup project 
-1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest experimental package 
+1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest **stable** package 
 1. Run the app using **Ctrl+F5** (without the Visual Studio debugger), and you’re good to go!
 
 ## Building the renderers ##
