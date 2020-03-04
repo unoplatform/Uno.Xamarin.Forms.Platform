@@ -24,20 +24,24 @@ namespace Xamarin.Forms.Controls.Issues
 			var button = new Button { Text = "Default keyboard" };
 			button.Clicked += async (sender, e) =>
 			{
+#if false // UNO TODO
 				var result = await DisplayPromptAsync("What’s the most useless product around today?", "The USB pet rock is definitely up there. What items do you have a hard time believing they actually exist?");
 
 				if (result != null)
 					(sender as Button).Text = result;
+#endif
 			};
             stackLayout.Children.Add(button);
 
             var button2 = new Button { Text = "Numeric keyboard" };
             button2.Clicked += async (sender, e) =>
             {
+#if false // UNO TODO
 	            var result = await DisplayPromptAsync("What’s the meaning of life?", "You know that number.", maxLength:2, keyboard:Keyboard.Numeric);
 
 	            if (result != null)
 					(sender as Button).Text = result;
+#endif
 			};
             stackLayout.Children.Add(button2);
 

@@ -54,14 +54,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Forms.ControlGaller
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Forms.CustomAttributes", "Xamarin.Forms.CustomAttributes\Xamarin.Forms.CustomAttributes.csproj", "{F60B255A-680C-4B94-99E8-2722640F3164}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Forms.Core.UITests.Wasm", "Xamarin.Forms.Core.UITests.Wasm\Xamarin.Forms.Core.UITests.Wasm.csproj", "{209CF5F7-626A-499E-AD87-8ACC99FE3A52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Forms.Core.UITests.Wasm", "Xamarin.Forms.Core.UITests.Wasm\Xamarin.Forms.Core.UITests.Wasm.csproj", "{209CF5F7-626A-499E-AD87-8ACC99FE3A52}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Xamarin.Forms.Controls.Issues\Xamarin.Forms.Controls.Issues.Shared\Xamarin.Forms.Controls.Issues.Shared.projitems*{0f0db9cc-ea65-429c-9363-38624bf8f49c}*SharedItemsImports = 13
+		Xamarin.Forms.Controls.Issues\Xamarin.Forms.Controls.Issues.Shared\Xamarin.Forms.Controls.Issues.Shared.projitems*{209cf5f7-626a-499e-ad87-8acc99fe3a52}*SharedItemsImports = 5
+		Xamarin.Forms.Core.UITests.Shared\Xamarin.Forms.Core.UITests.projitems*{209cf5f7-626a-499e-ad87-8acc99fe3a52}*SharedItemsImports = 5
 		Xamarin.Forms.ControlGallery.WindowsUniversal.Shared\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared.projitems*{3acb38ce-cae4-4760-9e31-2bbd2537754e}*SharedItemsImports = 13
+		Xamarin.Forms.ControlGallery.WindowsUniversal.Shared\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared.projitems*{b83bc7c5-fa0f-4d03-9d8d-1d0ff84da088}*SharedItemsImports = 5
 		Xamarin.Forms.ControlGallery.WindowsUniversal.Shared\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared.projitems*{c8b2d9ff-ce7b-463b-b9d6-8a776d6cbede}*SharedItemsImports = 4
-		Xamarin.Forms.Controls.Issues\Xamarin.Forms.Controls.Issues.Shared\Xamarin.Forms.Controls.Issues.Shared.projitems*{cb9c96ce-125c-4a68-b6a1-c3ff1fbf93e1}*SharedItemsImports = 4
+		Xamarin.Forms.Controls.Issues\Xamarin.Forms.Controls.Issues.Shared\Xamarin.Forms.Controls.Issues.Shared.projitems*{cb9c96ce-125c-4a68-b6a1-c3ff1fbf93e1}*SharedItemsImports = 5
 		Xamarin.Forms.Core.UITests.Shared\Xamarin.Forms.Core.UITests.projitems*{e175485b-3c8c-47d7-8dd5-f7fed627eb25}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

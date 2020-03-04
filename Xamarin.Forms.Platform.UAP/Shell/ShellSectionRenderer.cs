@@ -35,7 +35,7 @@ namespace Xamarin.Forms.Platform.UWP
 			IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed;
 			IsSettingsVisible = false;
 			AlwaysShowHeader = false;
-			PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Top;
+			PaneDisplayMode = NavigationViewPaneDisplayMode.Top;
 			ItemInvoked += OnMenuItemInvoked;
 
 			AutoSuggestBox = new Windows.UI.Xaml.Controls.AutoSuggestBox() { Width = 300 };
@@ -57,7 +57,7 @@ namespace Xamarin.Forms.Platform.UWP
 			Page.ContainerArea = new Rectangle(0, 0, e.NewSize.Width, e.NewSize.Height);
 		}
 
-		void OnMenuItemInvoked(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs args)
+		void OnMenuItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
 		{
 			var shellContent = args.InvokedItemContainer?.DataContext as ShellContent;
 			var shellItem = ShellSection.RealParent as ShellItem;

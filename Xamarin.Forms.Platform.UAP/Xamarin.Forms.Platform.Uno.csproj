@@ -38,6 +38,10 @@
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Include="..\Xamarin.Forms.Core\StreamWrapper.cs" Link="StreamWrapper.cs" />
+	</ItemGroup>
+
   <ItemGroup>
     <Content Include="build/Uno.Xamarin.Forms.Platform.targets">
       <Pack>true</Pack>
@@ -46,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms" Version="4.5.0.356" ExcludeAssets="build" />
 	</ItemGroup>
 
   <Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">

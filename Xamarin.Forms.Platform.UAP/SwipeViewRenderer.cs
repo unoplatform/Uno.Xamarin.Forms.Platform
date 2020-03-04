@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !HAS_UNO
+using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -491,3 +492,4 @@ namespace Xamarin.Forms.Platform.UWP
 		}
 	}
 }
+#endif

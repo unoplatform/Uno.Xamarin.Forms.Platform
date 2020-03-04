@@ -56,6 +56,7 @@ namespace Xamarin.Forms.Platform.UWP
 #endif		
 		}
 
+#if !HAS_UNO
 		public Task<Microsoft.UI.Xaml.Controls.IconSource> LoadIconSourceAsync(ImageSource imagesource, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			Microsoft.UI.Xaml.Controls.IconSource image = null;
@@ -73,6 +74,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			return Task.FromResult(image);
 		}
+#endif
 
 		public Task<IconElement> LoadIconElementAsync(ImageSource imagesource, CancellationToken cancellationToken = default(CancellationToken))
 		{

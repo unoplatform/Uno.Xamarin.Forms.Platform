@@ -26,7 +26,9 @@ namespace Xamarin.Forms.Controls.Issues
 
 		protected override async void Init()
 		{
+#if false // UNO TODO
 			await DisplayPromptAsync(Success, "This prompt should display when the page loads.");
+#endif
 		}
 
 #if UITEST
