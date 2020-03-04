@@ -1,5 +1,9 @@
 jobs:
 - job: VS_Latest
+
+  pool:
+    vmImage: 'windows-2019'
+
   variables:
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
     NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache

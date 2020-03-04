@@ -4,6 +4,7 @@
     <TargetFramework>net47</TargetFramework>
     <DefineConstants>UITEST;__WASM__</DefineConstants>
     <AssemblyName>Xamarin.Forms.Core.iOS.UITests</AssemblyName>
+    <NoWarn>$(NoWarn);1998</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

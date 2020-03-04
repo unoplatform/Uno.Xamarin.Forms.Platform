@@ -11,6 +11,7 @@ using System.Linq;
 using Xamarin.UITest;
 using NUnit.Framework;
 using Xamarin.Forms.Core.UITests;
+using Uno.UITest;
 #endif
 
 namespace Xamarin.Forms.Controls.Issues
