@@ -29,6 +29,7 @@ namespace Xamarin.Forms.Platform.UWP
 		internal static readonly Windows.UI.Color DefaultUnselectedColor = Windows.UI.Color.FromArgb(180, 255, 255, 255);
 		const string TogglePaneButton = "TogglePaneButton";
 		const string NavigationViewBackButton = "NavigationViewBackButton";
+		Shell _shell;
 
 		ShellItemRenderer ItemRenderer { get; }
 
@@ -165,6 +166,16 @@ namespace Xamarin.Forms.Platform.UWP
 
 		protected virtual void OnElementSet(Shell shell)
 		{
+			if(_shell != null)
+			{
+				(_shell as IShellController).ItemsCollectionChanged -= OnItemsCollectionChanged;
+			}
+
+			_shell = shell;
+
+			if (shell == null)
+				return;
+
 			var shr = CreateShellHeaderRenderer(shell);
 			PaneCustomContent = shr;
 			MenuItemsSource = IterateItems();
@@ -172,6 +183,12 @@ namespace Xamarin.Forms.Platform.UWP
 			IsPaneOpen = Shell.FlyoutIsPresented;
 			((IShellController)Element).AddFlyoutBehaviorObserver(this);
 			((IShellController)shell).AddAppearanceObserver(this, shell);
+			(shell as IShellController).ItemsCollectionChanged += OnItemsCollectionChanged;
+		}
+
+		void OnItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			MenuItemsSource = IterateItems();
 		}
 
 		IEnumerable<object> IterateItems()
@@ -181,7 +198,7 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				if (group.Count > 0 && group != groups[0])
 				{
-					yield return null; // Creates a separator
+					yield return new MenuFlyoutSeparator(); // Creates a separator
 				}
 				foreach (var item in group)
 				{

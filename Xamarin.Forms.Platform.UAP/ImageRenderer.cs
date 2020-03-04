@@ -3,9 +3,6 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using Xamarin.Forms.Internals;
 
 #if __IOS__ || __ANDROID__
@@ -111,7 +108,7 @@ namespace Xamarin.Forms.Platform.UWP
 		{
 			if (_measured)
 			{
-				ImageElementManager.RefreshImage(Element);
+				ImageElementManager.RefreshImage(this);
 			}
 
 			Element?.SetIsLoading(false);

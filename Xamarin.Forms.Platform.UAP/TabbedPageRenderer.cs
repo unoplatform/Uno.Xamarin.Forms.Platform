@@ -445,7 +445,7 @@ namespace Xamarin.Forms.Platform.UWP
 						// Update icon image.
 						if (tabBarImage.GetValue(FrameworkElement.NameProperty).ToString() == TabBarHeaderImageName)
 						{
-							if (headerIconsEnabled)
+							if (headerIconsEnabled && tabBarImage.DataContext != null)
 							{
 								if (Element.IsSet(Specifics.HeaderIconsSizeProperty))
 								{

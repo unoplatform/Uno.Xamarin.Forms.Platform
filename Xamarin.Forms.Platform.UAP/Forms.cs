@@ -30,10 +30,16 @@ namespace Xamarin.Forms
 			var accent = (SolidColorBrush)Windows.UI.Xaml.Application.Current.Resources["SystemColorControlAccentBrush"];
 			Color.SetAccent(accent.ToFormsColor());
 
+#if UWP_14393
 			Log.Listeners.Add(new DelegateLogListener((c, m) => Debug.WriteLine(LogFormat, c, m)));
-
+#else
+			Log.Listeners.Add(new DelegateLogListener((c, m) => Trace.WriteLine(m, c)));
+#endif
 #if !HAS_UNO
-			Windows.UI.Xaml.Application.Current.Resources.MergedDictionaries.Add(GetTabletResources());
+			if (!Windows.UI.Xaml.Application.Current.Resources.ContainsKey("RootContainerStyle"))
+			{
+				Windows.UI.Xaml.Application.Current.Resources.MergedDictionaries.Add(GetTabletResources());
+			}
 #endif
 
 			try
@@ -80,7 +86,7 @@ namespace Xamarin.Forms
 
 			Internals.Registrar.ExtraAssemblies = rendererAssemblies?.ToArray();
 
-			Internals.Registrar.RegisterAll(new[] { typeof(ExportRendererAttribute), typeof(ExportCellAttribute), typeof(ExportImageSourceHandlerAttribute) });
+			Registrar.RegisterAll(new[] { typeof(ExportRendererAttribute), typeof(ExportCellAttribute), typeof(ExportImageSourceHandlerAttribute), typeof(ExportFontAttribute) });
 
 			IsInitialized = true;
 			s_state = launchActivatedEventArgs.PreviousExecutionState;
