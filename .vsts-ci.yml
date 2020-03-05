@@ -9,9 +9,10 @@ jobs:
     NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache
 
   steps:
-  - task: GitVersion@3
+  - task: GitVersion@5
     inputs:
-      updateAssemblyInfo: false   
+      useConfigFile: true
+      configFilePath: gitversion.yml
       
   - task: NuGetToolInstaller@0
     inputs:
