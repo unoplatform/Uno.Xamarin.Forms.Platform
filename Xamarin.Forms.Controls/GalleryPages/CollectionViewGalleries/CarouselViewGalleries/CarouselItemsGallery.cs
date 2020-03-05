@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls.GalleryPages.CollectionViewGalleries.CarouselViewGalleries
@@ -12,9 +14,9 @@ namespace Xamarin.Forms.Controls.GalleryPages.CollectionViewGalleries.CarouselVi
 		{
 			var viewModel = new CarouselItemsGalleryViewModel();
 
-			Title = $"CarouselView (Items)";
+			Title = $"CarouselView (Indicators)";
 
-			var layout = new Grid
+			var grid = new Grid
 			{
 				RowDefinitions = new RowDefinitionCollection
 				{
@@ -39,10 +41,26 @@ namespace Xamarin.Forms.Controls.GalleryPages.CollectionViewGalleries.CarouselVi
 				ItemsSource = viewModel.Items,
 				IsScrollAnimated = true,
 				IsBounceEnabled = true,
-				EmptyView = "This is the empty view"
+				EmptyView = "This is the empty view",
+				PeekAreaInsets = new Thickness(50)
 			};
 
-			layout.Children.Add(carouselView, 0, 0);
+			var absolute = new AbsoluteLayout();
+			absolute.Children.Add(carouselView, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.All);
+
+			var indicators = new IndicatorView
+			{
+				Margin = new Thickness(15, 20),
+				IndicatorColor = Color.Gray,
+				SelectedIndicatorColor = Color.Black,
+				IndicatorsShape = IndicatorShape.Square
+			};
+
+			carouselView.IndicatorView = indicators;
+
+			absolute.Children.Add(indicators, new Rectangle(.5, 1, -1, -1), AbsoluteLayoutFlags.PositionProportional);
+
+			grid.Children.Add(absolute, 0, 0);
 
 			var stacklayoutButtons = new StackLayout
 			{
@@ -92,9 +110,9 @@ namespace Xamarin.Forms.Controls.GalleryPages.CollectionViewGalleries.CarouselVi
 			stacklayoutButtons.Children.Add(removeItemButton);
 			stacklayoutButtons.Children.Add(clearItemsButton);
 
-			layout.Children.Add(stacklayoutButtons, 0, 1);
+			grid.Children.Add(stacklayoutButtons, 0, 1);
 
-			Content = layout;
+			Content = grid;
 			BindingContext = viewModel;
 		}
 
@@ -135,18 +153,23 @@ namespace Xamarin.Forms.Controls.GalleryPages.CollectionViewGalleries.CarouselVi
 
 		public CarouselItemsGalleryViewModel()
 		{
-			Items = new ObservableCollection<CarouselData>();
-
-			var random = new Random();
-
-			for (int n = 0; n < 5; n++)
+			Task.Run(async () =>
 			{
-				_items.Add(new CarouselData
+				await Task.Delay(200);
+				var random = new Random();
+
+				var source = new List<CarouselData>();
+				for (int n = 0; n < 5; n++)
 				{
-					Color = Color.FromRgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255)),
-					Name = $"{n + 1}"
-				});
-			}
+					source.Add(new CarouselData
+					{
+						Color = Color.FromRgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255)),
+						Name = $"{n + 1}"
+					});
+				}
+				Items = new ObservableCollection<CarouselData>(source);
+			});
+
 		}
 
 		public ObservableCollection<CarouselData> Items

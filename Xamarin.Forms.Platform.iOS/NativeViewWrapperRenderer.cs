@@ -11,6 +11,12 @@ namespace Xamarin.Forms.Platform.MacOS
 {
 	public partial class NativeViewWrapperRenderer : ViewRenderer<NativeViewWrapper, UIView>
 	{
+		[Internals.Preserve(Conditional = true)]
+		public NativeViewWrapperRenderer()
+		{
+
+		}
+
 		public override SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
 		{
 			if (Element?.GetDesiredSizeDelegate == null)
