@@ -11,6 +11,7 @@
   <Target Name="SetVersions"
           BeforeTargets="PrepareForBuild;GetAssemblyVersion;GetPackageVersion;Pack"
           DependsOnTargets="GitVersion"
+          Condition="'$(DisableOriginalVersioning)'==''"
           Returns="$(Version)"
          >
     <PropertyGroup>
