@@ -61,6 +61,10 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 				_app.Reset();
 				args.Handled = true;
 			}
+			else if (args.VirtualKey == VirtualKey.F1)
+			{
+				_app.PlatformTest();
+			}
 		}
 
 		void AddNativeControls(NestedNativeControlGalleryPage page)

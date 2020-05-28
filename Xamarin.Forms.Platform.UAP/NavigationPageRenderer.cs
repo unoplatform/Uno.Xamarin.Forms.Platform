@@ -455,7 +455,10 @@ namespace Xamarin.Forms.Platform.UWP
 			if (_currentPage != null)
 			{
 				if (isPopping)
+				{
 					_currentPage.Cleanup();
+					_container.TitleView?.Cleanup();
+				}
 
 				_container.Content = null;
 				_currentPage.PropertyChanged -= OnCurrentPagePropertyChanged;

@@ -86,6 +86,8 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			base.OnConfigurationChanged(newConfig);
 			ConfigurationChanged?.Invoke(this, new EventArgs());
+
+			Xamarin.Forms.Application.Current?.OnRequestedThemeChanged(new AppThemeChangedEventArgs(Xamarin.Forms.Application.Current.RequestedTheme));
 		}
 
 		public override bool OnOptionsItemSelected(IMenuItem item)
@@ -316,6 +318,7 @@ namespace Xamarin.Forms.Platform.Android
 				_powerSaveModeBroadcastReceiver = new PowerSaveModeBroadcastReceiver();
 			}
 
+			ContextExtensions.SetDesignerContext(_layout);
 			Profile.FrameEnd();
 		}
 
@@ -511,7 +514,6 @@ namespace Xamarin.Forms.Platform.Android
 			PopupManager.ResetBusyCount(this);
 
 			Platform = new AppCompat.Platform(this);
-
 			Platform.SetPage(page);
 			_layout.AddView(Platform);
 			_layout.BringToFront();

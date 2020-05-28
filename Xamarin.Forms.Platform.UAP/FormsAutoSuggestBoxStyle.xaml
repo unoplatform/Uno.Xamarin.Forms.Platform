@@ -103,6 +103,8 @@
                               BorderBrush="{ThemeResource TextBoxButtonBorderThemeBrush}"
                               BorderThickness="{TemplateBinding BorderThickness}"
                               Background="{ThemeResource TextBoxButtonBackgroundThemeBrush}">
+													<TextBlock x:Name="GlyphElement"
+                                   Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
                             <TextBlock x:Name="GlyphElement"
                                    Foreground="{ThemeResource SystemControlBackgroundChromeBlackMediumBrush}"
                                    VerticalAlignment="Center"
@@ -164,6 +166,8 @@
                               BorderBrush="{ThemeResource TextBoxButtonBorderThemeBrush}"
                               BorderThickness="{TemplateBinding BorderThickness}"
                               Background="{ThemeResource TextBoxButtonBackgroundThemeBrush}">
+													<ContentPresenter x:Name="ContentPresenter"
+                                          Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
                             <ContentPresenter x:Name="ContentPresenter"
                                           Content="{TemplateBinding Content}"
                                           ContentTransitions="{TemplateBinding ContentTransitions}"

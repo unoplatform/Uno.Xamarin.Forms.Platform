@@ -7,11 +7,12 @@ using Xamarin.Forms.Platform.UWP;
 // Views
 
 [assembly: ExportRenderer(typeof(Layout), typeof(LayoutRenderer))]
-[assembly: ExportRenderer(typeof(BoxView), typeof(BoxViewRenderer))]
+[assembly: ExportRenderer(typeof(BoxView), typeof(BoxViewBorderRenderer))]
 [assembly: ExportRenderer(typeof(Image), typeof(ImageRenderer))]
 [assembly: ExportRenderer(typeof(ImageButton), typeof(ImageButtonRenderer))]
 [assembly: ExportRenderer(typeof(Label), typeof(LabelRenderer))]
 [assembly: ExportRenderer(typeof(Button), typeof(ButtonRenderer))]
+[assembly: ExportRenderer(typeof(RadioButton), typeof(RadioButtonRenderer))]
 [assembly: ExportRenderer(typeof(ListView), typeof(ListViewRenderer))]
 [assembly: ExportRenderer(typeof(CarouselView), typeof(CarouselViewRenderer))]
 [assembly: ExportRenderer(typeof(CollectionView), typeof(CollectionViewRenderer))]
@@ -70,3 +71,4 @@ using Xamarin.Forms.Platform.UWP;
 [assembly: ExportRenderer(typeof(EmbeddedFont), typeof(EmbeddedFontLoader))]
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Forms.DualScreen")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Forms.Platform.UAP.UnitTests")]
