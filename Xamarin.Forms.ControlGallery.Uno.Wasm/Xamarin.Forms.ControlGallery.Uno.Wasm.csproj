@@ -38,9 +38,9 @@
     <PackageReference Include="Xamarin.Forms" Version="4.5.0.356" ExcludeAssets="build" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-		<PackageReference Include="Uno.UI" Version="2.2.0-dev.18" />
-    <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.1.0-dev.426" />
-    <DotNetCliToolReference Include="Uno.Wasm.Bootstrap.CLI" Version="1.0.0-dev.300" />
+		<PackageReference Include="Uno.UI.WebAssembly" Version="3.0.0-dev.956" />
+    <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.4.0-dev.12" />
+    <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="1.4.0-dev.12" />
   </ItemGroup>
   
   
