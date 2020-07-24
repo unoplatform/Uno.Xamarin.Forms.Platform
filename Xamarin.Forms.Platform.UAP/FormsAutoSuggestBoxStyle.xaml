@@ -103,8 +103,6 @@
                               BorderBrush="{ThemeResource TextBoxButtonBorderThemeBrush}"
                               BorderThickness="{TemplateBinding BorderThickness}"
                               Background="{ThemeResource TextBoxButtonBackgroundThemeBrush}">
-													<TextBlock x:Name="GlyphElement"
-                                   Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
                             <TextBlock x:Name="GlyphElement"
                                    Foreground="{ThemeResource SystemControlBackgroundChromeBlackMediumBrush}"
                                    VerticalAlignment="Center"
@@ -120,6 +118,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+        
     <Style x:Key="FormsTextBox_QueryButtonStyle" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
