@@ -70,7 +70,7 @@ jobs:
 
 - job: Wasm_UITests
 
-  container: unoplatform/wasm-build:2.2
+  container: unoplatform/wasm-build:3.0
 
   pool:
     vmImage: 'ubuntu-latest'
