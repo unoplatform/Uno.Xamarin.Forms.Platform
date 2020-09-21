@@ -59,7 +59,7 @@ namespace Xamarin.Forms.Platform.UWP
 			Style = Windows.UI.Xaml.Application.Current.Resources["ShellNavigationView"] as Windows.UI.Xaml.Style;
 		}
 
-		async void OnBackRequested(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs args)
+		async void OnBackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
 		{
 			try
 			{
@@ -277,12 +277,12 @@ namespace Xamarin.Forms.Platform.UWP
 			if(_shell.Navigation.NavigationStack.Count > 1)
 			{
 				IsBackEnabled = true;
-				IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Visible;
+				IsBackButtonVisible = NavigationViewBackButtonVisible.Visible;
 			}
 			else
 			{
 				IsBackEnabled = false;
-				IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed;
+				IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed;
 			}
 
 			switch (_flyoutBehavior)
@@ -290,7 +290,7 @@ namespace Xamarin.Forms.Platform.UWP
 				case FlyoutBehavior.Disabled:
 					IsPaneToggleButtonVisible = false;
 					IsPaneVisible = false;
-					PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal;
+					PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
 					IsPaneOpen = false;
 					break;
 
@@ -298,14 +298,14 @@ namespace Xamarin.Forms.Platform.UWP
 					IsPaneVisible = true;
 					IsPaneToggleButtonVisible = !IsBackEnabled;
 					bool shouldOpen = Shell.FlyoutIsPresented;
-					PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal; //This will trigger opening the flyout
+					PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal; //This will trigger opening the flyout
 					IsPaneOpen = shouldOpen;
 					break;
 
 				case FlyoutBehavior.Locked:
 					IsPaneVisible = true;
 					IsPaneToggleButtonVisible = false;
-					PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Left;
+					PaneDisplayMode = NavigationViewPaneDisplayMode.Left;
 					break;
 			}
 		}

@@ -292,6 +292,8 @@
                                         Grid.Column="2"/>
 
                                     <!-- Top nav ItemsRepeater -->
+                                    <!--
+                                    UNO TODO
                                     <winui:ItemsRepeaterScrollHost
                                             Grid.Column="3">
                                         <ScrollViewer
@@ -310,6 +312,7 @@
                                             </winui:ItemsRepeater>
                                         </ScrollViewer>
                                     </winui:ItemsRepeaterScrollHost>
+                                    -->
 
                                     <Button 
                                         x:Name="TopNavOverflowButton"
@@ -330,6 +333,8 @@
                                                         <Setter Property="Margin" Value="0,-4,0,0" />
                                                     </Style>
                                                 </Flyout.FlyoutPresenterStyle>
+                                                <!--
+                                                UNO TODO
                                                 <winui:ItemsRepeaterScrollHost>
                                                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                                                         <winui:ItemsRepeater
@@ -340,7 +345,7 @@
                                                             </winui:ItemsRepeater.Layout>
                                                         </winui:ItemsRepeater>
                                                     </ScrollViewer>
-                                                </winui:ItemsRepeaterScrollHost>
+                                                </winui:ItemsRepeaterScrollHost>-->
                                             </Flyout>
                                         </Button.Flyout>
                                     </Button>
@@ -470,6 +475,8 @@
                                             Grid.Row="4" />
 
                                         <!-- Left nav ItemsRepeater -->
+                                        <!--
+                                        UNO TODO
                                         <winui:ItemsRepeaterScrollHost
                                             Grid.Row="6"
                                             Margin="0,0,0,20"
@@ -487,7 +494,7 @@
                                                     </winui:ItemsRepeater.Layout>
                                                 </winui:ItemsRepeater>
                                             </ScrollViewer>
-                                        </winui:ItemsRepeaterScrollHost>
+                                        </winui:ItemsRepeaterScrollHost>-->
 
 
                                         <ContentControl

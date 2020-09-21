@@ -26,9 +26,13 @@ namespace Xamarin.Forms.Platform.UWP
 			set => SetValue(IsSelectedProperty, value);
 		}
 
+#if HAS_UNO
+		void OnDataContextChanged(DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+#else
 		void OnDataContextChanged(Windows.UI.Xaml.FrameworkElement sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+#endif
 		{
-			if(Content is ViewToRendererConverter.WrapperControl oldControl)
+			if(Content is WrapperControl oldControl)
 			{				
 				oldControl.CleanUp();
 				if (_content != null)
@@ -48,7 +52,7 @@ namespace Xamarin.Forms.Platform.UWP
 				_content = (View)dataTemplate.CreateContent();
 				_content.BindingContext = bo;
 				_content.Parent = shell;
-				Content = new ViewToRendererConverter.WrapperControl(_content);
+				Content = new WrapperControl(_content);
 			}
 		}
 

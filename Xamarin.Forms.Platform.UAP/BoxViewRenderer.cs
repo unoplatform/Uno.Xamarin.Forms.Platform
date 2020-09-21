@@ -22,7 +22,7 @@ namespace Xamarin.Forms.Platform.UWP
 						DataContext = Element
 					};
 
-					rect.SetBinding(WShape.FillProperty, new Windows.UI.Xaml.Data.Binding { Converter = new BrushConverter(), ConverterParameter = e.NewElement.Color, Path = new PropertyPath("Background") });
+					rect.SetBinding(WShape.FillProperty, new Windows.UI.Xaml.Data.Binding { Converter = new FormsBrushConverter(), ConverterParameter = e.NewElement.Color, Path = new PropertyPath("Background") });
 
 					SetNativeControl(rect);
 				}

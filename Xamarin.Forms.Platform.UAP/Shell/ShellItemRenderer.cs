@@ -123,7 +123,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			if (Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.NavigationView", "IsBackButtonVisible"))
 			{
-				if (ShellContext.IsBackButtonVisible != Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed &&
+				if (ShellContext.IsBackButtonVisible != NavigationViewBackButtonVisible.Collapsed &&
 					ShellContext.IsBackEnabled)
 					inset += 45;
 			}

@@ -165,9 +165,8 @@
                               BorderBrush="{ThemeResource TextBoxButtonBorderThemeBrush}"
                               BorderThickness="{TemplateBinding BorderThickness}"
                               Background="{ThemeResource TextBoxButtonBackgroundThemeBrush}">
-													<ContentPresenter x:Name="ContentPresenter"
-                                          Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
                             <ContentPresenter x:Name="ContentPresenter"
+                                          Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
                                           Content="{TemplateBinding Content}"
                                           ContentTransitions="{TemplateBinding ContentTransitions}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"

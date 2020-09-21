@@ -143,7 +143,6 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void OnButtonClick(object sender, RoutedEventArgs e)
 		{
-			Console.WriteLine("OnButtonClick");
 			((IButtonController)Element)?.SendReleased();
 			((IButtonController)Element)?.SendClicked();
 		}

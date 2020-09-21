@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Graphics.Canvas.Text;
+using Microsoft.Extensions.Logging.Abstractions;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Xamarin.Forms.Internals;
 using IOPath = System.IO.Path;
 using WApplication = Windows.UI.Xaml.Application;
+
+#if !HAS_UNO
+using Microsoft.Graphics.Canvas.Text;
+#endif
 
 namespace Xamarin.Forms.Platform.UWP
 {
@@ -109,6 +113,9 @@ namespace Xamarin.Forms.Platform.UWP
 
 		static string FindFontFamilyName(string fontFile)
 		{
+#if HAS_UNO
+			return null;
+#else
 			using (var fontSet = new CanvasFontSet(new Uri(fontFile)))
 			{
 				if (fontSet.Fonts.Count == 0)
@@ -116,6 +123,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 				return fontSet.GetPropertyValues(CanvasFontPropertyIdentifier.FamilyName).FirstOrDefault().Value;
 			}
+#endif
 		}
 
 		static IEnumerable<string> GetAllFontPossibilities(string fontFamily)

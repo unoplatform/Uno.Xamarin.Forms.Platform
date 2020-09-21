@@ -9,4 +9,6 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
   </PropertyGroup>
+
+  <Target Name="GetTargetPath"/>
 </Project>
