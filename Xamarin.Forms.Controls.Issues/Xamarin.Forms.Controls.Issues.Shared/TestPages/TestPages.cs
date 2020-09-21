@@ -393,13 +393,17 @@ namespace Xamarin.Forms.Controls
 		[SetUp]
 		public void Setup()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestSetup(GetType(), Isolate);
+#endif
 		}
 
 		[TearDown]
 		public void TearDown()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestTearDown(Isolate);
+#endif
 		}
 #endif
 
@@ -426,13 +430,17 @@ namespace Xamarin.Forms.Controls
 		[SetUp]
 		public void Setup()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestSetup(GetType(), Isolate);
+#endif
 		}
 
 		[TearDown]
 		public virtual void TearDown()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestTearDown(Isolate);
+#endif
 		}
 #endif
 
@@ -461,13 +469,17 @@ namespace Xamarin.Forms.Controls
 		[SetUp]
 		public void Setup()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestSetup(GetType(), Isolate);
+#endif
 		}
 
 		[TearDown]
 		public void TearDown()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestTearDown(Isolate);
+#endif
 		}
 #endif
 
@@ -496,13 +508,17 @@ namespace Xamarin.Forms.Controls
 		[SetUp]
 		public void Setup()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestSetup(GetType(), Isolate);
+#endif
 		}
 
 		[TearDown]
 		public virtual void TearDown()
 		{
-			(RunningApp as ScreenshotConditionalApp).TestTearDown(Isolate);
+#if WINDOWS
+		(RunningApp as ScreenshotConditionalApp).TestTearDown(Isolate);
+#endif
 		}
 #endif
 
@@ -528,13 +544,17 @@ namespace Xamarin.Forms.Controls
 		[SetUp]
 		public void Setup()
 		{
-			(RunningApp as ScreenshotConditionalApp).TestSetup(GetType(), Isolate);
+#if WINDOWS
+		(RunningApp as ScreenshotConditionalApp).TestSetup(GetType(), Isolate);
+#endif
 		}
 
 		[TearDown]
 		public void TearDown()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestTearDown(Isolate);
+#endif
 		}
 #endif
 
@@ -566,13 +586,17 @@ namespace Xamarin.Forms.Controls
 		[SetUp]
 		public void Setup()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestSetup(GetType(), Isolate);
+#endif
 		}
 
 		[TearDown]
 		public virtual void TearDown()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestTearDown(Isolate);
+#endif
 		}
 #endif
 
@@ -787,13 +811,17 @@ namespace Xamarin.Forms.Controls
 		[SetUp]
 		public void Setup()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestSetup(GetType(), Isolate);
+#endif
 		}
 
 		[TearDown]
 		public virtual void TearDown()
 		{
+#if WINDOWS
 			(RunningApp as ScreenshotConditionalApp).TestTearDown(Isolate);
+#endif
 		}
 
 		public void ShowFlyout(string flyoutIcon = FlyoutIconAutomationId, bool usingSwipe = false, bool testForFlyoutIcon = true)

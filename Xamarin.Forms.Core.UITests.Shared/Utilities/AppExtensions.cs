@@ -38,18 +38,26 @@ namespace Xamarin.UITest
 
 		public static void AttachScreenshotToTestContext(this IApp app, string title)
 		{
+#if __WINDOWS__
 			((ScreenshotConditionalApp)app).AttachScreenshotToTestContext(title);
+#else
+#endif
 		}
 
 		public static void AttachScreenshotIfOutcomeFailed(this IApp app)
 		{
+#if __WINDOWS__
 			((ScreenshotConditionalApp)app).AttachScreenshotIfOutcomeFailed();
+#else
+#endif
 		}
 
 		public static AppResult WaitForFirstElement(this IApp app, string marked, string timeoutMessage = "Timed out waiting for element...")
 		{
+#if __WINDOWS__
 			if (app is ScreenshotConditionalApp scp)
 				return scp.WaitForFirstElement(marked, timeoutMessage);
+#endif
 
 			return app.WaitForElement(marked, timeoutMessage).FirstOrDefault();
 		}

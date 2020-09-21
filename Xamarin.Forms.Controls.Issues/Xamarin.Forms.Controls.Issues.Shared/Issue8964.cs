@@ -9,6 +9,11 @@ using Xamarin.Forms.Core.UITests;
 using Xamarin.UITest;
 using NUnit.Framework;
 #endif
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+using AppQuery = Uno.UITest.IAppQuery;
+using AppResult = Uno.UITest.IAppResult;
+#endif
 
 namespace Xamarin.Forms.Controls.Issues
 {
@@ -144,7 +149,7 @@ namespace Xamarin.Forms.Controls.Issues
 
 		}
 
-		void SwipePreviousItem(UITest.Queries.AppRect rect)
+		void SwipePreviousItem(AppRect rect)
 		{
 #if __ANDROID__
 			RunningApp.DragCoordinates(rect.X + 10, rect.Y, rect.X + rect.Width - 10, rect.Y);

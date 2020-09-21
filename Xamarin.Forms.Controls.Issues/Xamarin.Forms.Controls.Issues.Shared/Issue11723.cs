@@ -15,6 +15,12 @@ using NUnit.Framework;
 using Xamarin.Forms.Core.UITests;
 #endif
 
+#if __WASM__
+using AppRect = Uno.UITest.IAppRect;
+using AppQuery = Uno.UITest.IAppQuery;
+using AppResult = Uno.UITest.IAppResult;
+#endif
+
 namespace Xamarin.Forms.Controls.Issues
 {
 	[Preserve(AllMembers = true)]
@@ -94,7 +100,7 @@ namespace Xamarin.Forms.Controls.Issues
 
 		}
 
-		void CompareTextLocation(UITest.Queries.AppRect initialRect, int i)
+		void CompareTextLocation(AppRect initialRect, int i)
 		{
 			var newRect = RunningApp.WaitForFirstElement($"InitialText{i}").Rect;
 
