@@ -21,7 +21,12 @@
     <RepositoryUrl>https://github.com/unoplatform/Uno.Xamarin.Forms.Platform</RepositoryUrl>
     <Description>Uno Platform WebAssembly Renderers for Xamarin.Forms</Description>
     <Copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</Copyright>
-	</PropertyGroup>
+    <PackageIcon>uno-logo.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="uno-logo.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
 		<PackageReference Include="Uno.UI" Version="3.0.12" PrivateAssets="none" />
