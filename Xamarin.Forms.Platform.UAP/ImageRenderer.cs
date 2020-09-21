@@ -21,6 +21,7 @@ namespace Xamarin.Forms.Platform.UWP
 		public ImageRenderer() : base()
 		{
 			ImageElementManager.Init(this);
+			Windows.UI.Xaml.Application.Current.Resuming += OnResumingAsync;
 		}
 
 		bool IImageVisualElementRenderer.IsDisposed => _disposed;
@@ -59,8 +60,9 @@ namespace Xamarin.Forms.Platform.UWP
 				ImageElementManager.Dispose(this);
 				if (Control != null)
 				{
-					ImageControl.ImageOpened -= OnImageOpened;
-					ImageControl.ImageFailed -= OnImageFailed;
+					Control.ImageOpened -= OnImageOpened;
+					Control.ImageFailed -= OnImageFailed;
+					Windows.UI.Xaml.Application.Current.Resuming -= OnResumingAsync;
 				}
 			}
 
@@ -99,12 +101,7 @@ namespace Xamarin.Forms.Platform.UWP
 				await TryUpdateSource().ConfigureAwait(false);
 		}
 
-
-#if HAS_UNO
-		void OnImageOpened(object sender, EventArgs routedEventArgs)
-#else
 		void OnImageOpened(object sender, RoutedEventArgs routedEventArgs)
-#endif
 		{
 			if (_measured)
 			{
@@ -127,7 +124,6 @@ namespace Xamarin.Forms.Platform.UWP
 			Element?.SetIsLoading(false);
 		}
 #endif
-
 
 		protected virtual async Task TryUpdateSource()
 		{
@@ -152,6 +148,19 @@ namespace Xamarin.Forms.Platform.UWP
 		protected async Task UpdateSource()
 		{
 			await ImageElementManager.UpdateSource(this).ConfigureAwait(false);
+		}
+
+		async void OnResumingAsync(object sender, object e)
+		{
+			try
+			{
+				await ImageElementManager.UpdateSource(this);
+			}
+			catch (Exception exception)
+			{
+				Log.Warning("Update image source after app resume", 
+					$"ImageSource failed to update after app resume: {exception.Message}");				
+			}
 		}
 
 		void IImageVisualElementRenderer.SetImage(Windows.UI.Xaml.Media.ImageSource image)

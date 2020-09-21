@@ -201,8 +201,6 @@ namespace Xamarin.Forms
 					SetInheritedBindingContext(this, null);
 				}
 
-				VisualDiagnostics.SendVisualTreeChanged(value, this);
-
 				OnParentSet();
 
 				OnPropertyChanged();
@@ -325,16 +323,23 @@ namespace Xamarin.Forms
 
 			ChildAdded?.Invoke(this, new ElementEventArgs(child));
 
+			VisualDiagnostics.OnChildAdded(this, child);
+
 			OnDescendantAdded(child);
 			foreach (Element element in child.Descendants())
 				OnDescendantAdded(element);
 		}
 
-		protected virtual void OnChildRemoved(Element child)
+		[Obsolete("OnChildRemoved(Element) is obsolete as of version 4.8.0. Please use OnChildRemoved(Element, int) instead.")]
+		protected virtual void OnChildRemoved(Element child) => OnChildRemoved(child, -1);
+
+		protected virtual void OnChildRemoved(Element child, int oldLogicalIndex)
 		{
 			child.Parent = null;
 
 			ChildRemoved?.Invoke(child, new ElementEventArgs(child));
+
+			VisualDiagnostics.OnChildRemoved(this, child, oldLogicalIndex);
 
 			OnDescendantRemoved(child);
 			foreach (Element element in child.Descendants())
@@ -344,7 +349,7 @@ namespace Xamarin.Forms
 		protected virtual void OnParentSet()
 		{
 			ParentSet?.Invoke(this, EventArgs.Empty);
-			ApplyStyleSheetsOnParentSet();
+			ApplyStyleSheets();
 			(this as IPropertyPropagationController)?.PropagatePropertyChanged(null);
 		}
 
@@ -388,7 +393,7 @@ namespace Xamarin.Forms
 		internal virtual void OnParentResourcesChanged(object sender, ResourcesChangedEventArgs e)
 		{
 			if (e == ResourcesChangedEventArgs.StyleSheets)
-				ApplyStyleSheetsOnParentSet();
+				ApplyStyleSheets();
 			else
 				OnParentResourcesChanged(e.Values);
 		}
@@ -409,7 +414,10 @@ namespace Xamarin.Forms
 
 		internal virtual void OnResourcesChanged(object sender, ResourcesChangedEventArgs e)
 		{
-			OnResourcesChanged(e.Values);
+			if (e == ResourcesChangedEventArgs.StyleSheets)
+				ApplyStyleSheets();
+			else
+				OnResourcesChanged(e.Values);
 		}
 
 		internal void OnResourcesChanged(IEnumerable<KeyValuePair<string, object>> values)

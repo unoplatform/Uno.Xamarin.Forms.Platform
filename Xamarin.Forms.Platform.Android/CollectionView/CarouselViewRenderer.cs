@@ -24,6 +24,7 @@ namespace Xamarin.Forms.Platform.Android
 		int _gotoPosition = -1;
 		bool _noNeedForScroll;
 		bool _initialized;
+		bool _isVisible;
 
 		List<View> _oldViews;
 		CarouselViewwOnGlobalLayoutListener _carouselViewLayoutListener;
@@ -188,7 +189,7 @@ namespace Xamarin.Forms.Platform.Android
 			var oldItemViewAdapter = ItemsViewAdapter;
 			UnsubscribeCollectionItemsSourceChanged(oldItemViewAdapter);
 
-			ItemsViewAdapter = new ItemsViewAdapter<ItemsView, IItemsViewSource>(ItemsView,
+			ItemsViewAdapter = new ItemsViewAdapter<ItemsView, IItemsViewSource>(ItemsView, 
 				(view, context) => new SizedItemContentView(Context, GetItemWidth, GetItemHeight));
 
 			_gotoPosition = -1;
@@ -303,6 +304,14 @@ namespace Xamarin.Forms.Platform.Android
 
 			SetCurrentItem(_oldPosition);
 			Carousel.ScrollTo(_oldPosition, position: Xamarin.Forms.ScrollToPosition.Center, animate: Carousel.AnimatePositionChanges);
+		}
+
+		void UpdatePositionFromVisibilityChanges()
+		{
+			if (_isVisible != Carousel.IsVisible)
+				UpdateInitialPosition();
+
+			_isVisible = Carousel.IsVisible;
 		}
 
 		void UpdateVisualStates()
@@ -456,10 +465,11 @@ namespace Xamarin.Forms.Platform.Android
 			{
 				UpdateInitialPosition();
 				Carousel.Scrolled += CarouselViewScrolled;
-
 				_initialized = true;
+				_isVisible = Carousel.IsVisible;
 			}
 
+			UpdatePositionFromVisibilityChanges();
 			UpdateVisualStates();
 		}
 

@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel.LockScreen;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
 using Windows.Storage;
@@ -22,6 +21,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Xamarin.Forms.Internals;
+using IOPath = System.IO.Path;
 
 namespace Xamarin.Forms.Platform.UWP
 {
@@ -67,7 +67,7 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				try
 				{
-					Assembly assembly = Assembly.Load(new AssemblyName { Name = Path.GetFileNameWithoutExtension(file.Name) });
+					Assembly assembly = Assembly.Load(new AssemblyName { Name = IOPath.GetFileNameWithoutExtension(file.Name) });
 
 					assemblies.Add(assembly);
 				}
@@ -99,36 +99,9 @@ namespace Xamarin.Forms.Platform.UWP
 #endif
 		}
 
-		public string GetMD5Hash(string input)
-		{
-#if HAS_UNO
-			// MSDN - Documentation -https://msdn.microsoft.com/en-us/library/system.security.cryptography.md5(v=vs.110).aspx
-			using (System.Security.Cryptography.MD5 md5Hash = System.Security.Cryptography.MD5.Create())
-			{
-				// Convert the input string to a byte array and compute the hash.
-				byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+		public string GetHash(string input) => Crc64.GetHash(input);
 
-				// Create a new Stringbuilder to collect the bytes
-				// and create a string.
-				StringBuilder sBuilder = new StringBuilder();
-
-				// Loop through each byte of the hashed data 
-				// and format each one as a hexadecimal string.
-				for (int i = 0; i < data.Length; i++)
-				{
-					sBuilder.Append(data[i].ToString("x2"));
-				}
-
-				// Return the hexadecimal string.
-				return sBuilder.ToString();
-			}
-
-#else
-			HashAlgorithmProvider algorithm = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Md5);
-			IBuffer buffer = algorithm.HashData(Encoding.Unicode.GetBytes(input).AsBuffer());
-			return CryptographicBuffer.EncodeToHexString(buffer);
-#endif
-		}
+		string IPlatformServices.GetMD5Hash(string input) => GetHash(input);
 
 		public double GetNamedSize(NamedSize size, Type targetElementType, bool useOldSizes)
 		{
@@ -200,7 +173,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 		async void UISettingsColorValuesChanged(UISettings sender, object args)
 		{
-			await _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Application.Current?.OnRequestedThemeChanged(new AppThemeChangedEventArgs(Application.Current.RequestedTheme)));
+			await _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Application.Current?.TriggerThemeChanged(new AppThemeChangedEventArgs(Application.Current.RequestedTheme)));
 		}
 
 		async Task TryAllDispatchers(Action action)

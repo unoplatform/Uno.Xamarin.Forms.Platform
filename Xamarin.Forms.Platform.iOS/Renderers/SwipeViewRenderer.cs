@@ -13,6 +13,7 @@ namespace Xamarin.Forms.Platform.iOS
 {
 	public class SwipeViewRenderer : ViewRenderer<SwipeView, UIView>
 	{
+		const float MinimumOpenSwipeThresholdPercentage = 0.15f; // 15%
 		const float OpenSwipeThresholdPercentage = 0.6f; // 60%
 		const double SwipeThreshold = 250;
 		const double SwipeItemWidth = 100;
@@ -38,6 +39,7 @@ namespace Xamarin.Forms.Platform.iOS
 		double _previousScrollY;
 		int _previousFirstVisibleIndex;
 		bool _isSwipeEnabled;
+		bool _isScrollEnabled;
 		bool _isResettingSwipe;
 		bool _isOpen;
 		bool _isDisposed;
@@ -48,6 +50,7 @@ namespace Xamarin.Forms.Platform.iOS
 			SwipeView.VerifySwipeViewFlagEnabled(nameof(SwipeViewRenderer));
 
 			_swipeItems = new Dictionary<ISwipeItem, object>();
+			_isScrollEnabled = true;
 
 			_tapGestureRecognizer = new UITapGestureRecognizer(HandleTap)
 			{
@@ -150,6 +153,8 @@ namespace Xamarin.Forms.Platform.iOS
 				UpdateContent();
 			else if (e.PropertyName == VisualElement.BackgroundColorProperty.PropertyName)
 				SetBackgroundColor(Element.BackgroundColor);
+			else if (e.PropertyName == VisualElement.BackgroundProperty.PropertyName)
+				SetBackground(Element.Background);
 			else if (e.PropertyName == VisualElement.IsEnabledProperty.PropertyName)
 				UpdateIsSwipeEnabled();
 			else if (e.PropertyName == Specifics.SwipeTransitionModeProperty.PropertyName)
@@ -172,6 +177,17 @@ namespace Xamarin.Forms.Platform.iOS
 
 			if (_contentView != null && _contentView.BackgroundColor == UIColor.Clear)
 				_contentView.BackgroundColor = backgroundColor;
+		}
+
+		protected override void SetBackground(Brush brush)
+		{
+			Brush background = Element.Background;
+
+			if (Control != null)
+				Control.UpdateBackground(background);
+
+			if (_contentView != null && Element.Content == null && HasSwipeItems())
+				_contentView.UpdateBackground(background);
 		}
 
 		public override void TouchesEnded(NSSet touches, UIEvent evt)
@@ -351,7 +367,7 @@ namespace Xamarin.Forms.Platform.iOS
 		{
 			if (panGestureRecognizer != null)
 			{
-				var point = panGestureRecognizer.LocationInView(Control);
+				CGPoint point = panGestureRecognizer.LocationInView(this);
 				var navigationController = GetUINavigationController(GetViewController());
 
 				switch (panGestureRecognizer.State)
@@ -471,6 +487,10 @@ namespace Xamarin.Forms.Platform.iOS
 			_swipeItemsRect.Clear();
 
 			var items = GetSwipeItemsByDirection();
+
+			if (items == null || items.Count == 0)
+				return;
+
 			int i = 0;
 			float previousWidth = 0;
 
@@ -746,7 +766,10 @@ namespace Xamarin.Forms.Platform.iOS
 			UpdateIsOpen(_swipeOffset != 0);
 
 			if (Math.Abs(_swipeOffset) > double.Epsilon)
+			{
+				IsParentScrollEnabled(false);
 				Swipe();
+			}
 
 			RaiseSwipeChanging();
 		}
@@ -762,6 +785,7 @@ namespace Xamarin.Forms.Platform.iOS
 				return;
 
 			_isSwiping = false;
+			IsParentScrollEnabled(true);
 
 			RaiseSwipeEnded();
 
@@ -769,6 +793,24 @@ namespace Xamarin.Forms.Platform.iOS
 				return;
 
 			ValidateSwipeThreshold();
+		}
+
+		void IsParentScrollEnabled(bool scrollEnabled)
+		{
+			var swipeThresholdPercent = MinimumOpenSwipeThresholdPercentage * GetSwipeThreshold();
+
+			if (Math.Abs(_swipeOffset) < swipeThresholdPercent)
+				return;
+
+			if (scrollEnabled == _isScrollEnabled)
+				return;
+
+			_isScrollEnabled = scrollEnabled;
+
+			var parent = this.GetParentOfType<UIScrollView>();
+
+			if (parent != null)
+				parent.ScrollEnabled = _isScrollEnabled;
 		}
 
 		bool CanProcessTouchSwipeItems(CGPoint point)
@@ -1374,6 +1416,9 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void UpdateIsOpen(bool isOpen)
 		{
+			if (Element == null)
+				return;
+
 			((ISwipeViewController)Element).IsOpen = isOpen;
 		}
 
