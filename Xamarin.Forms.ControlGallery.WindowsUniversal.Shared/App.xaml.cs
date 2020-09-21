@@ -35,6 +35,7 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 		public App()
         {
 #if HAS_UNO
+			global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;
 			global::Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlName = true;
 			ApiInformation.IsFailWhenNotImplemented = false;
 #endif
