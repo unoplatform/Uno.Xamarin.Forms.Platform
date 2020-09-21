@@ -4,8 +4,8 @@ set -euo pipefail
 
 cd $BUILD_SOURCESDIRECTORY
 
-msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/Xamarin.Forms.ControlGallery.Uno.Wasm/Xamarin.Forms.ControlGallery.Uno.Wasm.csproj
-msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/Xamarin.Forms.Core.UITests.Wasm/Xamarin.Forms.Core.UITests.Wasm.csproj
+msbuild /r /p:Configuration=Release /p:DisableOriginalVersioning=true $BUILD_SOURCESDIRECTORY/Xamarin.Forms.ControlGallery.Uno.Wasm/Xamarin.Forms.ControlGallery.Uno.Wasm.csproj
+msbuild /r /p:Configuration=Release /p:DisableOriginalVersioning=true $BUILD_SOURCESDIRECTORY/Xamarin.Forms.Core.UITests.Wasm/Xamarin.Forms.Core.UITests.Wasm.csproj
 
 cd $BUILD_SOURCESDIRECTORY/build
 
