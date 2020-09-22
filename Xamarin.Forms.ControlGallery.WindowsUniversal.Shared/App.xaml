@@ -8,7 +8,7 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="ms-appx:///Xamarin.Forms.Platform.UAP/Resources.xbf" />
+				<ResourceDictionary Source="ms-appx:///Xamarin.Forms.Platform.UAP/Resources.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

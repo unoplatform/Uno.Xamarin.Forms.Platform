@@ -106,7 +106,8 @@ namespace Xamarin.Forms
 		internal static Windows.UI.Xaml.ResourceDictionary GetTabletResources()
 		{
 			return new Windows.UI.Xaml.ResourceDictionary {
-				Source = new Uri("ms-appx:///Xamarin.Forms.Platform.UAP/Resources.xbf")
+				// UNO TODO
+				Source = new Uri("ms-appx:///Xamarin.Forms.Platform.UAP/Resources.xaml")
 			};
 		}
 	}

@@ -349,7 +349,7 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				var titleBar = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().TitleBar;
 				if (overrideColor)
-					toggleButton.Foreground = new WSolidColorBrush(titleBar.ButtonForegroundColor.Value);
+					toggleButton.Foreground = new WSolidColorBrush(titleBar.ButtonForegroundColor ?? Windows.UI.Colors.Black);
 				else
 					toggleButton.ClearValue(Control.ForegroundProperty);
 			}
