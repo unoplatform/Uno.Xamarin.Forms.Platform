@@ -8,7 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\Xamarin.Forms.ControlGallery.Uno.UWP\Package.appxmanifest" LogicalName="Package.appxmanifest" />
-    <Content Include="..\Xamarin.Forms.ControlGallery.Uno.UWP\Assets\StoreLogo.png" Link="Assets\StoreLogo.png" />
   </ItemGroup>
   <ItemGroup>
     <UpToDateCheckInput Include="..\Xamarin.Forms.ControlGallery.Shared\**\*.xaml" />
