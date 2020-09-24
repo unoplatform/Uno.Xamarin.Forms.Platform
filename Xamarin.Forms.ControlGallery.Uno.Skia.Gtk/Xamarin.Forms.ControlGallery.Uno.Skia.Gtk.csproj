@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
+    <OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <NoWarn>NU1701;Uno0001</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Xamarin.Forms.ControlGallery.Uno.UWP\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Include="..\Xamarin.Forms.ControlGallery.Shared\**\*.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Note that for WebAssembly version 1.1.1 of the console logger required -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+    <PackageReference Include="Uno.UI.Skia.Gtk" Version="3.1.0-dev.414" />
+    <!--<PackageReference Include="Uno.UI.RemoteControl" Version="3.1.0-dev.414" Condition="'$(Configuration)'=='Debug'" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xamarin.Forms.Controls\Xamarin.Forms.Controls.csproj">
+      <Project>{cb9c96ce-125c-4a68-b6a1-c3ff1fbf93e1}</Project>
+      <Name>Xamarin.Forms.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xamarin.Forms.Platform.UAP\Xamarin.Forms.Platform.Uno.csproj" />
+  </ItemGroup>
+
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+
+  <Import Project="..\Xamarin.Forms.ControlGallery.Uno.Shared\Xamarin.Forms.ControlGallery.Uno.Shared.projitems" Label="Shared" Condition="Exists('..\Xamarin.Forms.ControlGallery.Uno.Shared\Xamarin.Forms.ControlGallery.Uno.Shared.projitems')" />
+
+  <Import Project="..\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared\Xamarin.Forms.ControlGallery.WindowsUniversal.Shared.projitems" Label="Shared" />
+
+</Project>

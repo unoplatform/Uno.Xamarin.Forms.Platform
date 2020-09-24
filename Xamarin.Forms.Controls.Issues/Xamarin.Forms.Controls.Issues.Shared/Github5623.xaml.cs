@@ -24,6 +24,7 @@ namespace Xamarin.Forms.Controls.Issues
 {
 #if UITEST
 	[Category(UITestCategories.CollectionView)]
+	[NUnit.Framework.Category(Core.UITests.UITestCategories.Github5000)]
 #endif
 #if APP
 	[XamlCompilation(XamlCompilationOptions.Compile)]

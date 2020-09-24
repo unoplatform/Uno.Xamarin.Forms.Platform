@@ -118,6 +118,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+        
     <Style x:Key="FormsTextBox_QueryButtonStyle" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
@@ -165,6 +166,7 @@
                               BorderThickness="{TemplateBinding BorderThickness}"
                               Background="{ThemeResource TextBoxButtonBackgroundThemeBrush}">
                             <ContentPresenter x:Name="ContentPresenter"
+                                          Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
                                           Content="{TemplateBinding Content}"
                                           ContentTransitions="{TemplateBinding ContentTransitions}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"

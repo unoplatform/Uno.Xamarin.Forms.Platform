@@ -16,7 +16,7 @@ jobs:
       
   - task: NuGetToolInstaller@0
     inputs:
-        versionSpec: 4.7.0
+        versionSpec: 5.1.0
         checkLatest: false
 
   - task: NuGetCommand@2
@@ -70,10 +70,10 @@ jobs:
 
 - job: Wasm_UITests
 
-  container: nventive/wasm-build:1.1-bionic
+  container: unoplatform/wasm-build:3.0
 
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-latest'
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget

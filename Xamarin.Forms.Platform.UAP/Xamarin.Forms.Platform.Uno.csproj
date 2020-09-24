@@ -10,8 +10,8 @@
     
 		<DefineConstants>NETFX_CORE;WINDOWS_UWP</DefineConstants>
 
-    <AssemblyName>Xamarin.Forms.Platform.Uno</AssemblyName>
-    <RootNamespace>Xamarin.Forms.Platform</RootNamespace>
+    <AssemblyName>Xamarin.Forms.Platform.UAP</AssemblyName>
+    <RootNamespace>Xamarin.Forms.Platform.UAP</RootNamespace>
     <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
     
     <PackageId>Uno.Xamarin.Forms.Platform</PackageId>
@@ -29,7 +29,7 @@
   </ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
-		<PackageReference Include="Uno.UI" Version="3.0.0-dev.956" PrivateAssets="none" />
+		<PackageReference Include="Uno.UI" Version="3.0.12" PrivateAssets="none" />
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
   
@@ -44,8 +44,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\Xamarin.Forms.Core\StreamWrapper.cs" Link="StreamWrapper.cs" />
-	</ItemGroup>
+    <Compile Include="..\Xamarin.Forms.Core\StreamWrapper.cs" Link="StreamWrapper.cs" />
+    <Compile Include="..\Xamarin.Forms.Core\Crc64.cs" Link="Crc64.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="build/Uno.Xamarin.Forms.Platform.targets">
@@ -55,7 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.5.0.356" ExcludeAssets="build" />
+    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1451" ExcludeAssets="build;buildTransitive" />
 	</ItemGroup>
 
   <Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">

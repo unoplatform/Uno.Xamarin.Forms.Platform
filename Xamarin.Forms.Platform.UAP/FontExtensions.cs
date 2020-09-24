@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging.Abstractions;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Xamarin.Forms.Core;
 using Xamarin.Forms.Internals;
+using IOPath = System.IO.Path;
 using WApplication = Windows.UI.Xaml.Application;
+
+#if !HAS_UNO
+using Microsoft.Graphics.Canvas.Text;
+#endif
 
 namespace Xamarin.Forms.Platform.UWP
 {
 	public static class FontExtensions
 	{
 		static Dictionary<string, FontFamily> FontFamilies = new Dictionary<string, FontFamily>();
+		static double DefaultFontSize = double.NegativeInfinity;
 
 		public static void ApplyFont(this Control self, Font font)
 		{
@@ -52,7 +59,11 @@ namespace Xamarin.Forms.Platform.UWP
 			switch (size)
 			{
 				case NamedSize.Default:
-					return (double)WApplication.Current.Resources["ControlContentThemeFontSize"];
+					if(DefaultFontSize == double.NegativeInfinity)
+					{
+						DefaultFontSize = (double)WApplication.Current.Resources["ControlContentThemeFontSize"];
+					}
+					return DefaultFontSize;
 				case NamedSize.Micro:
 					return 15.667;
 				case NamedSize.Small:
@@ -100,8 +111,34 @@ namespace Xamarin.Forms.Platform.UWP
 			return font;
 		}
 
+		static string FindFontFamilyName(string fontFile)
+		{
+#if HAS_UNO
+			return null;
+#else
+			using (var fontSet = new CanvasFontSet(new Uri(fontFile)))
+			{
+				if (fontSet.Fonts.Count == 0)
+					return null;
+
+				return fontSet.GetPropertyValues(CanvasFontPropertyIdentifier.FamilyName).FirstOrDefault().Value;
+			}
+#endif
+		}
+
 		static IEnumerable<string> GetAllFontPossibilities(string fontFamily)
 		{
+			//First check Alias
+			var (hasFontAlias, fontPostScriptName) = FontRegistrar.HasFont(fontFamily);
+			if (hasFontAlias)
+			{
+				var familyName = FindFontFamilyName(fontPostScriptName);
+				var file = FontFile.FromString(IOPath.GetFileName(fontPostScriptName));
+				var formatted = $"{fontPostScriptName}#{familyName ?? file.GetPostScriptNameWithSpaces()}";
+				yield return formatted;
+				yield break;
+			}
+
 			const string path = "Assets/Fonts/";
 			string[] extensions = new[]
 			{
@@ -117,8 +154,9 @@ namespace Xamarin.Forms.Platform.UWP
 				var (hasFont, filePath) = FontRegistrar.HasFont(fontFile.FileNameWithExtension());
 				if (hasFont)
 				{
-					var formated = $"{filePath}#{fontFile.GetPostScriptNameWithSpaces()}";
-					yield return formated;
+					var familyName = FindFontFamilyName(filePath);
+					var formatted = $"{filePath}#{familyName ?? fontFile.GetPostScriptNameWithSpaces()}";
+					yield return formatted;
 					yield break;
 				}
 				else
@@ -131,7 +169,8 @@ namespace Xamarin.Forms.Platform.UWP
 				var (hasFont, filePath) = FontRegistrar.HasFont(fontFile.FileNameWithExtension(ext));
 				if (hasFont)
 				{
-					var formatted = $"{filePath}#{fontFile.GetPostScriptNameWithSpaces()}";
+					var familyName = FindFontFamilyName(filePath);
+					var formatted = $"{filePath}#{familyName ?? fontFile.GetPostScriptNameWithSpaces()}";
 					yield return formatted;
 					yield break;
 				}
@@ -142,7 +181,9 @@ namespace Xamarin.Forms.Platform.UWP
 
 			foreach (var ext in extensions)
 			{
-				var formatted = $"{path}{fontFile.FileNameWithExtension(ext)}#{fontFile.GetPostScriptNameWithSpaces()}";
+				var fileName = $"{path}{fontFile.FileNameWithExtension(ext)}";
+				var familyName = FindFontFamilyName(fileName);
+				var formatted = $"{fileName}#{familyName ?? fontFile.GetPostScriptNameWithSpaces()}";
 				yield return formatted;
 			}
 		}

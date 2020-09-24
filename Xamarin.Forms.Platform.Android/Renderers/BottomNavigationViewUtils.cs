@@ -1,16 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using AColor = Android.Graphics.Color;
-using AView = Android.Views.View;
 using ColorStateList = Android.Content.Res.ColorStateList;
 using IMenu = Android.Views.IMenu;
 using LP = Android.Views.ViewGroup.LayoutParams;
@@ -19,6 +12,7 @@ using Typeface = Android.Graphics.Typeface;
 using TypefaceStyle = Android.Graphics.TypefaceStyle;
 using Android.Graphics.Drawables;
 using System.Threading.Tasks;
+using Android.Content.Res;
 
 #if __ANDROID_29__
 using Google.Android.Material.BottomNavigation;
@@ -88,10 +82,9 @@ namespace Xamarin.Forms.Platform.Android
 
 			if (showMore)
 			{
-				var moreString = new Java.Lang.String("More");
+				var moreString = context.Resources.GetText(Resource.String.overflow_tab_title);
 				var menuItem = menu.Add(0, MoreTabId, 0, moreString);
 				menuItems.Add(menuItem);
-				moreString.Dispose();
 
 				menuItem.SetIcon(Resource.Drawable.abc_ic_menu_overflow_material);
 				if (currentIndex >= maxBottomItems - 1)

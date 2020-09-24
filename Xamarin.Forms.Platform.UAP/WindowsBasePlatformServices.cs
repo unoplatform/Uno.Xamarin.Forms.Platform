@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel.LockScreen;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
 using Windows.Storage;
@@ -18,9 +17,11 @@ using Windows.Storage.Search;
 using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Xamarin.Forms.Internals;
+using IOPath = System.IO.Path;
 
 namespace Xamarin.Forms.Platform.UWP
 {
@@ -28,10 +29,12 @@ namespace Xamarin.Forms.Platform.UWP
 	{
 		const string WrongThreadError = "RPC_E_WRONG_THREAD";
 		readonly CoreDispatcher _dispatcher;
+		readonly UISettings _uiSettings = new UISettings();
 
 		protected WindowsBasePlatformServices(CoreDispatcher dispatcher)
 		{
 			_dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+			_uiSettings.ColorValuesChanged += UISettingsColorValuesChanged;
 		}
 
 		public async void BeginInvokeOnMainThread(Action action)
@@ -64,7 +67,7 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				try
 				{
-					Assembly assembly = Assembly.Load(new AssemblyName { Name = Path.GetFileNameWithoutExtension(file.Name) });
+					Assembly assembly = Assembly.Load(new AssemblyName { Name = IOPath.GetFileNameWithoutExtension(file.Name) });
 
 					assemblies.Add(assembly);
 				}
@@ -96,40 +99,21 @@ namespace Xamarin.Forms.Platform.UWP
 #endif
 		}
 
-		public string GetMD5Hash(string input)
-		{
-#if HAS_UNO
-			// MSDN - Documentation -https://msdn.microsoft.com/en-us/library/system.security.cryptography.md5(v=vs.110).aspx
-			using (System.Security.Cryptography.MD5 md5Hash = System.Security.Cryptography.MD5.Create())
-			{
-				// Convert the input string to a byte array and compute the hash.
-				byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+		public string GetHash(string input) => Crc64.GetHash(input);
 
-				// Create a new Stringbuilder to collect the bytes
-				// and create a string.
-				StringBuilder sBuilder = new StringBuilder();
-
-				// Loop through each byte of the hashed data 
-				// and format each one as a hexadecimal string.
-				for (int i = 0; i < data.Length; i++)
-				{
-					sBuilder.Append(data[i].ToString("x2"));
-				}
-
-				// Return the hexadecimal string.
-				return sBuilder.ToString();
-			}
-
-#else
-			HashAlgorithmProvider algorithm = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Md5);
-			IBuffer buffer = algorithm.HashData(Encoding.Unicode.GetBytes(input).AsBuffer());
-			return CryptographicBuffer.EncodeToHexString(buffer);
-#endif
-		}
+		string IPlatformServices.GetMD5Hash(string input) => GetHash(input);
 
 		public double GetNamedSize(NamedSize size, Type targetElementType, bool useOldSizes)
 		{
 			return size.GetFontSize();
+		}
+
+		public Color GetNamedColor(string name)
+		{
+			if (!Windows.UI.Xaml.Application.Current?.Resources.ContainsKey(name) ?? true)
+				return Color.Default;
+
+			return ((Windows.UI.Color)Windows.UI.Xaml.Application.Current?.Resources[name]).ToFormsColor();
 		}
 
 		public async Task<Stream> GetStreamAsync(Uri uri, CancellationToken cancellationToken)
@@ -185,6 +169,11 @@ namespace Xamarin.Forms.Platform.UWP
 		public SizeRequest GetNativeSize(VisualElement view, double widthConstraint, double heightConstraint)
 		{
 			return Platform.GetNativeSize(view, widthConstraint, heightConstraint);
+		}
+
+		async void UISettingsColorValuesChanged(UISettings sender, object args)
+		{
+			await _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Application.Current?.TriggerThemeChanged(new AppThemeChangedEventArgs(Application.Current.RequestedTheme)));
 		}
 
 		async Task TryAllDispatchers(Action action)
@@ -271,5 +260,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			return await taskCompletionSource.Task;
 		}
+
+		public OSAppTheme RequestedTheme => Windows.UI.Xaml.Application.Current.RequestedTheme == ApplicationTheme.Dark ? OSAppTheme.Dark : OSAppTheme.Light;
 	}
 }

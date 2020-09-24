@@ -8,6 +8,10 @@ using Tizen.Applications;
 using Xamarin.Forms.Internals;
 using ELayout = ElmSharp.Layout;
 using DeviceOrientation = Xamarin.Forms.Internals.DeviceOrientation;
+using ElmSharp.Wearable;
+using Specific = Xamarin.Forms.PlatformConfiguration.TizenSpecific.Application;
+using Xamarin.Forms.Platform.Tizen.Native;
+using Tizen.Common;
 
 namespace Xamarin.Forms.Platform.Tizen
 {
@@ -16,12 +20,11 @@ namespace Xamarin.Forms.Platform.Tizen
 	{
 		ITizenPlatform _platform;
 		Application _application;
-		bool _isInitialStart;
 		Window _window;
+		bool _useBezelInteration;
 
 		protected FormsApplication()
 		{
-			_isInitialStart = true;
 		}
 
 		/// <summary>
@@ -46,10 +49,24 @@ namespace Xamarin.Forms.Platform.Tizen
 			get; protected set;
 		}
 
+		public CircleSurface BaseCircleSurface
+		{
+			get; protected set;
+		}
+
+		public bool UseBezelInteration => _useBezelInteration;
+
 		protected override void OnPreCreate()
 		{
 			base.OnPreCreate();
 			Application.ClearCurrent();
+
+			if (DotnetUtil.TizenAPIVersion < 5)
+			{
+				// We should set the env variable to support IsolatedStorageFile on tizen 4.0 or lower version.
+				Environment.SetEnvironmentVariable("XDG_DATA_HOME", Current.DirectoryInfo.Data);
+			}
+
 			var type = typeof(Window);
 			// Use reflection to avoid breaking compatibility. ElmSharp.Window.CreateWindow() is has been added since API6.
 			var methodInfo = type.GetMethod("CreateWindow", BindingFlags.NonPublic | BindingFlags.Static);
@@ -58,8 +75,10 @@ namespace Xamarin.Forms.Platform.Tizen
 			{
 				window = (Window)methodInfo.Invoke(null, new object[] { "FormsWindow" });
 				BaseLayout = (ELayout)window.GetType().GetProperty("BaseLayout")?.GetValue(window);
+				BaseCircleSurface = (CircleSurface)window.GetType().GetProperty("BaseCircleSurface")?.GetValue(window);
+				Forms.CircleSurface = BaseCircleSurface;
 			}
-			else
+			else // in case of Xamarin Preload
 			{
 				window = PreloadedWindow.GetInstance() ?? new Window("FormsWindow");
 				if (window is PreloadedWindow precreated)
@@ -77,17 +96,6 @@ namespace Xamarin.Forms.Platform.Tizen
 			{
 				_platform.Dispose();
 			}
-		}
-
-		protected override void OnAppControlReceived(AppControlReceivedEventArgs e)
-		{
-			base.OnAppControlReceived(e);
-
-			if (!_isInitialStart && _application != null)
-			{
-				_application.SendResume();
-			}
-			_isInitialStart = false;
 		}
 
 		protected override void OnPause()
@@ -132,6 +140,11 @@ namespace Xamarin.Forms.Platform.Tizen
 			application.SendStart();
 			application.PropertyChanged += new PropertyChangedEventHandler(this.AppOnPropertyChanged);
 			SetPage(_application.MainPage);
+			if (Device.Idiom == TargetIdiom.Watch)
+			{
+				_useBezelInteration = Specific.GetUseBezelInteraction(_application);
+				UpdateOverlayContent();
+			}
 		}
 
 		void AppOnPropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -140,6 +153,30 @@ namespace Xamarin.Forms.Platform.Tizen
 			{
 				SetPage(_application.MainPage);
 			}
+			else if (Device.Idiom == TargetIdiom.Watch)
+			{
+				if (Specific.UseBezelInteractionProperty.PropertyName == args.PropertyName)
+				{
+					_useBezelInteration = Specific.GetUseBezelInteraction(_application);
+				}
+				else if (Specific.OverlayContentProperty.PropertyName == args.PropertyName)
+				{
+					UpdateOverlayContent();
+				}
+			}
+		}
+
+		void UpdateOverlayContent()
+		{
+			EvasObject nativeView = null;
+			var content = Specific.GetOverlayContent(_application);
+			if(content != null)
+			{
+				var renderer = Platform.GetOrCreateRenderer(content);
+				(renderer as LayoutRenderer)?.RegisterOnLayoutUpdated();
+				nativeView = renderer?.NativeView;
+			}
+			Forms.BaseLayout.SetOverlayPart(nativeView);
 		}
 
 		void SetPage(Page page)
@@ -169,16 +206,23 @@ namespace Xamarin.Forms.Platform.Tizen
 			MainWindow.Active();
 			MainWindow.Show();
 
+			// in case of no use of preloaded window
 			if (BaseLayout == null)
 			{
 				var conformant = new Conformant(MainWindow);
 				conformant.Show();
 
-				var layout = new ELayout(conformant);
-				layout.SetTheme("layout", "application", "default");
+				var layout = new ApplicationLayout(conformant);
+
 				layout.Show();
 
 				BaseLayout = layout;
+
+				if (Device.Idiom == TargetIdiom.Watch)
+				{
+					BaseCircleSurface = new CircleSurface(conformant);
+					Forms.CircleSurface = BaseCircleSurface;
+				}
 				conformant.SetContent(BaseLayout);
 			}
 

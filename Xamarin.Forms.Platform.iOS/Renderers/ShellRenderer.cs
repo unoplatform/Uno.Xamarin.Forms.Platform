@@ -109,7 +109,8 @@ namespace Xamarin.Forms.Platform.iOS
 		public override void ViewDidLayoutSubviews()
 		{
 			base.ViewDidLayoutSubviews();
-			_currentShellItemRenderer.ViewController.View.Frame = View.Bounds;
+			if(_currentShellItemRenderer != null)
+				_currentShellItemRenderer.ViewController.View.Frame = View.Bounds;
 
 			SetElementSize(new Size(View.Bounds.Width, View.Bounds.Height));
 		}
@@ -121,6 +122,7 @@ namespace Xamarin.Forms.Platform.iOS
 			SetupCurrentShellItem();
 
 			UpdateBackgroundColor();
+			UpdateFlowDirection();
 		}
 
 		protected virtual IShellFlyoutRenderer CreateFlyoutRenderer()
@@ -213,6 +215,27 @@ namespace Xamarin.Forms.Platform.iOS
 			if (e.PropertyName == Shell.CurrentItemProperty.PropertyName)
 			{
 				OnCurrentItemChanged();
+				UpdateFlowDirection();
+			}
+			else if(e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+			{
+				UpdateFlowDirection(true);
+			}
+		}
+
+		void UpdateFlowDirection(bool readdViews = false)
+		{
+			if (_currentShellItemRenderer?.ViewController == null)
+				return;
+
+			bool update = _currentShellItemRenderer.ViewController.View.UpdateFlowDirection(Element);
+			update = View.UpdateFlowDirection(Element) || update;
+
+			if (update && readdViews)
+			{
+				_currentShellItemRenderer.ViewController.View.RemoveFromSuperview();
+				View.AddSubview(_currentShellItemRenderer.ViewController.View);
+				View.SendSubviewToBack(_currentShellItemRenderer.ViewController.View);
 			}
 		}
 
@@ -227,6 +250,7 @@ namespace Xamarin.Forms.Platform.iOS
 		protected async void SetCurrentShellItemController(IShellItemRenderer value)
 		{
 			var oldRenderer = _currentShellItemRenderer;
+			(oldRenderer as IDisconnectable)?.Disconnect();
 			var newRenderer = value;
 
 			_currentShellItemRenderer = value;
@@ -236,7 +260,7 @@ namespace Xamarin.Forms.Platform.iOS
 			View.SendSubviewToBack(newRenderer.ViewController.View);
 
 			newRenderer.ViewController.View.Frame = View.Bounds;
-
+			
 			if (oldRenderer != null)
 			{
 				var transition = CreateShellItemTransition();
@@ -252,7 +276,7 @@ namespace Xamarin.Forms.Platform.iOS
 		{
 			var color = Shell.BackgroundColor;
 			if (color.IsDefault)
-				color = Color.Black;
+				color = ColorExtensions.BackgroundColor.ToColor();
 
 			FlyoutRenderer.View.BackgroundColor = color.ToUIColor();
 		}
@@ -261,7 +285,7 @@ namespace Xamarin.Forms.Platform.iOS
 		{
 			if (Shell.CurrentItem == null)
 			{
-				throw new InvalidOperationException("Shell CurrentItem should not be null");
+				return;
 			}
 			else if (_currentShellItemRenderer == null)
 			{
