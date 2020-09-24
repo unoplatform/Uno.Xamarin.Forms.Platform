@@ -10,8 +10,8 @@
     
 		<DefineConstants>NETFX_CORE;WINDOWS_UWP</DefineConstants>
 
-    <AssemblyName>Xamarin.Forms.Platform.Uno</AssemblyName>
-    <RootNamespace>Xamarin.Forms.Platform</RootNamespace>
+    <AssemblyName>Xamarin.Forms.Platform.UAP</AssemblyName>
+    <RootNamespace>Xamarin.Forms.Platform.UAP</RootNamespace>
     <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
     
     <PackageId>Uno.Xamarin.Forms.Platform</PackageId>
