@@ -7,7 +7,7 @@
       This should not be needed if a Xamarin.Forms.Core package ends up being created.
       -->
       <_OriginalRefs Include="@(ReferencePathWithRefAssemblies)"
-                     Condition="'%(FileName)'=='Xamarin.Forms.Platform.UAP'" />
+                     Condition="'%(FileName)'=='Xamarin.Forms.Platform.UAP' and '$(NuGetPackageId)'=='Xamarin.Forms'" />
       <ReferencePathWithRefAssemblies Remove="@(_OriginalRefs)" />
     </ItemGroup>
   </Target>

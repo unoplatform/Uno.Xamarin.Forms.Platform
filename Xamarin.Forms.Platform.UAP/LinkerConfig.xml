@@ -1,5 +1,5 @@
 ﻿<linker>
-  <assembly fullname="Xamarin.Forms.Platform.Uno" />
+  <assembly fullname="Xamarin.Forms.Platform.UAP" />
   <assembly fullname="Uno.Foundation"/>
   <assembly fullname="Xamarin.Forms.Xaml"/>
 </linker>

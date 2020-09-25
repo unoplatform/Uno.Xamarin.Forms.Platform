@@ -19,8 +19,8 @@
     <PackageProjectUrl>https://github.com/unoplatform/Uno.Xamarin.Forms.Platform</PackageProjectUrl>
     <PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/unoplatform/Uno.Xamarin.Forms.Platform</RepositoryUrl>
-    <Description>Uno Platform WebAssembly Renderers for Xamarin.Forms</Description>
-    <Copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</Copyright>
+    <Description>Uno Platform Renderers for Xamarin.Forms</Description>
+    <Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) nventive inc. - all rights reserved</Copyright>
     <PackageIcon>uno-logo.png</PackageIcon>
   </PropertyGroup>
 
@@ -33,8 +33,8 @@
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
   
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<EmbeddedResource Include="LinkerConfig.wasm.xml">
+  <ItemGroup>
+		<EmbeddedResource Include="LinkerConfig.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
 	</ItemGroup>
@@ -56,7 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1451" ExcludeAssets="build;buildTransitive" />
+    <PackageReference Include="Xamarin.Forms" Version="[4.8.0.1451]" ExcludeAssets="build;buildTransitive" />
 	</ItemGroup>
 
   <Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">
