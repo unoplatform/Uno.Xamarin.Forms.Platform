@@ -14,8 +14,7 @@ namespace Xamarin.Forms.Platform.UWP
 				def = double.NaN;
 			}
 
-			var val = (double)value;
-			return val > 0 ? val : def;
+			return value is double val && val > 0 ? val : def;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, string language)
