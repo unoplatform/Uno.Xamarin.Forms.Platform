@@ -33,12 +33,10 @@ namespace Xamarin.Forms
 #else
 			Log.Listeners.Add(new DelegateLogListener((c, m) => Trace.WriteLine(m, c)));
 #endif
-#if !HAS_UNO
 			if (!Windows.UI.Xaml.Application.Current.Resources.ContainsKey("RootContainerStyle"))
 			{
 				Windows.UI.Xaml.Application.Current.Resources.MergedDictionaries.Add(GetTabletResources());
 			}
-#endif
 
 			try
 			{
@@ -55,7 +53,6 @@ namespace Xamarin.Forms
 			Device.SetFlags(s_flags);
 			Device.Info = new WindowsDeviceInfo();
 
-#if !HAS_UNO
 			switch (Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily)
 			{
 				case "Windows.Desktop":
@@ -75,10 +72,6 @@ namespace Xamarin.Forms
 					Device.SetIdiom(TargetIdiom.Unsupported);
 					break;
 			}
-#else
-			// UNO TODO
-			Device.SetIdiom(TargetIdiom.Desktop);
-#endif
 
 			ExpressionSearch.Default = new WindowsExpressionSearch();
 
