@@ -54,7 +54,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ItemContentControl">
-                    <ContentPresenter />
+                    <!-- UNO TODO Content is not inherited https://github.com/unoplatform/uno/issues/857 -->
+                    <ContentPresenter 
+                        Content="{TemplateBinding Content}"
+                     />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
