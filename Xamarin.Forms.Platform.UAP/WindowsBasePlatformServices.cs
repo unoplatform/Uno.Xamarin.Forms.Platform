@@ -30,11 +30,15 @@ namespace Xamarin.Forms.Platform.UWP
 		const string WrongThreadError = "RPC_E_WRONG_THREAD";
 		readonly CoreDispatcher _dispatcher;
 		readonly UISettings _uiSettings = new UISettings();
+		private readonly bool _isThreadingSupported = true;
 
 		protected WindowsBasePlatformServices(CoreDispatcher dispatcher)
 		{
 			_dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
 			_uiSettings.ColorValuesChanged += UISettingsColorValuesChanged;
+#if __WASM__
+			_isThreadingSupported = Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_CONFIGURATION").StartsWith("threads", StringComparison.OrdinalIgnoreCase);
+#endif
 		}
 
 		public async void BeginInvokeOnMainThread(Action action)
@@ -133,7 +137,19 @@ namespace Xamarin.Forms.Platform.UWP
 			return new WindowsIsolatedStorage(ApplicationData.Current.LocalFolder);
 		}
 
-		public bool IsInvokeRequired => !_dispatcher?.HasThreadAccess ?? true;
+		public bool IsInvokeRequired
+		{
+			get
+			{
+				if (!_isThreadingSupported)
+				{
+					// Override the default Uno.WASM dispatcher behavior, which returns HasThreadAccess=false in single-threaded WASM environment
+					return false;
+				}
+
+				return !_dispatcher?.HasThreadAccess ?? true;
+			}
+		}
 
 		public string RuntimePlatform => Device.UWP;
 
