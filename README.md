@@ -1,10 +1,10 @@
 # Uno Platform WebAssembly Renderers for Xamarin.Forms 
 
-This repository is the home of the Uno.Xamarin.Forms.Platform package, which provides a set of Xamarin.Forms renderers to provide WebAssembly support through the Uno Platform.
+This repository is the home of the `Uno.Xamarin.Forms.Platform` package, which provides a set of **Xamarin.Forms** renderers to provide **WebAssembly** support through the Uno Platform.
 
 You can read about the Uno Platform https://platform.uno, and about Xamarin.Forms at https://www.xamarin.com/forms.
 
-![X.F for WebAssembly Samle](docs/20190917-xf-demo.gif)
+![X.F for WebAssembly Sample](docs/20190917-xf-demo.gif)
 
 <img src="banner.png" alt="Xamarin.Forms banner" height="145" >
 
@@ -14,31 +14,31 @@ You can read about the Uno Platform https://platform.uno, and about Xamarin.Form
 
 ## Getting Started ##
 
-- Require VS 2019 for Windows with ASP.NET Web Development and .NET Core cross-platform Workloads.
+- Require VS 2019 for Windows (16.2 or later) with `ASP.NET Web Development` and `.NET Core cross-platform Workloads`.
 
-1. Create a Xamarin.Forms project 
+1. Create a **Xamarin.Forms** project 
     1. Check **Place project and solution in the same directory**
     1. Check **Windows (UWP)**
 1. Using a **VS Developer Command Prompt**, navigate to the folder containing the solution
-1. Type the following to install the latest templates:
+1. Type the following to install the latest template:
     ```
-    dotnet new -i Uno.ProjectTemplates.Dotnet::2.0
+    dotnet new -i Uno.ProjectTemplates.Dotnet::3.1.6
     ```
 1. Then type the following to create the new WebAssembly project:
     ```
     dotnet new wasmxfhead
     ```
-1. Open or Reload the solution in Visual Studio 
-1. Set the Wasm project as the startup project 
-1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest **stable** package 
-1. Run the app using **Ctrl+F5** (without the Visual Studio debugger), and you’re good to go!
+1. Open or Reload the solution in Visual Studio
+1. Set the Wasm project as the startup project
+1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest **stable** package
+2. Run the app and you’re good to go!
 
 ## Building the renderers ##
 
 - Using Visual Studio 2019 (16.2 or later)
 - Open the `Uno.Xamarin.Forms.Platform.sln` solution
 - Build the `Xamarin.Forms.ControlGallery.Uno.Wasm` project
-- Run it without the debugger (usually with `Ctrl+F5`)
+- Run it using `F5`
 
 ## Coding Style ##
 
