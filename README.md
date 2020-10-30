@@ -14,7 +14,7 @@ You can read about the Uno Platform https://platform.uno, and about Xamarin.Form
 
 ## Getting Started ##
 
-- Require VS 2019 for Windows (16.2 or later) with `ASP.NET Web Development` and `.NET Core cross-platform Workloads`.
+- Require VS 2019 for Windows (16.5 or later) with `ASP.NET Web Development` and `.NET Core cross-platform Workloads`.
 
 1. Create a **Xamarin.Forms** project 
     1. Check **Place project and solution in the same directory**
