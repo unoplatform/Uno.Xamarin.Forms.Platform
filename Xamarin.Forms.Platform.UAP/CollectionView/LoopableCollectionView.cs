@@ -182,7 +182,10 @@ namespace Xamarin.Forms.Platform.UWP
 		{
 			add
 			{
-				return EventRegistrationTokenTable<EventHandler<object>>
+#if !HAS_UNO
+				return 
+#endif
+					EventRegistrationTokenTable<EventHandler<object>>
 					.GetOrCreateEventRegistrationTokenTable(ref _currentChangedTokenTable)
 					.AddEventHandler(value);
 			}
@@ -200,7 +203,10 @@ namespace Xamarin.Forms.Platform.UWP
 		{
 			add
 			{
-				return EventRegistrationTokenTable<CurrentChangingEventHandler>
+#if !HAS_UNO
+				return 
+#endif
+				EventRegistrationTokenTable<CurrentChangingEventHandler>
 					.GetOrCreateEventRegistrationTokenTable(ref _currentChangingTokenTable)
 					.AddEventHandler(value);
 			}
@@ -218,7 +224,10 @@ namespace Xamarin.Forms.Platform.UWP
 		{
 			add
 			{
-				return EventRegistrationTokenTable<VectorChangedEventHandler<object>>
+#if !HAS_UNO
+				return 
+#endif
+				EventRegistrationTokenTable<VectorChangedEventHandler<object>>
 					.GetOrCreateEventRegistrationTokenTable(ref _vectorChangedTokenTable)
 					.AddEventHandler(value);
 			}

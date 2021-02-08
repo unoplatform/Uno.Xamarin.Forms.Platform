@@ -49,7 +49,7 @@ namespace Xamarin.Forms.Platform.UWP
 		{
 			if (Element != null)
 			{
-				if(Content is ViewToRendererConverter.WrapperControl wrapperControl)
+				if(Content is WrapperControl wrapperControl)
 				{
 					wrapperControl.CleanUp();
 					Content = null;
@@ -66,7 +66,7 @@ namespace Xamarin.Forms.Platform.UWP
 			if (Footer is View visualElement)
 			{
 				Element = visualElement;
-				Content = new ViewToRendererConverter.WrapperControl(visualElement);
+				Content = new WrapperControl(visualElement);
 			}
 			else
 			{

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if false // UNO TODO
+using System.Collections.Generic;
 using Xamarin.Forms.CustomAttributes;
 using Xamarin.Forms.Internals;
 
@@ -30,3 +31,4 @@ namespace Xamarin.Forms.Controls
 		}
 	}
 }
+#endif

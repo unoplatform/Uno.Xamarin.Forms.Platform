@@ -9,22 +9,10 @@ using Windows.UI.Xaml.Controls;
 using WBrush = Windows.UI.Xaml.Media.Brush;
 using WSolidColorBrush = Windows.UI.Xaml.Media.SolidColorBrush;
 
-#if HAS_UNO
-using NavigationView = Windows.UI.Xaml.Controls.NavigationView;
-using NavigationViewBackButtonVisible = Windows.UI.Xaml.Controls.NavigationViewBackButtonVisible;
-using NavigationViewPaneDisplayMode = Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
-using NavigationViewItemInvokedEventArgs = Windows.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
-#else
-using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
-using NavigationViewBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible;
-using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
-using NavigationViewItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
-#endif
-
 namespace Xamarin.Forms.Platform.UWP
 {
 	[Windows.UI.Xaml.Data.Bindable]
-	public class ShellRenderer : NavigationView, IVisualElementRenderer, IAppearanceObserver, IFlyoutBehaviorObserver
+	public class ShellRenderer : Microsoft.UI.Xaml.Controls.NavigationView, IVisualElementRenderer, IAppearanceObserver, IFlyoutBehaviorObserver
 	{
 		public static readonly DependencyProperty FlyoutBackgroundColorProperty = DependencyProperty.Register(
 			nameof(FlyoutBackgroundColor), typeof(Brush), typeof(ShellRenderer),
@@ -53,7 +41,7 @@ namespace Xamarin.Forms.Platform.UWP
 			Xamarin.Forms.Shell.VerifyShellUWPFlagEnabled(nameof(ShellRenderer));
 			_flyoutBackdrop = Brush.Default;
 			IsSettingsVisible = false;
-			PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
+			PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal;
 			IsPaneOpen = false;
 			Content = ItemRenderer = CreateShellItemRenderer();
 			MenuItemTemplateSelector = CreateShellFlyoutTemplateSelector();
@@ -61,7 +49,7 @@ namespace Xamarin.Forms.Platform.UWP
 			MenuItemsSource = FlyoutItems;
 		}
 
-		async void OnBackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+		async void OnBackRequested(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs args)
 		{
 			try
 			{
@@ -118,7 +106,7 @@ namespace Xamarin.Forms.Platform.UWP
 			UpdatePaneButtonColor(NavigationViewBackButton, true);
 		}
 
-		void OnMenuItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+		void OnMenuItemInvoked(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs args)
 		{
 			var item = args.InvokedItemContainer?.DataContext as Element;
 			if (item != null)
@@ -353,12 +341,12 @@ namespace Xamarin.Forms.Platform.UWP
 			if(_shell.Navigation.NavigationStack.Count > 1)
 			{
 				IsBackEnabled = true;
-				IsBackButtonVisible = NavigationViewBackButtonVisible.Visible;
+				IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Visible;
 			}
 			else
 			{
 				IsBackEnabled = false;
-				IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed;
+				IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed;
 			}
 
 			switch (_flyoutBehavior)
@@ -374,14 +362,14 @@ namespace Xamarin.Forms.Platform.UWP
 					IsPaneVisible = true;
 					IsPaneToggleButtonVisible = !IsBackEnabled;
 					bool shouldOpen = Shell.FlyoutIsPresented;
-					PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal; //This will trigger opening the flyout
+					PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal; //This will trigger opening the flyout
 					IsPaneOpen = shouldOpen;
 					break;
 
 				case FlyoutBehavior.Locked:
 					IsPaneVisible = true;
 					IsPaneToggleButtonVisible = false;
-					PaneDisplayMode = NavigationViewPaneDisplayMode.Left;
+					PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Left;
 					break;
 			}
 		}

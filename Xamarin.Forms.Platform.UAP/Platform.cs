@@ -55,7 +55,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			if (renderer == null)
 			{
-				renderer = Internal.Registrar.Registered.GetHandlerForObject<IVisualElementRenderer>(element) ??
+				renderer = Registrar.Registered.GetHandlerForObject<IVisualElementRenderer>(element) ??
 												  new DefaultRenderer();
 			}
 
