@@ -82,7 +82,7 @@ namespace Xamarin.Forms.Core.UITests
 				};
 #endif
 			}
-			
+
 			App.WaitForElement("TargetViewContainer");
 			App.Tap("TargetViewContainer");
 			App.EnterText(callerMemberName.Replace("_", "") + "VisualElement");
@@ -123,8 +123,8 @@ namespace Xamarin.Forms.Core.UITests
 
 		string UpdateQueryForParent(string query, bool isOnParentRenderer)
 		{
-			if (isOnParentRenderer && 
-				PlatformViewType != PlatformViews.BoxView && 
+			if (isOnParentRenderer &&
+				PlatformViewType != PlatformViews.BoxView &&
 				PlatformViewType != PlatformViews.Frame)
 			{
 
@@ -142,12 +142,12 @@ namespace Xamarin.Forms.Core.UITests
 		{
 			T returnValue = GetPropertyFromBindableProperty<T>(formProperty);
 			int loopCount = 0;
-			while(loopCount < 5)
+			while (loopCount < 5)
 			{
 				Thread.Sleep(100);
 				T newValue = GetPropertyFromBindableProperty<T>(formProperty);
 
-				if(newValue.Equals(returnValue))
+				if (newValue.Equals(returnValue))
 					break;
 				else
 					returnValue = newValue;
@@ -246,7 +246,7 @@ namespace Xamarin.Forms.Core.UITests
 			if (prop.GetType() == typeof(string) && typeof(T) == typeof(Matrix))
 			{
 				Matrix matrix = ParsingUtils.ParseCATransform3D((string)prop);
-				result =  (T)((object)matrix);
+				result = (T)((object)matrix);
 				return true;
 			}
 

@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls;
 using Xamarin.Forms.Internals;
 using NativeAutomationProperties = Windows.UI.Xaml.Automation.AutomationProperties;
 using WImage = Windows.UI.Xaml.Controls.Image;
+using WFlowDirection = Windows.UI.Xaml.FlowDirection;
 
 namespace Xamarin.Forms.Platform.UWP
 {
@@ -42,8 +43,22 @@ namespace Xamarin.Forms.Platform.UWP
 			if (element == null)
 				throw new ArgumentNullException(nameof(element));
 
-			IVisualElementRenderer renderer = Internals.Registrar.Registered.GetHandlerForObject<IVisualElementRenderer>(element) ??
-			                                  new DefaultRenderer();
+			IVisualElementRenderer renderer = null;
+
+			// temporary hack to fix the following issues
+			// https://github.com/xamarin/Xamarin.Forms/issues/13261
+			// https://github.com/xamarin/Xamarin.Forms/issues/12484
+			if (element is RadioButton tv && tv.ResolveControlTemplate() != null)
+			{
+				renderer = new DefaultRenderer();
+			}
+
+			if (renderer == null)
+			{
+				renderer = Registrar.Registered.GetHandlerForObject<IVisualElementRenderer>(element) ??
+												  new DefaultRenderer();
+			}
+
 			renderer.SetElement(element);
 			return renderer;
 		}
@@ -76,7 +91,7 @@ namespace Xamarin.Forms.Platform.UWP
 				// Windows.UI.Xaml.Application.Current.Resources.MergedDictionaries.Add(Forms.GetTabletResources());
 			}
 
-#if !UWP_14393 && !HAS_UNO
+#if UWP_16299 && !HAS_UNO
 			if (!current.Resources.ContainsKey(ShellRenderer.ShellStyle))
 			{
 				var myResourceDictionary = new Windows.UI.Xaml.ResourceDictionary();
@@ -590,9 +605,22 @@ namespace Xamarin.Forms.Platform.UWP
 			MessagingCenter.Subscribe<Page, PromptArguments>(Window.Current, Page.PromptSignalName, OnPagePrompt);
 		}
 
-		static void OnPageActionSheet(object sender, ActionSheetArguments options)
+		static void OnPageActionSheet(Page sender, ActionSheetArguments options)
 		{
 			bool userDidSelect = false;
+
+			if (options.FlowDirection == FlowDirection.MatchParent)
+			{
+				if ((sender as IVisualElementController).EffectiveFlowDirection.IsRightToLeft())
+				{
+					options.FlowDirection = FlowDirection.RightToLeft;
+				}
+				else if ((sender as IVisualElementController).EffectiveFlowDirection.IsLeftToRight())
+				{
+					options.FlowDirection = FlowDirection.LeftToRight;
+				}
+			}
+
 			var flyoutContent = new FormsFlyout(options);
 
 			var actionSheet = new Flyout
@@ -675,6 +703,26 @@ namespace Xamarin.Forms.Platform.UWP
 				Title = title,
 				VerticalScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollBarVisibility.Auto
 			};
+
+			if (options.FlowDirection == FlowDirection.RightToLeft)
+			{
+				alertDialog.FlowDirection = Windows.UI.Xaml.FlowDirection.RightToLeft;
+			}
+			else if (options.FlowDirection == FlowDirection.LeftToRight)
+			{
+				alertDialog.FlowDirection = Windows.UI.Xaml.FlowDirection.LeftToRight;
+			}
+			else
+			{
+				if ((sender as IVisualElementController).EffectiveFlowDirection.IsRightToLeft())
+				{
+					alertDialog.FlowDirection = WFlowDirection.RightToLeft;
+				}
+				else if ((sender as IVisualElementController).EffectiveFlowDirection.IsLeftToRight())
+				{
+					alertDialog.FlowDirection = WFlowDirection.LeftToRight;
+				}
+			}
 
 			if (options.Cancel != null)
 				alertDialog.SecondaryButtonText = options.Cancel;

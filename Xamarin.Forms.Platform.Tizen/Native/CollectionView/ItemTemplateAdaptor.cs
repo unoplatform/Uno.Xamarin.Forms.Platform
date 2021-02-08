@@ -51,16 +51,16 @@ namespace Xamarin.Forms.Platform.Tizen.Native
 		protected View _headerCache;
 		protected View _footerCache;
 
-		public ItemTemplateAdaptor(ItemsView itemsView) : base(itemsView.ItemsSource)
-		{
-			ItemTemplate = itemsView.ItemTemplate;
-			_itemsView = itemsView;
-		}
+		bool IsSelectable { get; }
+
+
+		public ItemTemplateAdaptor(ItemsView itemsView) : this(itemsView, itemsView.ItemsSource, itemsView.ItemTemplate) { }
 
 		protected ItemTemplateAdaptor(ItemsView itemsView, IEnumerable items, DataTemplate template) : base(items)
 		{
 			ItemTemplate = template;
 			_itemsView = itemsView;
+			IsSelectable = itemsView is SelectableItemsView;
 		}
 
 		protected DataTemplate ItemTemplate { get; set; }
@@ -103,7 +103,7 @@ namespace Xamarin.Forms.Platform.Tizen.Native
 			var renderer = Platform.GetOrCreateRenderer(view);
 			var native = renderer.NativeView;
 			view.Parent = _itemsView;
-			(renderer as LayoutRenderer)?.RegisterOnLayoutUpdated();
+			(renderer as ILayoutRenderer)?.RegisterOnLayoutUpdated();
 
 			_nativeFormsTable[native] = view;
 			return native;
@@ -121,7 +121,7 @@ namespace Xamarin.Forms.Platform.Tizen.Native
 			{
 				_headerCache.Parent = _itemsView;
 				var renderer = Platform.GetOrCreateRenderer(_headerCache);
-				(renderer as LayoutRenderer)?.RegisterOnLayoutUpdated();
+				(renderer as ILayoutRenderer)?.RegisterOnLayoutUpdated();
 				return renderer.NativeView;
 			}
 			return null;
@@ -134,7 +134,7 @@ namespace Xamarin.Forms.Platform.Tizen.Native
 			{
 				_footerCache.Parent = _itemsView;
 				var renderer = Platform.GetOrCreateRenderer(_footerCache);
-				(renderer as LayoutRenderer).RegisterOnLayoutUpdated();
+				(renderer as ILayoutRenderer)?.RegisterOnLayoutUpdated();
 				return renderer.NativeView;
 			}
 			return null;
@@ -159,6 +159,7 @@ namespace Xamarin.Forms.Platform.Tizen.Native
 				_dataBindedViewTable[this[index]] = view;
 
 				view.MeasureInvalidated += OnItemMeasureInvalidated;
+				_itemsView.AddLogicalChild(view);
 			}
 		}
 
@@ -212,6 +213,29 @@ namespace Xamarin.Forms.Platform.Tizen.Native
 			return _footerCache?.Measure(Forms.ConvertToScaledDP(widthConstraint), Forms.ConvertToScaledDP(heightConstraint)).Request.ToPixel() ?? new ESize(0, 0);
 		}
 
+		public override void UpdateViewState(EvasObject view, ViewHolderState state)
+		{
+			base.UpdateViewState(view, state);
+			if (_nativeFormsTable.TryGetValue(view, out View formsView))
+			{
+				switch (state)
+				{
+					case ViewHolderState.Focused:
+						VisualStateManager.GoToState(formsView, VisualStateManager.CommonStates.Focused);
+						formsView.SetValue(VisualElement.IsFocusedPropertyKey, true);
+						break;
+					case ViewHolderState.Normal:
+						VisualStateManager.GoToState(formsView, VisualStateManager.CommonStates.Normal);
+						formsView.SetValue(VisualElement.IsFocusedPropertyKey, false);
+						break;
+					case ViewHolderState.Selected:
+						if (IsSelectable)
+							VisualStateManager.GoToState(formsView, VisualStateManager.CommonStates.Selected);
+						break;
+				}
+			}
+		}
+
 		protected virtual View CreateHeaderView()
 		{
 			if (_itemsView is StructuredItemsView structuredItemsView)
@@ -227,6 +251,10 @@ namespace Xamarin.Forms.Platform.Tizen.Native
 					{
 						header = structuredItemsView.HeaderTemplate.CreateContent() as View;
 						header.BindingContext = structuredItemsView.Header;
+					}
+					else if (structuredItemsView.Header is String str)
+					{
+						header = new XLabel { Text = str, };
 					}
 					return header;
 				}
@@ -250,6 +278,10 @@ namespace Xamarin.Forms.Platform.Tizen.Native
 						footer = structuredItemsView.FooterTemplate.CreateContent() as View;
 						footer.BindingContext = structuredItemsView.Footer;
 					}
+					else if (structuredItemsView.Footer is String str)
+					{
+						footer = new XLabel { Text = str, };
+					}
 					return footer;
 				}
 			}
@@ -261,6 +293,8 @@ namespace Xamarin.Forms.Platform.Tizen.Native
 			if (view.BindingContext != null && _dataBindedViewTable.ContainsKey(view.BindingContext))
 			{
 				_dataBindedViewTable[view.BindingContext] = null;
+				_itemsView.RemoveLogicalChild(view);
+				view.BindingContext = null;
 			}
 		}
 

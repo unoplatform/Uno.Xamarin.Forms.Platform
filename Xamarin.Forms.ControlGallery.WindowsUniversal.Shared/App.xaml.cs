@@ -79,7 +79,8 @@ namespace Xamarin.Forms.ControlGallery.WindowsUniversal
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-				Forms.SetFlags("Shell_UWP_Experimental", "SwipeView_Experimental", "MediaElement_Experimental");
+				Forms.SetFlags("Shell_UWP_Experimental");
+
 				Forms.Init (e);
 				//FormsMaps.Init (Controls.App.Config["UWPMapsAuthKey"]);
 

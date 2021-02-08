@@ -5,7 +5,7 @@ using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 
-#if UWP_14393 && !HAS_UNO
+#if !UWP_16299 && !HAS_UNO
 using FileMode = Xamarin.Forms.Internals.FileMode;
 using FileAccess = Xamarin.Forms.Internals.FileAccess;
 using FileShare = Xamarin.Forms.Internals.FileShare;

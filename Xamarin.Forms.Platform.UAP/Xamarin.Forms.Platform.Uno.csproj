@@ -22,14 +22,15 @@
     <Description>Uno Platform Renderers for Xamarin.Forms</Description>
     <Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) nventive inc. - all rights reserved</Copyright>
     <PackageIcon>uno-logo.png</PackageIcon>
+    <UserSecretsId>b78a998f-55d8-487a-b526-c09fa3ebcca7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="uno-logo.png" Pack="true" PackagePath="\"/>
+    <None Include="uno-logo.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'MonoAndroid90' ">
-		<PackageReference Include="Uno.UI" Version="3.0.12" PrivateAssets="none" />
+		<PackageReference Include="Uno.UI" Version="3.4.0" PrivateAssets="none" />
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
   
@@ -56,7 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="[4.8.0.1451]" ExcludeAssets="build;buildTransitive" />
+    <PackageReference Include="Xamarin.Forms" Version="[5.0.0.1931]" ExcludeAssets="build;buildTransitive" />
 	</ItemGroup>
 
   <Target Name="RemoveOriginalUAPRenderer" BeforeTargets="CoreCompile">

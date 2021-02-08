@@ -37,7 +37,6 @@ using Rectangle = Xamarin.Forms.Shapes.Rectangle;
 [assembly: ExportRenderer(typeof(CheckBox), typeof(CheckBoxRenderer))]
 [assembly: ExportRenderer(typeof(TableView), typeof(TableViewRenderer))]
 [assembly: ExportRenderer(typeof(NativeViewWrapper), typeof(NativeViewWrapperRenderer))]
-[assembly: ExportRenderer(typeof(MediaElement), typeof(MediaElementRenderer))]
 #if !HAS_UNO
 [assembly: ExportRenderer(typeof(RefreshView), typeof(RefreshViewRenderer))]
 #endif
@@ -59,10 +58,13 @@ using Rectangle = Xamarin.Forms.Shapes.Rectangle;
 
 // Pages
 
-[assembly: Xamarin.Forms.Platform.UWP.ExportRendererAttribute(typeof(Page), typeof(PageRenderer))]
-[assembly: Xamarin.Forms.Platform.UWP.ExportRendererAttribute(typeof(NavigationPage), typeof(NavigationPageRenderer))]
-[assembly: Xamarin.Forms.Platform.UWP.ExportRendererAttribute(typeof(MasterDetailPage), typeof(MasterDetailPageRenderer))]
-[assembly: Xamarin.Forms.Platform.UWP.ExportRendererAttribute(typeof(CarouselPage), typeof(CarouselPageRenderer))]
+[assembly: ExportRenderer(typeof(Page), typeof(PageRenderer))]
+[assembly: ExportRenderer(typeof(NavigationPage), typeof(NavigationPageRenderer))]
+[assembly: ExportRenderer(typeof(FlyoutPage), typeof(FlyoutPageRenderer))]
+#pragma warning disable CS0618 // Type or member is obsolete
+[assembly: ExportRenderer(typeof(MasterDetailPage), typeof(MasterDetailPageRenderer))]
+#pragma warning restore CS0618 // Type or member is obsolete
+[assembly: ExportRenderer(typeof(CarouselPage), typeof(CarouselPageRenderer))]
 
 // Cells
 

@@ -8,6 +8,7 @@ using AppRect = Uno.UITest.IAppRect;
 namespace Xamarin.Forms.Core.UITests
 {
 	[Category(UITestCategories.CollectionView)]
+	[Category(UITestCategories.UwpIgnore)]
 	internal class CollectionViewUITests : BaseTestFixture
 	{
 		string _collectionViewId = "collectionview";

@@ -50,7 +50,7 @@ We follow the style used by the [.NET Foundation](https://github.com/dotnet/runt
 
 ## Contributing ##
 
-- [How to Contribute](https://github.com/xamarin/Xamarin.Forms/blob/master/.github/CONTRIBUTING.md)
+- [How to Contribute](https://github.com/xamarin/Xamarin.Forms/blob/main/.github/CONTRIBUTING.md)
 
 ### Reporting Bugs ###
 
