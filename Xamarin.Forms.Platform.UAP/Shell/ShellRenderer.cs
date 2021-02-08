@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -37,9 +39,14 @@ namespace Xamarin.Forms.Platform.UWP
 		internal const string ShellStyle = "ShellNavigationView";
 		Shell _shell;
 		Brush _flyoutBackdrop;
+		double _flyoutHeight = -1d;
+		double _flyoutWidth = -1d;
+
 		FlyoutBehavior _flyoutBehavior;
+		List<List<Element>> _flyoutGrouping;
 		ShellItemRenderer ItemRenderer { get; }
 		IShellController ShellController => (IShellController)_shell;
+		ObservableCollection<object> FlyoutItems = new ObservableCollection<object>();
 
 		public ShellRenderer()
 		{
@@ -50,13 +57,8 @@ namespace Xamarin.Forms.Platform.UWP
 			IsPaneOpen = false;
 			Content = ItemRenderer = CreateShellItemRenderer();
 			MenuItemTemplateSelector = CreateShellFlyoutTemplateSelector();
-			if (ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.NavigationView", "PaneClosing"))
-				PaneClosing += (s, e) => OnPaneClosed();
-			if (ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.NavigationView", "PaneOpening"))
-				PaneOpening += (s, e) => OnPaneOpening();
-			ItemInvoked += OnMenuItemInvoked;
-			BackRequested += OnBackRequested;
-			Style = Windows.UI.Xaml.Application.Current.Resources["ShellNavigationView"] as Windows.UI.Xaml.Style;
+			Style = (Windows.UI.Xaml.Style)Windows.UI.Xaml.Application.Current.Resources["ShellNavigationView"];
+			MenuItemsSource = FlyoutItems;
 		}
 
 		async void OnBackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
@@ -69,6 +71,8 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				Internals.Log.Warning(nameof(Shell), $"Failed to Navigate Back: {exc}");
 			}
+
+			UpdateToolBar();
 		}
 
 		public WBrush FlyoutBackgroundColor
@@ -82,23 +86,32 @@ namespace Xamarin.Forms.Platform.UWP
 			base.OnApplyTemplate();
 			UpdatePaneButtonColor(TogglePaneButton, !IsPaneOpen);
 			UpdatePaneButtonColor(NavigationViewBackButton, !IsPaneOpen);
+			(GetTemplateChild(TogglePaneButton) as FrameworkElement)?.SetAutomationPropertiesAutomationId("OK");
 		}
 
-		void OnPaneOpening()
+		void OnPaneOpening(Microsoft.UI.Xaml.Controls.NavigationView sender, object args)
 		{
 			if (Shell != null)
 				Shell.FlyoutIsPresented = true;
+
 			UpdatePaneButtonColor(TogglePaneButton, false);
 			UpdatePaneButtonColor(NavigationViewBackButton, false);
 			UpdateFlyoutBackgroundColor();
 			UpdateFlyoutBackdrop();
-
-			if(_flyoutBehavior == FlyoutBehavior.Flyout)
-				ShellSplitView.UpdateFlyoutBackdrop();
+			UpdateFlyoutPosition();
+			UpdateFlyoutVerticalScrollMode();
 		}
 
-		void OnPaneClosed()
+		void OnPaneOpened(Microsoft.UI.Xaml.Controls.NavigationView sender, object args)
 		{
+			// UWP likes to sometimes set the back drop back to the
+			// default color
+			UpdateFlyoutBackdrop();
+		}
+
+		void OnPaneClosing(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs args)
+		{
+			args.Cancel = true;
 			if (Shell != null)
 				Shell.FlyoutIsPresented = false;
 			UpdatePaneButtonColor(TogglePaneButton, true);
@@ -159,6 +172,18 @@ namespace Xamarin.Forms.Platform.UWP
 
 			if (element != null)
 			{
+
+				if (ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.NavigationView", "PaneClosing"))
+					PaneClosing += OnPaneClosing;
+				if (ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.NavigationView", "PaneOpening"))
+					PaneOpening += OnPaneOpening;
+				if (ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.NavigationView", "PaneOpened"))
+					PaneOpened += OnPaneOpened;
+
+				ItemInvoked += OnMenuItemInvoked;
+				BackRequested += OnBackRequested;
+
+
 				Element = (Shell)element;
 				Element.SizeChanged += OnElementSizeChanged;
 				OnElementSet(Element);
@@ -170,13 +195,22 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				Element.SizeChanged -= OnElementSizeChanged;
 				Element.PropertyChanged -= OnElementPropertyChanged;
+
+				if (ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.NavigationView", "PaneClosing"))
+					PaneClosing -= OnPaneClosing;
+				if (ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.NavigationView", "PaneOpening"))
+					PaneOpening -= OnPaneOpening;
+				if (ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.NavigationView", "PaneOpened"))
+					PaneOpened -= OnPaneOpened;
+
+				ItemInvoked -= OnMenuItemInvoked;
+				BackRequested -= OnBackRequested;
 			}
 		}
 
 		#endregion IVisualElementRenderer
-
-
-		ShellSplitView ShellSplitView => (ShellSplitView)GetTemplateChild("RootSplitView");
+		ShellSplitView ShellSplitView => GetTemplateChild("RootSplitView") as ShellSplitView;
+		ScrollViewer ShellLeftNavScrollViewer => (ScrollViewer)GetTemplateChild("LeftNavScrollViewer");
 		protected internal Shell Element { get; set; }
 
 		internal Shell Shell => Element;
@@ -200,8 +234,49 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				UpdateFlyoutBackgroundColor();
 			}
+			else if (e.PropertyName == Shell.FlyoutVerticalScrollModeProperty.PropertyName)
+			{
+				UpdateFlyoutVerticalScrollMode();
+			}
 		}
 
+		void UpdateFlyoutVerticalScrollMode()
+		{
+			var scrollViewer = ShellLeftNavScrollViewer;
+			if (scrollViewer != null)
+			{
+				switch (Shell.FlyoutVerticalScrollMode)
+				{
+					case ScrollMode.Disabled:
+						scrollViewer.VerticalScrollMode = Windows.UI.Xaml.Controls.ScrollMode.Disabled;
+						scrollViewer.VerticalScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollBarVisibility.Hidden;
+						break;
+					case ScrollMode.Enabled:
+						scrollViewer.VerticalScrollMode = Windows.UI.Xaml.Controls.ScrollMode.Enabled;
+						scrollViewer.VerticalScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollBarVisibility.Visible;
+						break;
+					default:
+						scrollViewer.VerticalScrollMode = Windows.UI.Xaml.Controls.ScrollMode.Auto;
+						scrollViewer.VerticalScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollBarVisibility.Auto;
+						break;
+				}
+			}
+		}
+
+		void UpdateFlyoutPosition()
+		{
+			if (_flyoutBehavior == FlyoutBehavior.Disabled)
+				return;
+
+			var splitView = ShellSplitView;
+			if (splitView != null)
+			{
+				splitView.SetFlyoutSizes(_flyoutHeight, _flyoutWidth);
+				if (IsPaneOpen)
+					ShellSplitView?.RefreshFlyoutPosition();
+			}
+		}
+		
 		void UpdateFlyoutBackdrop()
 		{
 			if (_flyoutBehavior != FlyoutBehavior.Flyout)
@@ -212,13 +287,12 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				splitView.FlyoutBackdrop = _flyoutBackdrop;
 				if (IsPaneOpen)
-					ShellSplitView.UpdateFlyoutBackdrop();
+					ShellSplitView?.RefreshFlyoutBackdrop();
 			}
 		}
 
 		protected virtual void UpdateFlyoutBackgroundColor()
 		{
-
 			if (_shell.FlyoutBackgroundColor == Color.Default)
 			{
 				object color = null;
@@ -251,19 +325,21 @@ namespace Xamarin.Forms.Platform.UWP
 
 			var shr = CreateShellHeaderRenderer(shell);
 			PaneCustomContent = shr;
-			MenuItemsSource = IterateItems();
+			PaneFooter = CreateShellFooterRenderer(shell);
+
+			UpdateMenuItemSource();
 			SwitchShellItem(shell.CurrentItem, false);
 			IsPaneOpen = Shell.FlyoutIsPresented;
 			ShellController.AddFlyoutBehaviorObserver(this);
 			ShellController.AddAppearanceObserver(this, shell);
 			ShellController.ItemsCollectionChanged += OnItemsCollectionChanged;
-			ShellController.StructureChanged += OnStructureChanged;
+			ShellController.FlyoutItemsChanged += OnFlyoutItemsChanged;
 			UpdateFlyoutBackgroundColor();
 
 			_shell.Navigated += OnShellNavigated;
 			UpdateToolBar();
 		}
-
+		
 		void OnShellNavigated(object sender, ShellNavigatedEventArgs e)
 		{
 			UpdateToolBar();
@@ -288,9 +364,9 @@ namespace Xamarin.Forms.Platform.UWP
 			switch (_flyoutBehavior)
 			{
 				case FlyoutBehavior.Disabled:
-					IsPaneToggleButtonVisible = false;
-					IsPaneVisible = false;
-					PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
+					IsPaneVisible = IsBackEnabled;
+					IsPaneToggleButtonVisible = !IsBackEnabled;
+					PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal;
 					IsPaneOpen = false;
 					break;
 
@@ -310,30 +386,66 @@ namespace Xamarin.Forms.Platform.UWP
 			}
 		}
 
-		void OnStructureChanged(object sender, EventArgs e)
+		void OnFlyoutItemsChanged(object sender, EventArgs e)
 		{
-			MenuItemsSource = IterateItems();
+			UpdateMenuItemSource();
 		}
 
 		void OnItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
-			MenuItemsSource = IterateItems();
+			UpdateMenuItemSource();
 		}
 
-		IEnumerable<object> IterateItems()
+		void UpdateMenuItemSource()
 		{
-			var groups = ((IShellController)Shell).GenerateFlyoutGrouping();
+			var newGrouping = ((IShellController)Shell).GenerateFlyoutGrouping();
+			if (_flyoutGrouping != newGrouping)
+			{
+				_flyoutGrouping = newGrouping;
+				var newItems = IterateItems(newGrouping).ToList();
+
+				foreach (var item in newItems)
+				{
+					if (!FlyoutItems.Contains(item))
+						FlyoutItems.Add(item);
+				}
+
+				for (var i = FlyoutItems.Count - 1; i >= 0; i--)
+				{
+					var item = FlyoutItems[i];
+					if (!newItems.Contains(item))
+						FlyoutItems.RemoveAt(i);
+				}
+			}
+		}
+
+		IEnumerable<object> IterateItems(List<List<Element>> groups)
+		{
+			int separatorNumber = 0;
 			foreach (var group in groups)
 			{
 				if (group.Count > 0 && group != groups[0])
 				{
-					yield return new MenuFlyoutSeparator(); // Creates a separator
+					yield return new FlyoutItemMenuSeparator(separatorNumber++); // Creates a separator
 				}
 				foreach (var item in group)
 				{
 					yield return item;
 				}
 			}
+		}
+
+		class FlyoutItemMenuSeparator : MenuFlyoutSeparator
+		{
+			public FlyoutItemMenuSeparator(int separatorNumber)
+			{
+				Id = separatorNumber;
+			}
+
+			public int Id { get; set; }
+			public override int GetHashCode() => Id.GetHashCode();
+			public override bool Equals(object obj) =>
+				obj is FlyoutItemMenuSeparator fim && fim.Id == Id;
 		}
 
 		void SwitchShellItem(ShellItem newItem, bool animate = true)
@@ -369,6 +481,9 @@ namespace Xamarin.Forms.Platform.UWP
 					titleColor = appearance.TitleColor.ToWindowsColor();
 
 				_flyoutBackdrop = appearance.FlyoutBackdrop;
+
+				_flyoutWidth = appearance.FlyoutWidth;
+				_flyoutHeight = appearance.FlyoutHeight;
 			}
 
 			var titleBar = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().TitleBar;
@@ -376,8 +491,8 @@ namespace Xamarin.Forms.Platform.UWP
 			titleBar.ForegroundColor = titleBar.ButtonForegroundColor = titleColor;
 			UpdatePaneButtonColor(TogglePaneButton, !IsPaneOpen);
 			UpdatePaneButtonColor(NavigationViewBackButton, !IsPaneOpen);
-
 			UpdateFlyoutBackdrop();
+			UpdateFlyoutPosition();
 		}
 
 		#endregion IAppearanceObserver
@@ -390,6 +505,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 		public virtual ShellFlyoutTemplateSelector CreateShellFlyoutTemplateSelector() => new ShellFlyoutTemplateSelector();
 		public virtual ShellHeaderRenderer CreateShellHeaderRenderer(Shell shell) => new ShellHeaderRenderer(shell);
+		public virtual ShellFooterRenderer CreateShellFooterRenderer(Shell shell) => new ShellFooterRenderer(shell);
 		public virtual ShellItemRenderer CreateShellItemRenderer() => new ShellItemRenderer(this);
 		public virtual ShellSectionRenderer CreateShellSectionRenderer() => new ShellSectionRenderer();
 	}

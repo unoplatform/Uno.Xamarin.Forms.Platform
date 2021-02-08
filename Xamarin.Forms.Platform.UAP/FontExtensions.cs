@@ -17,6 +17,7 @@ namespace Xamarin.Forms.Platform.UWP
 {
 	public static class FontExtensions
 	{
+		[ThreadStatic]
 		static Dictionary<string, FontFamily> FontFamilies = new Dictionary<string, FontFamily>();
 		static double DefaultFontSize = double.NegativeInfinity;
 
@@ -98,6 +99,8 @@ namespace Xamarin.Forms.Platform.UWP
 			if (string.IsNullOrWhiteSpace(fontFamily))
 				return (FontFamily)WApplication.Current.Resources["ContentControlThemeFontFamily"];
 
+			if (FontFamilies == null)
+				FontFamilies = new Dictionary<string, FontFamily>();
 			//Return from Cache!
 			if (FontFamilies.TryGetValue(fontFamily, out var f))
 			{
@@ -116,17 +119,32 @@ namespace Xamarin.Forms.Platform.UWP
 #if HAS_UNO
 			return null;
 #else
-			using (var fontSet = new CanvasFontSet(new Uri(fontFile)))
+			try
 			{
-				if (fontSet.Fonts.Count == 0)
-					return null;
+				var fontUri = new Uri(fontFile, UriKind.RelativeOrAbsolute);
 
-				return fontSet.GetPropertyValues(CanvasFontPropertyIdentifier.FamilyName).FirstOrDefault().Value;
+				// CanvasFontSet only supports ms-appx:// and ms-appdata:// font URIs
+				if (fontUri.IsAbsoluteUri && (fontUri.Scheme == "ms-appx" || fontUri.Scheme == "ms-appdata"))
+				{
+					using (var fontSet = new CanvasFontSet(fontUri))
+					{
+						if (fontSet.Fonts.Count != 0) 
+							return fontSet.GetPropertyValues(CanvasFontPropertyIdentifier.FamilyName).FirstOrDefault().Value;
+					}
+				}
+
+				return null;
+			}
+			catch(Exception ex)
+			{
+				// the CanvasFontSet constructor can throw an exception in case something's wrong with the font. It should not crash the app
+				Internals.Log.Warning("Font",$"Error loading font {fontFile}: {ex.Message}");
+				return null;
 			}
 #endif
 		}
 
-		static IEnumerable<string> GetAllFontPossibilities(string fontFamily)
+			static IEnumerable<string> GetAllFontPossibilities(string fontFamily)
 		{
 			//First check Alias
 			var (hasFontAlias, fontPostScriptName) = FontRegistrar.HasFont(fontFamily);
