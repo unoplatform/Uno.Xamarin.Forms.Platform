@@ -74,7 +74,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish ControlGallery Wasm Artifacts
     inputs:
-      pathToPublish: .\Xamarin.Forms.ControlGallery.Uno.Wasm\bin\Release\netstandard2.0\dist
+      pathToPublish: .\Xamarin.Forms.ControlGallery.Uno.Wasm\bin\Release\net5.0\dist
       artifactType: container
       artifactName: FormsControlGallery-Wasm
 
