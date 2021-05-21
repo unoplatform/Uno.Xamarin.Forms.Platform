@@ -39,6 +39,11 @@ jobs:
         versionSpec: 5.1.0
         checkLatest: false
 
+  - task: UseDotNet@2
+    inputs:
+      packageType: sdk
+      version: 5.0.203
+
   - task: NuGetCommand@2
     inputs:
       command: restore
@@ -120,6 +125,11 @@ jobs:
       packageAuthor: 'nventive'
       summaryFile: '$(Build.ArtifactStagingDirectory)/Canary.md'
       resultFile: '$(Build.ArtifactStagingDirectory)/update_result.json'
+
+  - task: UseDotNet@2
+    inputs:
+      packageType: sdk
+      version: 5.0.203
 
   - bash: |
       chmod +x build/scripts/wasm-uitest-run.sh
