@@ -39,6 +39,11 @@ jobs:
         versionSpec: 5.1.0
         checkLatest: false
 
+  - task: UseDotNet@2
+    inputs:
+      packageType: sdk
+      version: 5.0.203
+
   - task: NuGetCommand@2
     inputs:
       command: restore
@@ -74,7 +79,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish ControlGallery Wasm Artifacts
     inputs:
-      pathToPublish: .\Xamarin.Forms.ControlGallery.Uno.Wasm\bin\Release\netstandard2.0\dist
+      pathToPublish: .\Xamarin.Forms.ControlGallery.Uno.Wasm\bin\Release\net5.0\dist
       artifactType: container
       artifactName: FormsControlGallery-Wasm
 
@@ -120,6 +125,11 @@ jobs:
       packageAuthor: 'nventive'
       summaryFile: '$(Build.ArtifactStagingDirectory)/Canary.md'
       resultFile: '$(Build.ArtifactStagingDirectory)/update_result.json'
+
+  - task: UseDotNet@2
+    inputs:
+      packageType: sdk
+      version: 5.0.203
 
   - bash: |
       chmod +x build/scripts/wasm-uitest-run.sh
